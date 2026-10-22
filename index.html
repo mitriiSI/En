@@ -221,6 +221,12 @@
     .progress button span { display: none; }
     .hud-top { padding: 16px; }
   }
+  /* 4K / very large screens: every full-screen layer costs ~4x the pixels, so drop the extras */
+  .hi-res .scene img { animation: none; transform: scale(1.04); }
+  .hi-res .grain { display: none; }
+  .hi-res h1, .hi-res h2 { text-shadow: none; }
+  .hi-res .done h1, .hi-res .done h2 { text-shadow: 0 4px 24px rgba(0, 0, 0, .7); }
+
   @media (prefers-reduced-motion: reduce) {
     .ch, .text .w { animation: none !important; opacity: 1; }
     .rise, .person { transition: none; }
@@ -341,6 +347,10 @@
   const slides = [...document.querySelectorAll(".slide")];
   const scenes = [...document.querySelectorAll(".scene")];
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // physical pixels on screen; above ~5 MP (e.g. 4K full screen) switch to the lighter mode
+  const physPx = () => innerWidth * innerHeight * Math.pow(devicePixelRatio || 1, 2);
+  const setHiRes = () => document.documentElement.classList.toggle("hi-res", physPx() > 5e6);
+  setHiRes(); addEventListener("resize", setHiRes);
 
   /* ---------- loader: wait for the first photo ---------- */
   const loader = document.getElementById("loader");
@@ -499,13 +509,14 @@
   const motes = [], sparks = [];
   const mouse = { x: -999, y: -999 };
   function resize() {
-    dpr = Math.min(1.5, devicePixelRatio || 1);
+    // keep the canvas around 2 MP at most; on 4K it is drawn at lower resolution and stretched
+    dpr = Math.min(1, Math.sqrt(2e6 / (innerWidth * innerHeight)));
     W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr;
     cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
   }
   resize(); addEventListener("resize", resize);
   addEventListener("pointermove", e => { mouse.x = e.clientX * dpr; mouse.y = e.clientY * dpr; });
-  const N = reduced ? 0 : (innerWidth < 760 ? 40 : 80);
+  const N = reduced ? 0 : (innerWidth < 760 ? 40 : physPx() > 5e6 ? 50 : 80);
   for (let i = 0; i < N; i++) motes.push({
     x: Math.random() * W, y: Math.random() * H,
     r: (Math.random() * 1.4 + .3) * dpr, vx: (Math.random() - .5) * .2, vy: -(Math.random() * .3 + .04),
