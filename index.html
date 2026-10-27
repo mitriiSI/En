@@ -60,7 +60,11 @@
   .doc code { background: var(--panel2); padding: 1px 5px; border-radius: 6px; }
   .doc pre { background: var(--panel2); padding: 12px; border-radius: 10px; overflow-x: auto; white-space: pre-wrap; }
   .doc strong { color: var(--ink); }
-  iframe.page { width: 100%; height: 100%; border: 0; background: #fff; }
+  .pagewrap { width: 100%; height: 100%; background: #fff; }
+  iframe.page { width: 100%; height: 100%; border: 0; background: #fff; display: block; }
+  body.fs .pagewrap { position: fixed; inset: 0; z-index: 50; }
+  #fsExit { display: none; position: fixed; top: 10px; right: 10px; z-index: 60; background: rgba(0,0,0,.7); color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 12px; padding: 8px 14px; }
+  body.fs #fsExit { display: block; }
 
   /* home */
   .home { max-width: 900px; margin: 0 auto; padding: 36px 22px 80px; }
@@ -129,12 +133,12 @@
     <h1 id="title">Главная</h1>
     <button class="btn" id="fsBtn" style="display:none">⛶ На весь экран</button>
     <button class="btn" id="delBtn" style="display:none">Удалить</button>
-    <button class="btn primary" id="askBtn">Спросить Клода</button>
   </div>
   <div class="view" id="view"></div>
 </main>
 
 <div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
+<button id="fsExit">✕ Закрыть</button>
 <div class="toast" id="toast"></div>
 <input type="file" id="fileIn" accept="application/json" hidden>
 
@@ -213,7 +217,7 @@
     $('#title').textContent = 'Главная';
     $('#fsBtn').style.display = 'none'; $('#delBtn').style.display = 'none';
     var secs = merged();
-    $('#view').innerHTML = '<div class="home"><h1>Учебный хаб</h1><p class="sub">Выбери раздел слева или добавь свой. Всё, что добавишь, сохраняется в этом браузере; чтобы закрепить в репозитории, нажми «Спросить Клода».</p><div class="grid">' +
+    $('#view').innerHTML = '<div class="home"><h1>Учебный хаб</h1><p class="sub">Выбери раздел слева или добавь свой. Всё, что добавишь, сохраняется в этом браузере; для переноса на другие устройства есть экспорт и импорт.</p><div class="grid">' +
       secs.map(function (s) {
         return '<div class="card" data-open-sec="' + esc(s.id) + '"><div class="ico">' + esc(s.icon || '📁') + '</div><h3>' + esc(s.title) + '</h3><p>' + s.items.length + ' матер.</p></div>';
       }).join('') + '</div></div>';
@@ -228,7 +232,7 @@
     $('#title').textContent = f.item.title;
     $('#delBtn').style.display = f.item.user ? '' : 'none';
     $('#fsBtn').style.display = f.item.type === 'page' ? '' : 'none';
-    document.body.classList.remove('nav-open');
+    document.body.classList.remove('nav-open'); exitFs();
     var v = $('#view');
     if (f.item.type === 'markdown') renderMarkdown(f.item, v);
     else if (f.item.type === 'cards') renderCards(f.item, v);
@@ -256,13 +260,25 @@
   }
 
   function renderPage(item, v) {
+    exitFs();
     if (item.html != null) {
-      v.innerHTML = '<iframe class="page" sandbox="allow-scripts allow-popups allow-forms"></iframe>';
-      v.firstChild.srcdoc = item.html;
+      v.innerHTML = '<div class="pagewrap"><iframe class="page" allowfullscreen allow="fullscreen" sandbox="allow-scripts allow-popups allow-forms"></iframe></div>';
+      v.querySelector('iframe').srcdoc = item.html;
     } else {
-      v.innerHTML = '<iframe class="page" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" src="' + esc(item.url) + '"></iframe>';
+      v.innerHTML = '<div class="pagewrap"><iframe class="page" allowfullscreen allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" src="' + esc(item.url) + '"></iframe></div>';
     }
   }
+  function enterFs() {
+    var w = document.querySelector('.pagewrap'); if (!w) return;
+    document.body.classList.add('fs');
+    try { var r = w.requestFullscreen || w.webkitRequestFullscreen; if (r) { var p = r.call(w); if (p && p.catch) p.catch(function () {}); } } catch (e) {}
+  }
+  function exitFs() {
+    document.body.classList.remove('fs');
+    try { if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen(); } catch (e) {}
+  }
+  document.addEventListener('fullscreenchange', function () { if (!document.fullscreenElement) document.body.classList.remove('fs'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') exitFs(); });
 
   /* flashcards */
   function renderCards(item, v) {
@@ -397,22 +413,14 @@
   };
 
   /* ---------- top bar actions ---------- */
-  $('#askBtn').onclick = function () {
-    var ctx;
-    if (current) {
-      ctx = 'Раздел «' + current.section.title + '», материал «' + current.item.title + '».';
-      if (current.item.user) ctx += ' Этот материал сейчас хранится только у меня в браузере, добавь его в репозиторий.';
-    } else ctx = 'Общий вопрос по сайту.';
-    var prompt = 'Сайт «Учебный хаб» из репозитория ' + REPO + ' (корень репозитория). ' + ctx + '\n\nМой запрос: ';
-    window.open('https://claude.ai/new?q=' + encodeURIComponent(prompt), '_blank', 'noopener');
-  };
   $('#delBtn').onclick = function () {
     if (!current || !current.item.user) return;
     if (!confirm('Удалить «' + current.item.title + '»?')) return;
     user.items = user.items.filter(function (i) { return i.id !== current.item.id; });
     save(); showHome(); toast('Удалено');
   };
-  $('#fsBtn').onclick = function () { var f = $('#view iframe'); if (f && f.requestFullscreen) f.requestFullscreen(); };
+  $('#fsBtn').onclick = enterFs;
+  $('#fsExit').onclick = exitFs;
   $('#menuBtn').onclick = function () { document.body.classList.toggle('nav-open'); };
   $('#addSection').onclick = sectionForm;
   $('#addItem').onclick = itemForm;
