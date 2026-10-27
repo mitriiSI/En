@@ -1,8 +1,8 @@
 /* Офлайн-режим: сначала сеть (чтобы обновления доходили сразу), при её отсутствии — кэш. */
-var CACHE = 'hub-v1';
+var CACHE = 'hub-v2';
 var SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'data/sections.json',
-  'lib/marked.min.js', 'lib/purify.min.js', 'lib/mammoth.browser.min.js',
+  'lib/marked.min.js', 'lib/purify.min.js', 'lib/mammoth.browser.min.js', 'lib/widgets.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
 ];
 

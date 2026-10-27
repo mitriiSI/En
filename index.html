@@ -15,11 +15,11 @@
 <style>
   :root {
     --bg: #0f1220; --panel: #171b30; --panel2: #1f2440; --line: #2b3154;
-    --ink: #eef0f8; --muted: #9aa2c0; --accent: #7aa2ff; --gold: #f0c36b; --ok: #4cc38a; --bad: #ef6b5b;
+    --ink: #eef0f8; --muted: #9aa2c0; --accent: #7aa2ff; --gold: #f0c36b; --ok: #4cc38a; --bad: #ef6b5b; --demand: #6fa0ff; --supply: #ff8f66;
     --top: env(safe-area-inset-top, 0px); --bot: env(safe-area-inset-bottom, 0px);
   }
   @media (prefers-color-scheme: light) {
-    :root { --bg:#f3f4fa; --panel:#fff; --panel2:#eceef8; --line:#dcdff0; --ink:#1b1f33; --muted:#626a8a; --accent:#2f5bd9; --gold:#a86f00; }
+    :root { --bg:#f3f4fa; --panel:#fff; --panel2:#eceef8; --line:#dcdff0; --ink:#1b1f33; --muted:#626a8a; --accent:#2f5bd9; --gold:#a86f00; --demand:#2f6fe0; --supply:#d9582b; }
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
@@ -102,6 +102,35 @@
   .fc .brow { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
   .fc .hint { margin-top: 14px; color: var(--muted); font-size: 13px; }
 
+
+  /* интерактивные блоки внутри конспекта */
+  .wg { margin: 22px 0; padding: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 6px 22px rgba(0,0,0,.18); }
+  .wg-h { display: flex; align-items: center; gap: 10px; font-size: 18px; }
+  .wg-badge { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: var(--accent); border-radius: 999px; padding: 2px 9px; }
+  .wg-lead { margin: 6px 0 12px; color: var(--muted); font-size: 15px; }
+  .wg svg { width: 100%; height: auto; display: block; background: var(--panel2); border-radius: 14px; touch-action: manipulation; }
+  .wg svg text { fill: var(--ink); font-size: 13px; font-family: inherit; }
+  .wg-ax { stroke: var(--muted); stroke-width: 1.5; }
+  .wg-grid { stroke: var(--line); stroke-width: 1; }
+  .wg-ctl { margin: 14px 0 4px; display: grid; gap: 10px; }
+  .wg-ctl label { display: flex; align-items: center; gap: 10px; font-size: 14px; margin: 0; color: var(--ink); }
+  .wg-ctl .n { min-width: 130px; }
+  .wg-ctl input[type=range] { flex: 1; min-width: 0; accent-color: var(--accent); }
+  .wg-ctl b { min-width: 40px; text-align: right; }
+  .wg-out { margin-top: 12px; padding: 12px 14px; border-radius: 14px; background: var(--panel2); font-size: 15px; }
+  .wg-out b { color: var(--gold); }
+  .wg-chips { display: flex; gap: 10px; flex-wrap: wrap; margin: 4px 0 10px; }
+  .wg-chip { flex: 1 1 130px; border: 2px solid var(--line); background: var(--panel2); border-radius: 16px; padding: 12px; text-align: left; }
+  .wg-chip.on { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 18%, var(--panel2)); }
+  .wg-chip.off { opacity: .55; }
+  .wg-chip small { display: block; color: var(--muted); }
+  .wg-meter { height: 24px; border-radius: 12px; background: var(--panel2); overflow: hidden; border: 1px solid var(--line); }
+  .wg-meter i { display: block; height: 100%; width: 0; background: var(--ok); transition: width .25s, background .25s; }
+  .wg-meter.over i { background: var(--bad); }
+  .wg-legend { display: flex; gap: 6px 14px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin: 8px 0 0; }
+  .wg-legend i { display: inline-block; width: 14px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
+  @media (max-width: 520px) { .wg-ctl label { flex-wrap: wrap; } .wg-ctl .n { min-width: 100%; } }
+
   /* modal */
   .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: flex-end; justify-content: center; z-index: 30; }
   .modal-bg.on { display: flex; }
@@ -134,6 +163,7 @@
 
 <script src="lib/marked.min.js"></script>
 <script src="lib/purify.min.js"></script>
+<script src="lib/widgets.js"></script>
 <script>
 (function () {
   'use strict';
@@ -344,7 +374,10 @@
     else v.innerHTML = '<div class="page"><a style="color:var(--accent)" target="_blank" rel="noopener" href="' + esc(it.url) + '">Открыть: ' + esc(it.url) + '</a></div>';
   }
   function clean(h) { return window.DOMPurify ? DOMPurify.sanitize(h) : esc(h); }
-  function md(t) { return window.marked ? clean(marked.parse(t)) : '<pre>' + esc(t) + '</pre>'; }
+  function md(t) {
+    var out = window.marked ? clean(marked.parse(t)) : '<pre>' + esc(t) + '</pre>';
+    return out.replace(/<p>\s*@@graph:([a-z0-9_-]+)@@\s*<\/p>/g, '<div class="wg-slot" data-w="$1"></div>');
+  }
   function pn(sid, iid) {
     var items = itemsOf(sid), k = items.map(function (i) { return i.id; }).indexOf(iid);
     var p = items[k - 1], n = items[k + 1];
@@ -354,7 +387,7 @@
   }
   var cache = {};
   function renderMd(it, v, sid) {
-    var put = function (t) { if (parse().iid === it.id) v.innerHTML = '<div class="page doc">' + md(t) + pn(sid, it.id) + '</div>'; };
+    var put = function (t) { if (parse().iid === it.id) { v.innerHTML = '<div class="page doc">' + md(t) + pn(sid, it.id) + '</div>'; if (window.HubWidgets) HubWidgets.mountAll(v); } };
     if (it.text != null) return put(it.text);
     if (cache[it.src]) return put(cache[it.src]);
     v.innerHTML = '<div class="page">Загрузка…</div>';

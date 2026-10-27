@@ -12,12 +12,6 @@
           "src": "content/ekonomika-tema1.md"
         },
         {
-          "id": "tema1-graphs",
-          "title": "Тема I. Интерактивные графики",
-          "type": "page",
-          "url": "content/interactive-tema1.html"
-        },
-        {
           "id": "tema1-cards",
           "title": "Тема I. Карточки для повторения",
           "type": "cards",
