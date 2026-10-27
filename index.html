@@ -241,10 +241,21 @@
     return items;
   }
   function itemById(sid, iid) { return itemsOf(sid).filter(function (i) { return i.id === iid; })[0]; }
+  /* блоки внутри предмета: конспекты, карточки, презентации */
+  var GROUPS = [{ id: 'notes', title: 'Конспекты', icon: '📝' }, { id: 'cards', title: 'Карточки', icon: '🃏' }, { id: 'pages', title: 'Презентации', icon: '🎞️' }, { id: 'other', title: 'Другое', icon: '📎' }];
+  function groupOf(i) { return i.group || (i.type === 'cards' ? 'cards' : (i.type === 'markdown' || i.type === 'doc') ? 'notes' : i.type === 'page' ? 'pages' : 'other'); }
+  function groupsOf(sid) { var items = itemsOf(sid); return GROUPS.filter(function (g) { return items.some(function (i) { return groupOf(i) === g.id; }); }); }
+  function group(gid) { return GROUPS.filter(function (g) { return g.id === gid; })[0]; }
+  function siblings(sid, iid) {
+    var it = itemById(sid, iid), all = itemsOf(sid);
+    return groupsOf(sid).length > 1 && it ? all.filter(function (i) { return groupOf(i) === groupOf(it); }) : all;
+  }
   function move(sid, iid, d) {
     var ids = itemsOf(sid).map(function (i) { return i.id; });
-    var k = ids.indexOf(iid), n = k + d;
-    if (k < 0 || n < 0 || n >= ids.length) return;
+    var sib = siblings(sid, iid).map(function (i) { return i.id; });
+    var j = sib.indexOf(iid), other = sib[j + d];
+    if (j < 0 || !other) return;
+    var k = ids.indexOf(iid), n = ids.indexOf(other);
     var t = ids[k]; ids[k] = ids[n]; ids[n] = t;
     user.order[sid] = ids; save(); render();
   }
@@ -252,6 +263,7 @@
   /* ---------- routing ---------- */
   function parse() {
     var p = location.hash.replace(/^#\/?/, '').split('/');
+    if (p[0] === 's' && p[1] && p[2] === 'g' && p[3]) return { v: 'sub', sid: p[1], gid: p[3] };
     if (p[0] === 's' && p[1]) return { v: p[2] ? 'item' : 'sub', sid: p[1], iid: p[2] };
     return { v: 'home' };
   }
@@ -259,7 +271,11 @@
   window.addEventListener('hashchange', render);
   $('#back').onclick = function () {
     var r = parse();
-    if (r.v === 'item') go('#/s/' + r.sid); else go('#/');
+    if (r.v === 'item') {
+      var it = itemById(r.sid, r.iid);
+      go(it && groupsOf(r.sid).length > 1 ? '#/s/' + r.sid + '/g/' + groupOf(it) : '#/s/' + r.sid);
+    } else if (r.gid) go('#/s/' + r.sid);
+    else go('#/');
   };
 
   /* ---------- rendering ---------- */
@@ -272,7 +288,7 @@
     exitFs(); cardKeys = null;
     var r = parse(), v = $('#view');
     if (r.v === 'home') home(v);
-    else if (r.v === 'sub') sub(v, r.sid);
+    else if (r.v === 'sub') sub(v, r.sid, r.gid);
     else item(v, r.sid, r.iid);
     v.scrollTop = 0;
   }
@@ -302,12 +318,30 @@
   function plural(n) { var a = n % 10, b = n % 100; return (a === 1 && b !== 11) ? 'материал' : (a >= 2 && a <= 4 && (b < 10 || b >= 20)) ? 'материала' : 'материалов'; }
 
   /* subject */
-  function sub(v, sid) {
+  function sub(v, sid, gid) {
     var s = section(sid);
     if (!s) return go('#/');
-    setHead((s.icon || '') + ' ' + s.title, '<button class="ib' + (editing ? ' primary' : '') + '" id="edBtn">' + (editing ? 'Готово' : 'Порядок') + '</button>');
+    var grps = groupsOf(sid);
+    if (gid && !group(gid)) return go('#/s/' + sid);
+    if (!gid && grps.length > 1) {
+      editing = false;
+      setHead((s.icon || '') + ' ' + s.title, '');
+      v.onclick = null;
+      v.innerHTML = '<div class="page"><div class="toolbar">' +
+        '<button class="ib primary" id="upBtn">⬆ Загрузить файлы</button>' +
+        '<button class="ib" id="addBtn">＋ Создать</button></div><div class="grid">' +
+        grps.map(function (g) {
+          var n = itemsOf(sid).filter(function (i) { return groupOf(i) === g.id; }).length;
+          return '<div class="tile" data-grp="' + esc(sid) + '/g/' + g.id + '"><div class="ico">' + g.icon + '</div><div><h3>' + g.title + '</h3><small>' + n + ' ' + plural(n) + '</small></div></div>';
+        }).join('') + '</div></div>';
+      v.querySelector('#upBtn').onclick = function () { pickFiles(sid); };
+      v.querySelector('#addBtn').onclick = function () { itemForm(sid); };
+      return;
+    }
+    var g = gid && group(gid);
+    setHead(g ? g.icon + ' ' + g.title : (s.icon || '') + ' ' + s.title, '<button class="ib' + (editing ? ' primary' : '') + '" id="edBtn">' + (editing ? 'Готово' : 'Порядок') + '</button>');
     $('#edBtn').onclick = function () { editing = !editing; render(); };
-    var items = itemsOf(sid);
+    var items = itemsOf(sid).filter(function (i) { return !gid || groupOf(i) === gid; });
     var html = '<div class="page"><div class="toolbar">' +
       '<button class="ib primary" id="upBtn">⬆ Загрузить файлы</button>' +
       '<button class="ib" id="addBtn">＋ Создать</button></div>';
@@ -380,7 +414,7 @@
     return out.replace(/<p>\s*@@graph:([a-z0-9_-]+)@@\s*<\/p>/g, '<div class="wg-slot" data-w="$1"></div>');
   }
   function pn(sid, iid) {
-    var items = itemsOf(sid), k = items.map(function (i) { return i.id; }).indexOf(iid);
+    var items = siblings(sid, iid), k = items.map(function (i) { return i.id; }).indexOf(iid);
     var p = items[k - 1], n = items[k + 1];
     if (!p && !n) return '';
     return '<div class="pn">' + (p ? '<button class="ib" data-item="' + esc(sid) + '/' + esc(p.id) + '">‹ ' + esc(p.title) + '</button>' : '') +
@@ -557,9 +591,10 @@
 
   /* ---------- global clicks ---------- */
   document.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-sec],[data-item]');
+    var t = e.target.closest('[data-sec],[data-item],[data-grp]');
     if (!t || e.target.closest('.tools')) return;
     if (t.dataset.sec) go('#/s/' + t.dataset.sec);
+    else if (t.dataset.grp) go('#/s/' + t.dataset.grp);
     else if (t.dataset.item) go('#/s/' + t.dataset.item);
   });
 
