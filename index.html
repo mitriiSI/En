@@ -93,12 +93,13 @@
   .fc .progress { color: var(--muted); margin-bottom: 12px; }
   .fc .bar { height: 6px; background: var(--panel2); border-radius: 6px; overflow: hidden; margin-bottom: 18px; }
   .fc .bar i { display: block; height: 100%; background: var(--ok); transition: width .3s; }
-  .flip { perspective: 1200px; height: 280px; cursor: pointer; }
-  .flip-in { position: relative; width: 100%; height: 100%; transition: transform .5s; transform-style: preserve-3d; }
-  .flip.on .flip-in { transform: rotateY(180deg); }
-  .face { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: grid; place-items: center; padding: 24px; border-radius: 22px; border: 1px solid var(--line); background: var(--panel); font-size: 21px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
-  .face.back { transform: rotateY(180deg); background: color-mix(in srgb, var(--accent) 16%, var(--panel)); font-weight: 500; }
-  .face small { position: absolute; top: 12px; left: 16px; color: var(--muted); font-size: 12px; font-weight: 400; text-transform: uppercase; letter-spacing: .08em; }
+  .flipwrap { perspective: 1000px; }
+  .card3 { position: relative; height: 290px; border-radius: 24px; border: 1px solid var(--line); background: var(--panel); display: flex; align-items: center; justify-content: center; padding: 34px 22px 38px; font-size: 21px; font-weight: 600; line-height: 1.4; box-shadow: 0 10px 30px rgba(0,0,0,.25); cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation; transition: transform .18s ease-in; }
+  .card3.turn { transform: rotateY(90deg); }
+  .card3.back { background: color-mix(in srgb, var(--accent) 20%, var(--panel)); border-color: var(--accent); font-weight: 500; }
+  .card3 .lab { position: absolute; top: 13px; left: 18px; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .card3.back .lab { color: var(--accent); }
+  .card3 .tap { position: absolute; bottom: 12px; left: 0; right: 0; font-size: 12px; font-weight: 400; color: var(--muted); }
   .fc .brow { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
   .fc .hint { margin-top: 14px; color: var(--muted); font-size: 13px; }
 
@@ -419,19 +420,34 @@
     if (cardKeys) cardKeys(e);
   });
 
-  /* flashcards */
+  /* flashcards: карточка переворачивается, на обороте ответ */
   function cards(it, v) {
-    var deck = (it.cards || []).slice(), idx = 0, known = {}, flipped = false;
+    var deck = (it.cards || []).slice(), idx = 0, known = {}, flipped = false, busy = false;
     if (!deck.length) { v.innerHTML = '<div class="page">В колоде нет карточек.</div>'; return; }
+    function face() {
+      var c = deck[idx], card = v.querySelector('#flip'); if (!card) return;
+      card.classList.toggle('back', flipped);
+      card.querySelector('.lab').textContent = flipped ? 'ответ' : 'вопрос';
+      card.querySelector('.txt').textContent = flipped ? c.a : c.q;
+      card.querySelector('.tap').textContent = flipped ? 'нажми, чтобы вернуться к вопросу ↻' : 'нажми, чтобы увидеть ответ ↻';
+      var fb = v.querySelector('#fl'); if (fb) fb.textContent = flipped ? 'Показать вопрос' : 'Перевернуть';
+    }
+    function turn() {
+      var card = v.querySelector('#flip'); if (!card || busy) return;
+      busy = true; card.classList.add('turn');
+      setTimeout(function () { flipped = !flipped; face(); card.classList.remove('turn'); setTimeout(function () { busy = false; }, 190); }, 190);
+    }
     function draw() {
-      var c = deck[idx], done = Object.keys(known).length;
+      var done = Object.keys(known).length;
       v.innerHTML = '<div class="fc"><div class="progress">Карточка ' + (idx + 1) + ' из ' + deck.length + ' · знаю: ' + done + '</div>' +
         '<div class="bar"><i style="width:' + (done / deck.length * 100) + '%"></i></div>' +
-        '<div class="flip' + (flipped ? ' on' : '') + '" id="flip"><div class="flip-in"><div class="face"><small>вопрос</small>' + esc(c.q) + '</div><div class="face back"><small>ответ</small>' + esc(c.a) + '</div></div></div>' +
-        '<div class="brow"><button class="ib" id="prev">‹ Назад</button><button class="ib danger" id="again">Повторить</button><button class="ib primary" id="know">Знаю ✓</button><button class="ib" id="next">Далее ›</button></div>' +
-        '<div class="brow"><button class="ib" id="shuf">Перемешать</button><button class="ib" id="reset">Сначала</button></div>' +
-        '<div class="hint">Нажми на карточку, чтобы перевернуть.</div></div>';
-      v.querySelector('#flip').onclick = function () { flipped = !flipped; this.classList.toggle('on', flipped); };
+        '<div class="flipwrap"><div class="card3" id="flip"><span class="lab"></span><span class="txt"></span><span class="tap"></span></div></div>' +
+        '<div class="brow"><button class="ib" id="prev">‹ Назад</button><button class="ib primary" id="fl">Перевернуть</button><button class="ib" id="next">Далее ›</button></div>' +
+        '<div class="brow"><button class="ib danger" id="again">Повторить позже</button><button class="ib" id="know" style="border-color:var(--ok)">Знаю ✓</button></div>' +
+        '<div class="brow"><button class="ib" id="shuf">Перемешать</button><button class="ib" id="reset">Сначала</button></div></div>';
+      busy = false; face();
+      v.querySelector('#flip').onclick = turn;
+      v.querySelector('#fl').onclick = turn;
       v.querySelector('#prev').onclick = function () { step(-1); };
       v.querySelector('#next').onclick = function () { step(1); };
       v.querySelector('#know').onclick = function () { known[idx] = 1; if (Object.keys(known).length === deck.length) { toast('Вся колода пройдена 🎉'); draw(); } else step(1); };
@@ -443,7 +459,7 @@
     draw();
     cardKeys = function (e) {
       if (e.key === 'ArrowRight') step(1); else if (e.key === 'ArrowLeft') step(-1);
-      else if (e.key === ' ') { e.preventDefault(); flipped = !flipped; var f = v.querySelector('#flip'); if (f) f.classList.toggle('on', flipped); }
+      else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); turn(); }
     };
   }
 
