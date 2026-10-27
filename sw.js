@@ -1,5 +1,5 @@
 /* Офлайн-режим: сначала сеть (чтобы обновления доходили сразу), при её отсутствии — кэш. */
-var CACHE = 'hub-v13';
+var CACHE = 'hub-v14';
 var SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'data/sections.json',
   'lib/marked.min.js', 'lib/purify.min.js', 'lib/mammoth.browser.min.js', 'lib/widgets.js', 'lib/scene3d.js', 'lib/history-russia.js', 'lib/widgets3d.js', 'lib/filosofiya3d.js', 'lib/ekonomika3d.js', 'lib/politucheniya3d.js', 'lib/politucheniya3d-2.js', 'lib/upravlenie3d-1.js', 'lib/upravlenie3d-2.js', 'lib/upravlenie3d-3.js', 'lib/upravlenie3d-4.js', 'lib/upravlenie3d-common.js', 'lib/upravlenie3d-1b.js', 'lib/upravlenie3d-2b.js', 'lib/upravlenie3d-3b.js', 'lib/upravlenie3d-4b.js', 'lib/upravlenie2d.js', 'lib/three.min.js',
@@ -37,6 +37,7 @@ self.addEventListener('fetch', function (e) {
   if (req.method !== 'GET') return;
   var url = new URL(req.url);
   if (url.origin !== location.origin) return;
+  if (/\.(mp4|webm|mov)$/i.test(url.pathname)) return; // видео — напрямую из сети (большие файлы, range-запросы)
   e.respondWith(
     fetch(req, { cache: 'no-cache' }).then(function (res) {
       if (res && res.ok) { var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put(req, copy); }); }

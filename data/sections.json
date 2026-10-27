@@ -471,6 +471,13 @@
       "icon": "🦅",
       "items": [
         {
+          "id": "lekciya-15-video",
+          "title": "🎬 Видеолекция 15: Александр I и Николай I",
+          "type": "video",
+          "video": "istoriya-rossii/lekciya-15-aleksandr-nikolaj.mp4",
+          "poster": "istoriya-rossii/lekciya-15-poster.jpg"
+        },
+        {
           "id": "aleksandr-nikolaj",
           "title": "Александр I и Николай I: идеологии и политика (21.10)",
           "type": "markdown",

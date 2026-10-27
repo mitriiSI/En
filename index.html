@@ -272,8 +272,8 @@
   }
   function itemById(sid, iid) { return itemsOf(sid).filter(function (i) { return i.id === iid; })[0]; }
   /* блоки внутри предмета: конспекты, карточки, презентации */
-  var GROUPS = [{ id: 'notes', title: 'Конспекты', icon: '📝' }, { id: 'cards', title: 'Карточки', icon: '🃏' }, { id: 'pages', title: 'Презентации', icon: '🎞️' }, { id: 'other', title: 'Другое', icon: '📎' }];
-  function groupOf(i) { return i.group || (i.type === 'cards' ? 'cards' : (i.type === 'markdown' || i.type === 'doc') ? 'notes' : i.type === 'page' ? 'pages' : 'other'); }
+  var GROUPS = [{ id: 'videos', title: 'Видеолекции', icon: '🎬' }, { id: 'notes', title: 'Конспекты', icon: '📝' }, { id: 'cards', title: 'Карточки', icon: '🃏' }, { id: 'pages', title: 'Презентации', icon: '🎞️' }, { id: 'other', title: 'Другое', icon: '📎' }];
+  function groupOf(i) { return i.group || (i.type === 'video' ? 'videos' : i.type === 'cards' ? 'cards' : (i.type === 'markdown' || i.type === 'doc') ? 'notes' : i.type === 'page' ? 'pages' : 'other'); }
   function groupsOf(sid) { var items = itemsOf(sid); return GROUPS.filter(function (g) { return items.some(function (i) { return groupOf(i) === g.id; }); }); }
   function group(gid) { return GROUPS.filter(function (g) { return g.id === gid; })[0]; }
   function siblings(sid, iid) {
@@ -436,6 +436,9 @@
     else if (it.type === 'doc') v.innerHTML = '<div class="page doc">' + clean(it.html) + pn(sid, iid) + '</div>';
     else if (it.type === 'cards') cards(it, v);
     else if (it.type === 'page') pageView(it, v);
+    else if (it.type === 'video') v.innerHTML = '<div class="page"><video controls playsinline preload="metadata" style="width:100%;border-radius:16px;background:#000;display:block"' +
+      (it.poster ? ' poster="' + esc(it.poster) + '"' : '') + ' src="' + esc(it.video) + '"></video>' +
+      '<p style="margin:14px 0 0"><a class="ib" style="text-decoration:none" href="' + esc(it.video) + '" download>⬇️ Скачать видео</a></p>' + pn(sid, iid) + '</div>';
     else v.innerHTML = '<div class="page"><a style="color:var(--accent)" target="_blank" rel="noopener" href="' + esc(it.url) + '">Открыть: ' + esc(it.url) + '</a></div>';
   }
   function clean(h) { return window.DOMPurify ? DOMPurify.sanitize(h) : esc(h); }
