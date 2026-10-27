@@ -1,5 +1,5 @@
 /* Офлайн-режим: сначала сеть (чтобы обновления доходили сразу), при её отсутствии — кэш. */
-var CACHE = 'hub-v8';
+var CACHE = 'hub-v9';
 var SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'data/sections.json',
   'lib/marked.min.js', 'lib/purify.min.js', 'lib/mammoth.browser.min.js', 'lib/widgets.js', 'lib/scene3d.js', 'lib/history-russia.js', 'lib/widgets3d.js', 'lib/filosofiya3d.js', 'lib/three.min.js',
@@ -38,7 +38,7 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(req.url);
   if (url.origin !== location.origin) return;
   e.respondWith(
-    fetch(req).then(function (res) {
+    fetch(req, { cache: 'no-cache' }).then(function (res) {
       if (res && res.ok) { var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put(req, copy); }); }
       return res;
     }).catch(function () {
