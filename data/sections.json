@@ -472,9 +472,9 @@
       "items": [
         {
           "id": "lekciya-15-video",
-          "title": "🎬 Видеолекция 15: Александр I и Николай I",
+          "title": "🎬 Видеолекция 15: Александр I и Николай I (с 3D-моделями)",
           "type": "video",
-          "video": "istoriya-rossii/lekciya-15-aleksandr-nikolaj.mp4",
+          "video": "istoriya-rossii/lekciya-15-aleksandr-nikolaj.mp4?v=2",
           "poster": "istoriya-rossii/lekciya-15-poster.jpg"
         },
         {
