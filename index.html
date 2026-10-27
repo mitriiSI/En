@@ -1,571 +1,448 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>University of Glasgow</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<title>Учебный хаб</title>
 <style>
   :root {
-    --bg: #05070f;
-    --ink: #f6f2ea;
-    --muted: #c3c7d4;
-    --gold: #f0c36b;
-    --gold-soft: rgba(240, 195, 107, .4);
+    --bg: #0f1220; --panel: #161a2c; --panel2: #1d2238; --line: #2a3050;
+    --ink: #eef0f8; --muted: #9aa2c0; --accent: #7aa2ff; --accent2: #f0c36b; --ok: #4cc38a; --bad: #ef6b5b;
+    --r: 14px;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: Inter, system-ui, sans-serif;
-    overflow-x: hidden;
+  @media (prefers-color-scheme: light) {
+    :root { --bg:#f4f5fa; --panel:#fff; --panel2:#eef0f8; --line:#dfe2ef; --ink:#1b1f33; --muted:#626a8a; --accent:#2f5bd9; --accent2:#a86f00; }
   }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; display: flex; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
 
-  /* ---------- photo scenes ---------- */
-  .scenes { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: #000; }
-  .scene {
-    position: absolute; inset: 0; opacity: 0;
-    will-change: transform, opacity;
-  }
-  .scene img {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-    animation: drift 26s ease-in-out infinite alternate;
-  }
-  @keyframes drift { from { transform: scale(1.04) translate(-1%, 0); } to { transform: scale(1.12) translate(1%, -1%); } }
+  /* sidebar */
+  aside { width: 300px; flex: none; background: var(--panel); border-right: 1px solid var(--line); display: flex; flex-direction: column; height: 100%; }
+  .brand { padding: 18px 18px 10px; font-weight: 800; font-size: 20px; letter-spacing: .2px; }
+  .brand small { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
+  .search { margin: 6px 14px 10px; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); width: calc(100% - 28px); }
+  nav { flex: 1; overflow-y: auto; padding: 0 8px 12px; }
+  .sec { margin-top: 6px; }
+  .sec-h { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; font-weight: 700; cursor: pointer; user-select: none; }
+  .sec-h:hover { background: var(--panel2); }
+  .sec-h .chev { margin-left: auto; color: var(--muted); transition: transform .2s; }
+  .sec.closed .chev { transform: rotate(-90deg); }
+  .sec.closed .items { display: none; }
+  .item { display: flex; align-items: center; gap: 8px; padding: 7px 10px 7px 34px; border-radius: 10px; cursor: pointer; color: var(--muted); font-size: 15px; }
+  .item:hover { background: var(--panel2); color: var(--ink); }
+  .item.active { background: color-mix(in srgb, var(--accent) 20%, transparent); color: var(--ink); }
+  .item .t { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tag { font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 8px; padding: 0 6px; }
+  .side-foot { padding: 12px 14px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .btn { border: 1px solid var(--line); background: var(--panel2); border-radius: 10px; padding: 8px 12px; font-size: 14px; }
+  .btn:hover { border-color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .btn.danger:hover { border-color: var(--bad); color: var(--bad); }
+  .btn.wide { grid-column: 1 / -1; }
 
-  /* cinematic grading: vignette + letterbox-ish fade + film grain */
-  .grade {
-    position: fixed; inset: 0; z-index: 1; pointer-events: none;
-    background:
-      radial-gradient(120% 90% at 50% 45%, transparent 40%, rgba(0, 0, 0, .65) 100%),
-      linear-gradient(180deg, rgba(0, 0, 0, .55) 0%, transparent 22%, transparent 70%, rgba(0, 0, 0, .75) 100%);
-  }
-  .shade {
-    position: fixed; inset: 0; z-index: 2; pointer-events: none;
-    background: linear-gradient(90deg, rgba(4, 6, 14, .9) 0%, rgba(4, 6, 14, .75) 45%, rgba(4, 6, 14, .1) 80%);
-    opacity: 0; transition: opacity 1s ease;
-  }
-  body.reading .shade { opacity: 1; }
-  .grain {
-    position: fixed; inset: 0; z-index: 3; pointer-events: none; opacity: .06;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-  /* white flash when we "fly through" into the next room */
-  .flash {
-    position: fixed; inset: 0; z-index: 4; pointer-events: none;
-    background: radial-gradient(circle at 50% 45%, rgba(255, 240, 210, .9), rgba(255, 240, 210, 0) 60%);
-    opacity: 0;
-  }
-  #particles { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+  /* main */
+  main { flex: 1; min-width: 0; display: flex; flex-direction: column; height: 100%; }
+  .topbar { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  .topbar h1 { font-size: 18px; margin: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .menu-btn { display: none; }
+  .view { flex: 1; overflow-y: auto; }
+  .doc { max-width: 820px; margin: 0 auto; padding: 28px 22px 80px; }
+  .doc h1 { font-size: 30px; line-height: 1.2; }
+  .doc h2 { margin-top: 2em; padding-top: .4em; border-top: 1px solid var(--line); color: var(--accent2); }
+  .doc blockquote { margin: 1em 0; padding: .6em 1em; border-left: 4px solid var(--accent); background: var(--panel2); border-radius: 0 10px 10px 0; }
+  .doc blockquote p { margin: .3em 0; }
+  .doc table { border-collapse: collapse; width: 100%; font-size: 15px; display: block; overflow-x: auto; }
+  .doc th, .doc td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  .doc th { background: var(--panel2); }
+  .doc code { background: var(--panel2); padding: 1px 5px; border-radius: 6px; }
+  .doc pre { background: var(--panel2); padding: 12px; border-radius: 10px; overflow-x: auto; white-space: pre-wrap; }
+  .doc strong { color: var(--ink); }
+  iframe.page { width: 100%; height: 100%; border: 0; background: #fff; }
 
-  .loader {
-    position: fixed; inset: 0; z-index: 50; background: var(--bg);
-    display: grid; place-items: center; transition: opacity 1s ease, visibility 1s;
-    font-family: "Playfair Display", serif; letter-spacing: .3em; font-size: .9rem; color: var(--gold);
-  }
-  .loader.done { opacity: 0; visibility: hidden; }
+  /* home */
+  .home { max-width: 900px; margin: 0 auto; padding: 36px 22px 80px; }
+  .home h1 { font-size: 32px; margin: 0 0 6px; }
+  .home p.sub { color: var(--muted); margin: 0 0 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; cursor: pointer; transition: transform .15s, border-color .15s; }
+  .card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .card .ico { font-size: 26px; }
+  .card h3 { margin: 6px 0 2px; font-size: 17px; }
+  .card p { margin: 0; color: var(--muted); font-size: 14px; }
 
-  /* ---------- slides ---------- */
-  main { position: relative; z-index: 10; }
-  .slide {
-    min-height: 100vh; scroll-snap-align: start;
-    display: flex; align-items: center;
-    padding: 12vh 7vw 14vh;
-  }
-  .content { max-width: 620px; }
-  .cover { justify-content: center; text-align: center; }
-  .cover .content { max-width: 1000px; }
+  /* flashcards */
+  .fc { max-width: 640px; margin: 0 auto; padding: 28px 22px 60px; text-align: center; }
+  .fc .progress { color: var(--muted); margin-bottom: 14px; }
+  .fc .bar { height: 6px; background: var(--panel2); border-radius: 6px; overflow: hidden; margin-bottom: 18px; }
+  .fc .bar i { display: block; height: 100%; background: var(--ok); transition: width .3s; }
+  .flip { perspective: 1200px; height: 280px; cursor: pointer; }
+  .flip-in { position: relative; width: 100%; height: 100%; transition: transform .5s; transform-style: preserve-3d; }
+  .flip.on .flip-in { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; display: grid; place-items: center; padding: 24px; border-radius: 20px; border: 1px solid var(--line); background: var(--panel); font-size: 21px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+  .face.back { transform: rotateY(180deg); background: color-mix(in srgb, var(--accent) 16%, var(--panel)); font-weight: 500; }
+  .face small { position: absolute; top: 12px; left: 16px; color: var(--muted); font-size: 12px; font-weight: 400; text-transform: uppercase; letter-spacing: .08em; }
+  .fc .row { display: flex; gap: 10px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+  .fc .hint { margin-top: 14px; color: var(--muted); font-size: 13px; }
 
-  .kicker {
-    font-size: .8rem; letter-spacing: .35em; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 1.2rem;
-    opacity: 0; transform: translateY(20px); transition: all .8s ease .1s;
-  }
-  .active .kicker { opacity: 1; transform: none; }
-  .num {
-    font-family: "Playfair Display", serif; font-size: .95rem; color: var(--gold);
-    display: inline-block; border: 1px solid var(--gold-soft); border-radius: 99px; padding: .2em .8em; margin-right: .8em;
-  }
+  /* modal */
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; place-items: center; z-index: 30; padding: 16px; }
+  .modal-bg.on { display: grid; }
+  .modal { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px; width: min(560px, 100%); max-height: 92vh; overflow-y: auto; }
+  .modal h2 { margin: 0 0 12px; font-size: 20px; }
+  .modal label { display: block; margin: 12px 0 4px; font-size: 13px; color: var(--muted); }
+  .modal input, .modal select, .modal textarea { width: 100%; padding: 9px 11px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); }
+  .modal textarea { min-height: 150px; resize: vertical; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 14px; }
+  .modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+  .modal .note { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; opacity: 0; transition: all .25s; z-index: 40; pointer-events: none; }
+  .toast.on { opacity: 1; transform: translateX(-50%); }
 
-  h1, h2 {
-    font-family: "Playfair Display", serif; font-weight: 900; line-height: .98;
-    letter-spacing: -.01em; margin-bottom: 1.4rem;
-    text-shadow: 0 6px 40px rgba(0, 0, 0, .7);
-  }
-  h1 { font-size: clamp(3rem, 9vw, 8.5rem); }
-  h2 { font-size: clamp(2.4rem, 5.5vw, 4.6rem); }
-  .word { display: inline-block; white-space: nowrap; }
-  /* keyframe animations (not transitions/filters): some browsers left pieces stuck invisible */
-  .ch { display: inline-block; opacity: 0; }
-  .active .ch { animation: chIn .9s cubic-bezier(.2, 1.4, .3, 1) both; }
-  @keyframes chIn {
-    from { opacity: 0; transform: translateY(80%) rotateX(-90deg) scale(.6); }
-    60% { opacity: 1; }
-    to { opacity: 1; transform: none; }
-  }
-  .gold { color: var(--gold); }
-
-  .text {
-    font-size: clamp(1rem, 1.35vw, 1.2rem); line-height: 1.75; color: #e6e8ef; font-weight: 300;
-  }
-  .text .w { display: inline-block; opacity: 0; }
-  .active .text .w { animation: wIn .6s ease both; }
-  @keyframes wIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-  .done .ch, .done .text .w { animation: none; opacity: 1; transform: none; }
-  .done .rise, .done .person, .done .kicker { opacity: 1; transform: none; transition: none; }
-  .text b { color: var(--ink); font-weight: 600; }
-
-  .rise { opacity: 0; transform: translateY(40px) scale(.96); transition: all .9s cubic-bezier(.2, .9, .3, 1); }
-  .active .rise { opacity: 1; transform: none; }
-
-  .scroll-hint {
-    margin-top: 3rem; font-size: .8rem; letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
-    display: inline-flex; flex-direction: column; align-items: center; gap: .8rem;
-  }
-  .scroll-hint i { width: 22px; height: 36px; border: 1.5px solid var(--muted); border-radius: 12px; position: relative; }
-  .scroll-hint i::after {
-    content: ""; position: absolute; left: 50%; top: 7px; width: 3px; height: 7px; margin-left: -1.5px;
-    background: var(--gold); border-radius: 2px; animation: wheel 1.6s ease-in-out infinite;
-  }
-  @keyframes wheel { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(12px); opacity: 0; } }
-  .cover .text { max-width: 640px; margin: 0 auto; }
-
-  .chips { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.8rem; }
-  .chip {
-    font-size: .85rem; padding: .55em 1em; border-radius: 99px;
-    border: 1px solid var(--gold-soft); background: rgba(10, 10, 20, .6); color: var(--ink);
-  }
-  .big-year {
-    font-family: "Playfair Display", serif; font-weight: 900; color: transparent;
-    -webkit-text-stroke: 1.5px var(--gold); font-size: clamp(4rem, 12vw, 10rem); line-height: 1;
-    margin-bottom: .5rem; font-variant-numeric: tabular-nums;
-  }
-
-  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
-  .card {
-    padding: 1.2rem 1.1rem; border-radius: 16px;
-    background: linear-gradient(160deg, rgba(14, 14, 24, .82), rgba(14, 14, 24, .6));
-    border: 1px solid rgba(255, 255, 255, .14);
-  }
-  .card .ico { font-size: 1.6rem; margin-bottom: .6rem; }
-  .card h3 { font-family: "Playfair Display", serif; font-size: 1.25rem; margin-bottom: .35rem; color: var(--gold); }
-  .card p { font-size: .88rem; line-height: 1.5; color: var(--muted); }
-
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
-  .stat { border-left: 2px solid var(--gold); padding-left: 1rem; }
-  .stat strong { display: block; font-family: "Playfair Display", serif; font-size: 2.3rem; font-variant-numeric: tabular-nums; }
-  .stat span { font-size: .85rem; color: var(--muted); line-height: 1.4; display: block; }
-
-  /* alumni "standing" at the gate */
-  .alumni { align-items: stretch; flex-direction: column; justify-content: center; gap: 2rem; }
-  .alumni .content { max-width: 680px; }
-  .people { display: flex; gap: clamp(.6rem, 1.6vw, 1.4rem); align-items: flex-end; flex-wrap: wrap; }
-  .person {
-    width: clamp(110px, min(13vw, 17vh), 190px);
-    opacity: 0; transform: translateY(80px) scale(.9);
-    transition: transform 1.1s cubic-bezier(.2, 1.1, .3, 1), opacity .9s ease;
-  }
-  .active .person { opacity: 1; transform: none; }
-  .person .photo {
-    aspect-ratio: 3 / 4; border-radius: 14px; overflow: hidden; position: relative;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, .55), 0 0 0 1px rgba(240, 195, 107, .35);
-  }
-  .person img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%; display: block; transition: transform .6s ease; }
-  .person:hover img { transform: scale(1.06); }
-  .person .photo::after {
-    content: ""; position: absolute; inset: 0;
-    background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, .75));
-  }
-  .person h3 { font-family: "Playfair Display", serif; font-size: 1.05rem; margin-top: .8rem; }
-  .person p { font-size: .78rem; color: var(--muted); line-height: 1.4; margin-top: .2rem; }
-
-  .credits {
-    position: absolute; right: 7vw; bottom: 64px; z-index: 11;
-    font-size: .62rem; color: rgba(255, 255, 255, .5); max-width: 420px; text-align: right; line-height: 1.5;
-  }
-  .credits a { color: inherit; }
-
-  /* ---------- HUD ---------- */
-  .hud-top {
-    position: fixed; z-index: 20; top: 0; left: 0; right: 0;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 22px 7vw; font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
-  }
-  .hud-top .count { font-family: "Playfair Display", serif; letter-spacing: .1em; font-size: 1rem; color: var(--ink); }
-  .hud-top .count b { color: var(--gold); }
-  .progress {
-    position: fixed; z-index: 20; left: 7vw; right: 7vw; bottom: 34px; height: 2px;
-    background: rgba(255, 255, 255, .2);
-  }
-  .progress .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, #ff6b6b, var(--gold)); box-shadow: 0 0 12px var(--gold); }
-  .progress button {
-    position: absolute; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%;
-    background: var(--bg); border: 2px solid rgba(255, 255, 255, .5); cursor: pointer; transition: all .4s;
-  }
-  .progress button.on { border-color: var(--gold); background: var(--gold); box-shadow: 0 0 14px var(--gold); }
-  .progress button span {
-    position: absolute; top: 16px; left: 50%; transform: translateX(-50%); white-space: nowrap;
-    font-size: .65rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted);
-  }
-
-  @media (max-width: 760px) {
-    .slide { padding: 12vh 16px 16vh; }
-    .shade { background: rgba(4, 6, 14, .7); }
-    .cards, .stats { grid-template-columns: 1fr; }
-    .person { width: calc(50% - .5rem); }
-    .credits { position: static; text-align: left; margin-top: 1rem; }
-    .progress { left: 16px; right: 16px; }
-    .progress button span { display: none; }
-    .hud-top { padding: 16px; }
-  }
-  /* 4K / very large screens: every full-screen layer costs ~4x the pixels, so drop the extras */
-  .hi-res .scene img { animation: none; transform: scale(1.04); }
-  .hi-res .grain { display: none; }
-  .hi-res h1, .hi-res h2 { text-shadow: none; }
-  .hi-res .done h1, .hi-res .done h2 { text-shadow: 0 4px 24px rgba(0, 0, 0, .7); }
-
-  @media (prefers-reduced-motion: reduce) {
-    .ch, .text .w { animation: none !important; opacity: 1; }
-    .rise, .person { transition: none; }
-    .scene img { animation: none; }
+  @media (max-width: 800px) {
+    aside { position: fixed; z-index: 20; left: 0; top: 0; transform: translateX(-100%); transition: transform .25s; width: 86vw; max-width: 340px; }
+    body.nav-open aside { transform: none; box-shadow: 0 0 40px rgba(0,0,0,.5); }
+    .menu-btn { display: inline-block; }
+    .doc h1 { font-size: 25px; }
+    .flip { height: 240px; }
   }
 </style>
 </head>
 <body>
 
-<div class="loader" id="loader">GLASGOW · 1451</div>
-
-<!-- real photographs, Wikimedia Commons -->
-<div class="scenes" id="scenes">
-  <div class="scene"><img alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/University_of_Glasgow_Gilbert_Scott_Building_-_Feb_2008.jpg/1920px-University_of_Glasgow_Gilbert_Scott_Building_-_Feb_2008.jpg"></div>
-  <div class="scene"><img alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/University_of_Glasgow_Cloister.jpg/1920px-University_of_Glasgow_Cloister.jpg"></div>
-  <div class="scene"><img alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Hillhead_Congregational_Church_%28Charles_Wilson_Building%29_Charles_Wilson_Lecture_Theatre.jpg/1920px-Hillhead_Congregational_Church_%28Charles_Wilson_Building%29_Charles_Wilson_Lecture_Theatre.jpg"></div>
-  <div class="scene"><img alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Hunterian_Museum_and_Bute_Hall_-_geograph.org.uk_-_7353827.jpg/1920px-Hunterian_Museum_and_Bute_Hall_-_geograph.org.uk_-_7353827.jpg"></div>
-  <div class="scene"><img alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Main_gate_%28entrance%29%2C_Glasgow_University%2C_Scotland%2C_UK.jpg/1920px-Main_gate_%28entrance%29%2C_Glasgow_University%2C_Scotland%2C_UK.jpg"></div>
-</div>
-<div class="grade"></div>
-<div class="shade"></div>
-<div class="grain"></div>
-<div class="flash" id="flash"></div>
-<canvas id="particles"></canvas>
-
-<header class="hud-top">
-  <span>University of Glasgow</span>
-  <span class="count"><b id="cur">00</b> / 04</span>
-</header>
+<aside>
+  <div class="brand">Учебный хаб<small>конспекты · презентации · карточки</small></div>
+  <input class="search" id="search" type="search" placeholder="Поиск по материалам…">
+  <nav id="nav"></nav>
+  <div class="side-foot">
+    <button class="btn primary" id="addSection">+ Раздел</button>
+    <button class="btn primary" id="addItem">+ Материал</button>
+    <button class="btn" id="exportBtn">Экспорт</button>
+    <button class="btn" id="importBtn">Импорт</button>
+  </div>
+</aside>
 
 <main>
-  <!-- cover -->
-  <section class="slide cover" data-label="Intro">
-    <div class="content">
-      <p class="kicker">Scotland · Est. 1451</p>
-      <h1 class="split">University of <span class="gold">Glasgow</span></h1>
-      <p class="text split-words">More than five and a half centuries of learning, discovery and ideas that helped to shape the modern world.</p>
-      <div class="scroll-hint rise" style="transition-delay:1.4s"><i></i>Scroll</div>
-    </div>
-  </section>
-
-  <!-- 1 -->
-  <section class="slide" data-label="Foundation">
-    <div class="content">
-      <p class="kicker"><span class="num">01</span>When &amp; why it was founded</p>
-      <div class="big-year rise" data-count="1451">0000</div>
-      <h2 class="split">A university for <span class="gold">Scotland</span></h2>
-      <p class="text split-words">The University of Glasgow was founded in <b>1451</b> by a papal bull of <b>Pope Nicholas V</b>, at the request of <b>King James II</b> and Bishop <b>William Turnbull</b>. Scotland wanted its own centre of learning, so that young Scots would no longer have to travel abroad to study. Today it is the second-oldest university in Scotland and the fourth-oldest in the English-speaking world.</p>
-      <div class="chips rise" style="transition-delay:1.2s">
-        <span class="chip">Papal bull · 7 January 1451</span>
-        <span class="chip">Modelled on Bologna</span>
-        <span class="chip">First classes in Glasgow Cathedral</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- 2 -->
-  <section class="slide" data-label="Disciplines">
-    <div class="content">
-      <p class="kicker"><span class="num">02</span>The first disciplines</p>
-      <h2 class="split">What students <span class="gold">learned</span></h2>
-      <p class="text split-words">In its early years the university followed the model of the University of Bologna. Teaching took place in and around <b>Glasgow Cathedral</b>, and the papal bull allowed faculties of <b>Theology</b>, <b>Canon and Civil Law</b> and <b>Arts</b>. Most students began with the Arts course, which prepared them for careers in the Church, the law and public service.</p>
-      <div class="cards">
-        <div class="card rise" style="transition-delay:1s"><div class="ico">📜</div><h3>Arts</h3><p>Latin grammar, logic, rhetoric and philosophy — the foundation for every student.</p></div>
-        <div class="card rise" style="transition-delay:1.2s"><div class="ico">✝️</div><h3>Theology</h3><p>The study of the Christian faith and Scripture, training future priests.</p></div>
-        <div class="card rise" style="transition-delay:1.4s"><div class="ico">⚖️</div><h3>Law</h3><p>Canon law of the Church and Roman civil law for lawyers and officials.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3 -->
-  <section class="slide" data-label="Fame">
-    <div class="content">
-      <p class="kicker"><span class="num">03</span>Why it is famous</p>
-      <h2 class="split">Cradle of the <span class="gold">Enlightenment</span></h2>
-      <p class="text split-words">Glasgow was a centre of the <b>Scottish Enlightenment</b>. Here <b>James Watt</b>, the university's instrument maker, improved the steam engine, <b>Joseph Lister</b> developed antiseptic surgery, and <b>Lord Kelvin</b> transformed physics. Its neo-Gothic main building on Gilmorehill, with its famous cloisters, is one of the most beautiful in Britain. Today Glasgow is a member of the Russell Group and one of the world's top universities.</p>
-      <div class="stats">
-        <div class="stat rise" style="transition-delay:1s"><strong data-count="7">0</strong><span>Nobel laureates linked to the university</span></div>
-        <div class="stat rise" style="transition-delay:1.2s"><strong data-count="1807">0</strong><span>Hunterian, Scotland's oldest public museum</span></div>
-        <div class="stat rise" style="transition-delay:1.4s"><strong data-count="1870">0</strong><span>Move to the Gothic campus on Gilmorehill</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 4 -->
-  <section class="slide alumni" data-label="Graduates">
-    <div class="content">
-      <p class="kicker"><span class="num">04</span>Famous graduates</p>
-      <h2 class="split">Famous <span class="gold">alumni</span></h2>
-      <p class="text split-words">For centuries Glasgow has educated great scientists, thinkers, politicians and even film stars. Its students changed economics, physics, politics and culture, and their names are known all over the world. Here they stand at the main gate of the university they studied in.</p>
-    </div>
-    <div class="people">
-      <div class="person" style="transition-delay:1s">
-        <div class="photo"><img alt="Adam Smith" src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Adam_Smith_The_Muir_portrait_%28cropped_2%29.jpg"></div>
-        <h3>Adam Smith</h3><p>Father of modern economics, “The Wealth of Nations”.</p>
-      </div>
-      <div class="person" style="transition-delay:1.2s">
-        <div class="photo"><img alt="Lord Kelvin" src="https://upload.wikimedia.org/wikipedia/commons/1/11/Sir_William_Thomson%2C_Baron_Kelvin_by_T._%26_R._Annan_%26_Sons.jpg"></div>
-        <h3>Lord Kelvin</h3><p>Physicist — the Kelvin temperature scale bears his name.</p>
-      </div>
-      <div class="person" style="transition-delay:1.4s">
-        <div class="photo"><img alt="Nicola Sturgeon" src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Nicola_Sturgeon_in_2019.jpg"></div>
-        <h3>Nicola Sturgeon</h3><p>Law graduate, First Minister of Scotland 2014–2023.</p>
-      </div>
-      <div class="person" style="transition-delay:1.6s">
-        <div class="photo"><img alt="Gerard Butler" src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Gerard_Butler_%2829681162176%29_%282%29.jpg"></div>
-        <h3>Gerard Butler</h3><p>Hollywood actor, star of “300”, graduated in law.</p>
-      </div>
-    </div>
-    <p class="credits">Photos: <a href="https://commons.wikimedia.org/wiki/Category:University_of_Glasgow" target="_blank" rel="noopener">Wikimedia Commons</a> (CC BY / CC BY-SA / public domain), used under their respective licences.</p>
-  </section>
+  <div class="topbar">
+    <button class="btn menu-btn" id="menuBtn" aria-label="Меню">☰</button>
+    <h1 id="title">Главная</h1>
+    <button class="btn" id="fsBtn" style="display:none">⛶ На весь экран</button>
+    <button class="btn" id="delBtn" style="display:none">Удалить</button>
+    <button class="btn primary" id="askBtn">Спросить Клода</button>
+  </div>
+  <div class="view" id="view"></div>
 </main>
 
-<nav class="progress" id="progress"><div class="fill" id="fill"></div></nav>
+<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileIn" accept="application/json" hidden>
 
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
 <script>
-(() => {
-  const slides = [...document.querySelectorAll(".slide")];
-  const scenes = [...document.querySelectorAll(".scene")];
-  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  // physical pixels on screen; above ~5 MP (e.g. 4K full screen) switch to the lighter mode
-  const physPx = () => innerWidth * innerHeight * Math.pow(devicePixelRatio || 1, 2);
-  const setHiRes = () => document.documentElement.classList.toggle("hi-res", physPx() > 5e6);
-  setHiRes(); addEventListener("resize", setHiRes);
+(function () {
+  'use strict';
+  var REPO = 'mitriiSI/En';
+  var KEY = 'hub.user.v1';
+  var base = { sections: [] };
+  var user = load();
+  var current = null;          // {section, item}
+  var query = '';
+  var cache = {};
 
-  /* ---------- loader: wait for the first photo ---------- */
-  const loader = document.getElementById("loader");
-  const first = scenes[0].querySelector("img");
-  const hide = () => loader.classList.add("done");
-  if (first.complete) hide(); else { first.onload = first.onerror = hide; setTimeout(hide, 4000); }
+  var $ = function (s) { return document.querySelector(s); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var uid = function (p) { return p + Date.now().toString(36) + Math.floor(Math.random() * 1000).toString(36); };
 
-  /* ---------- split text into animated pieces ---------- */
-  document.querySelectorAll(".split").forEach(el => {
-    let i = 0;
-    const walk = node => {
-      [...node.childNodes].forEach(n => {
-        if (n.nodeType === 3) {
-          const frag = document.createDocumentFragment();
-          n.textContent.split(/(\s+)/).forEach(part => {
-            if (!part) return;
-            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(" ")); return; }
-            const w = document.createElement("span"); w.className = "word";
-            [...part].forEach(c => {
-              const s = document.createElement("span");
-              s.className = "ch"; s.textContent = c;
-              s.style.animationDelay = (i++ * 0.035) + "s";
-              w.appendChild(s);
-            });
-            frag.appendChild(w);
-          });
-          n.replaceWith(frag);
-        } else walk(n);
-      });
-    };
-    walk(el);
-  });
-  document.querySelectorAll(".split-words").forEach(el => {
-    let i = 0, last = null;
-    const walk = node => {
-      [...node.childNodes].forEach(n => {
-        if (n.nodeType === 3) {
-          const frag = document.createDocumentFragment();
-          n.textContent.split(/(\s+)/).forEach((part, k) => {
-            if (!part) return;
-            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(" ")); return; }
-            // punctuation right after bold text sticks to the previous word
-            if (k === 0 && last && /^[.,;:!?]+$/.test(part)) { last.textContent += part; return; }
-            const s = last = document.createElement("span");
-            s.className = "w"; s.textContent = part;
-            s.style.animationDelay = (0.45 + i++ * 0.022) + "s";
-            frag.appendChild(s);
-          });
-          n.replaceWith(frag);
-        } else walk(n);
-      });
-    };
-    walk(el);
-  });
+  function load() {
+    try { var v = JSON.parse(localStorage.getItem(KEY)); if (v && v.sections && v.items) return v; } catch (e) {}
+    return { sections: [], items: [] };
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(user)); } catch (e) { toast('Не удалось сохранить в браузере'); } }
 
-  /* ---------- count-up numbers ---------- */
-  function countUp(el) {
-    const target = +el.dataset.count, start = performance.now(), dur = 1600;
-    const step = now => {
-      const t = Math.min(1, (now - start) / dur), e = 1 - Math.pow(1 - t, 4);
-      el.textContent = Math.round(target * e);
-      if (t < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
+  function toast(msg) {
+    var t = $('#toast'); t.textContent = msg; t.classList.add('on');
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove('on'); }, 2400);
   }
 
-  /* ---------- progress HUD ---------- */
-  const prog = document.getElementById("progress"), fill = document.getElementById("fill"), cur = document.getElementById("cur");
-  const dots = slides.map((s, i) => {
-    const b = document.createElement("button");
-    b.style.left = (i / (slides.length - 1) * 100) + "%";
-    b.setAttribute("aria-label", s.dataset.label);
-    b.innerHTML = `<span>${s.dataset.label}</span>`;
-    b.onclick = () => s.scrollIntoView({ behavior: "smooth" });
-    prog.appendChild(b);
-    return b;
+  /* ---------- data ---------- */
+  function merged() {
+    var out = base.sections.map(function (s) {
+      var extra = user.items.filter(function (i) { return i.sectionId === s.id; }).map(function (i) { return Object.assign({ user: true }, i); });
+      return Object.assign({}, s, { items: s.items.concat(extra) });
+    });
+    user.sections.forEach(function (s) {
+      var items = user.items.filter(function (i) { return i.sectionId === s.id; }).map(function (i) { return Object.assign({ user: true }, i); });
+      out.push(Object.assign({}, s, { user: true, items: items }));
+    });
+    return out;
+  }
+  function find(sid, iid) {
+    var secs = merged();
+    for (var i = 0; i < secs.length; i++) {
+      if (secs[i].id !== sid) continue;
+      for (var j = 0; j < secs[i].items.length; j++) if (secs[i].items[j].id === iid) return { section: secs[i], item: secs[i].items[j] };
+    }
+    return null;
+  }
+  var TYPE_LABEL = { markdown: 'конспект', cards: 'карточки', page: 'страница', link: 'ссылка' };
+
+  /* ---------- sidebar ---------- */
+  var closedSecs = {};
+  function renderNav() {
+    var q = query.trim().toLowerCase();
+    var html = '';
+    merged().forEach(function (s) {
+      var items = s.items.filter(function (i) { return !q || (i.title + ' ' + s.title).toLowerCase().indexOf(q) > -1; });
+      if (q && !items.length) return;
+      var closed = !q && closedSecs[s.id];
+      html += '<div class="sec' + (closed ? ' closed' : '') + '" data-sec="' + esc(s.id) + '">' +
+        '<div class="sec-h" data-toggle="' + esc(s.id) + '"><span>' + esc(s.icon || '📁') + '</span><span>' + esc(s.title) + '</span><span class="chev">▾</span></div>' +
+        '<div class="items">' + (items.length ? items.map(function (i) {
+          var act = current && current.section.id === s.id && current.item.id === i.id;
+          return '<div class="item' + (act ? ' active' : '') + '" data-go="' + esc(s.id) + '/' + esc(i.id) + '"><span class="t">' + esc(i.title) + '</span><span class="tag">' + (TYPE_LABEL[i.type] || i.type) + '</span></div>';
+        }).join('') : '<div class="item" style="cursor:default">пока пусто</div>') + '</div></div>';
+    });
+    $('#nav').innerHTML = html || '<div class="item" style="padding-left:12px">ничего не найдено</div>';
+  }
+
+  /* ---------- views ---------- */
+  function showHome() {
+    current = null; location.hash = '';
+    $('#title').textContent = 'Главная';
+    $('#fsBtn').style.display = 'none'; $('#delBtn').style.display = 'none';
+    var secs = merged();
+    $('#view').innerHTML = '<div class="home"><h1>Учебный хаб</h1><p class="sub">Выбери раздел слева или добавь свой. Всё, что добавишь, сохраняется в этом браузере; чтобы закрепить в репозитории, нажми «Спросить Клода».</p><div class="grid">' +
+      secs.map(function (s) {
+        return '<div class="card" data-open-sec="' + esc(s.id) + '"><div class="ico">' + esc(s.icon || '📁') + '</div><h3>' + esc(s.title) + '</h3><p>' + s.items.length + ' матер.</p></div>';
+      }).join('') + '</div></div>';
+    renderNav();
+  }
+
+  function open(sid, iid) {
+    var f = find(sid, iid);
+    if (!f) return showHome();
+    current = f;
+    location.hash = sid + '/' + iid;
+    $('#title').textContent = f.item.title;
+    $('#delBtn').style.display = f.item.user ? '' : 'none';
+    $('#fsBtn').style.display = f.item.type === 'page' ? '' : 'none';
+    document.body.classList.remove('nav-open');
+    var v = $('#view');
+    if (f.item.type === 'markdown') renderMarkdown(f.item, v);
+    else if (f.item.type === 'cards') renderCards(f.item, v);
+    else if (f.item.type === 'page') renderPage(f.item, v);
+    else if (f.item.type === 'link') { v.innerHTML = '<div class="home"><p><a href="' + esc(f.item.url) + '" target="_blank" rel="noopener" style="color:var(--accent)">Открыть: ' + esc(f.item.url) + '</a></p></div>'; }
+    v.scrollTop = 0;
+    renderNav();
+  }
+
+  function md(text) {
+    if (window.marked) {
+      var raw = marked.parse(text);
+      return window.DOMPurify ? DOMPurify.sanitize(raw) : raw;
+    }
+    return '<pre>' + esc(text) + '</pre>';
+  }
+  function renderMarkdown(item, v) {
+    var put = function (t) { v.innerHTML = '<article class="doc">' + md(t) + '</article>'; };
+    if (item.text != null) return put(item.text);
+    if (cache[item.src]) return put(cache[item.src]);
+    v.innerHTML = '<div class="doc">Загрузка…</div>';
+    fetch(item.src).then(function (r) { if (!r.ok) throw 0; return r.text(); })
+      .then(function (t) { cache[item.src] = t; if (current && current.item === item || current && current.item.id === item.id) put(t); })
+      .catch(function () { v.innerHTML = '<div class="doc">Не удалось загрузить файл ' + esc(item.src) + '. Если открываешь локально, запусти <code>python3 -m http.server</code> в папке репозитория.</div>'; });
+  }
+
+  function renderPage(item, v) {
+    if (item.html != null) {
+      v.innerHTML = '<iframe class="page" sandbox="allow-scripts allow-popups allow-forms"></iframe>';
+      v.firstChild.srcdoc = item.html;
+    } else {
+      v.innerHTML = '<iframe class="page" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" src="' + esc(item.url) + '"></iframe>';
+    }
+  }
+
+  /* flashcards */
+  function renderCards(item, v) {
+    var deck = (item.cards || []).slice();
+    var idx = 0, known = {}, flipped = false;
+    if (!deck.length) { v.innerHTML = '<div class="doc">В колоде нет карточек.</div>'; return; }
+    function draw() {
+      var c = deck[idx], done = Object.keys(known).length;
+      v.innerHTML = '<div class="fc">' +
+        '<div class="progress">Карточка ' + (idx + 1) + ' из ' + deck.length + ' · знаю: ' + done + '</div>' +
+        '<div class="bar"><i style="width:' + (done / deck.length * 100) + '%"></i></div>' +
+        '<div class="flip' + (flipped ? ' on' : '') + '" id="flip"><div class="flip-in">' +
+        '<div class="face"><small>вопрос</small>' + esc(c.q) + '</div>' +
+        '<div class="face back"><small>ответ</small>' + esc(c.a) + '</div></div></div>' +
+        '<div class="row"><button class="btn" id="prev">← Назад</button>' +
+        '<button class="btn danger" id="again">Повторить</button>' +
+        '<button class="btn primary" id="know">Знаю ✓</button>' +
+        '<button class="btn" id="next">Далее →</button></div>' +
+        '<div class="row"><button class="btn" id="shuf">Перемешать</button><button class="btn" id="reset">Сначала</button></div>' +
+        '<div class="hint">Нажми на карточку, чтобы перевернуть. Клавиши: ← → и пробел.</div></div>';
+      v.querySelector('#flip').onclick = function () { flipped = !flipped; this.classList.toggle('on', flipped); };
+      v.querySelector('#prev').onclick = function () { go(-1); };
+      v.querySelector('#next').onclick = function () { go(1); };
+      v.querySelector('#know').onclick = function () { known[idx] = 1; if (Object.keys(known).length === deck.length) { toast('Вся колода пройдена 🎉'); draw(); } else go(1); };
+      v.querySelector('#again').onclick = function () { delete known[idx]; go(1); };
+      v.querySelector('#shuf').onclick = function () { deck.sort(function () { return Math.random() - .5; }); idx = 0; known = {}; flipped = false; draw(); };
+      v.querySelector('#reset').onclick = function () { idx = 0; known = {}; flipped = false; draw(); };
+    }
+    function go(d) { idx = (idx + d + deck.length) % deck.length; flipped = false; draw(); }
+    draw();
+    cardKeys = function (e) {
+      if (!current || current.item.id !== item.id) return;
+      if (e.key === 'ArrowRight') go(1);
+      else if (e.key === 'ArrowLeft') go(-1);
+      else if (e.key === ' ') { e.preventDefault(); flipped = !flipped; var f = v.querySelector('#flip'); if (f) f.classList.toggle('on', flipped); }
+    };
+  }
+  var cardKeys = null;
+  document.addEventListener('keydown', function (e) {
+    if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    if (cardKeys) cardKeys(e);
   });
 
-  /* ---------- slide activation ---------- */
-  let current = -1, doneTimer;
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(en => {
-      if (!en.isIntersecting) return;
-      const i = slides.indexOf(en.target);
-      if (i === current) return;
-      current = i;
-      slides.forEach((s, j) => { s.classList.toggle("active", j === i); s.classList.remove("done"); });
-      // after the reveal, pin every letter/word visible in case a browser drops an animation
-      clearTimeout(doneTimer);
-      doneTimer = setTimeout(() => en.target.classList.add("done"), 4500);
-      en.target.querySelectorAll("[data-count]").forEach(countUp);
-      document.body.classList.toggle("reading", i > 0);
-      dots.forEach((d, j) => d.classList.toggle("on", j <= i));
-      cur.textContent = String(i).padStart(2, "0");
-      burst();
-    });
-  }, { threshold: 0.55 });
-  slides.forEach(s => io.observe(s));
+  /* ---------- modals ---------- */
+  function modal(html, onReady) {
+    $('#modal').innerHTML = html; $('#modalBg').classList.add('on');
+    var c = $('#modal').querySelector('[data-close]'); if (c) c.onclick = closeModal;
+    if (onReady) onReady($('#modal'));
+  }
+  function closeModal() { $('#modalBg').classList.remove('on'); }
+  $('#modalBg').addEventListener('mousedown', function (e) { if (e.target === this) closeModal(); });
 
-  /* ---------- scroll-driven camera: fly through one photo into the next ---------- */
-  const flash = document.getElementById("flash");
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const ease = t => t * t * (3 - 2 * t);
-  let target = 0, pos = 0, settled = true;
-  const wake = () => { if (settled) { settled = false; requestAnimationFrame(camera); } };
-  // map scroll to slide index by real slide offsets (slides may be taller than the screen)
-  const measure = () => {
-    const tops = slides.map(s => s.offsetTop);
-    const y = Math.min(scrollY, document.documentElement.scrollHeight - innerHeight);
-    let i = 0;
-    while (i < tops.length - 1 && y >= tops[i + 1]) i++;
-    const span = i < tops.length - 1 ? tops[i + 1] - tops[i] : 1;
-    target = Math.min(scenes.length - 1, i + clamp((y - tops[i]) / span, 0, 1));
-    wake();
+  function sectionForm() {
+    modal('<h2>Новый раздел</h2>' +
+      '<label>Название</label><input id="f-title" placeholder="Например: История">' +
+      '<label>Значок (эмодзи)</label><input id="f-icon" value="📁" maxlength="4">' +
+      '<div class="actions"><button class="btn" data-close>Отмена</button><button class="btn primary" id="f-ok">Создать</button></div>',
+      function (m) {
+        m.querySelector('#f-title').focus();
+        m.querySelector('#f-ok').onclick = function () {
+          var t = m.querySelector('#f-title').value.trim();
+          if (!t) return toast('Введи название');
+          user.sections.push({ id: uid('s'), title: t, icon: m.querySelector('#f-icon').value || '📁' });
+          save(); closeModal(); renderNav(); toast('Раздел создан');
+        };
+      });
+  }
+
+  function itemForm() {
+    var secs = merged();
+    modal('<h2>Новый материал</h2>' +
+      '<label>Раздел</label><select id="f-sec">' + secs.map(function (s) { return '<option value="' + esc(s.id) + '"' + (current && current.section.id === s.id ? ' selected' : '') + '>' + esc(s.title) + '</option>'; }).join('') + '</select>' +
+      '<label>Название</label><input id="f-title" placeholder="Например: Тема II. Метод экономической теории">' +
+      '<label>Тип</label><select id="f-type">' +
+      '<option value="markdown">Конспект / текст (Markdown)</option>' +
+      '<option value="cards">Карточки для повторения</option>' +
+      '<option value="page">Страница или презентация (HTML-код)</option>' +
+      '<option value="url">Страница по ссылке / путь в репозитории</option></select>' +
+      '<label id="f-lbl">Текст</label><textarea id="f-body"></textarea>' +
+      '<div class="note" id="f-note"></div>' +
+      '<div class="actions"><button class="btn" data-close>Отмена</button><button class="btn primary" id="f-ok">Добавить</button></div>',
+      function (m) {
+        var type = m.querySelector('#f-type'), lbl = m.querySelector('#f-lbl'), body = m.querySelector('#f-body'), note = m.querySelector('#f-note');
+        function sync() {
+          var t = type.value;
+          if (t === 'markdown') { lbl.textContent = 'Текст (поддерживается Markdown: # заголовки, **жирный**, списки, таблицы)'; body.placeholder = ''; note.textContent = ''; body.style.minHeight = '220px'; }
+          if (t === 'cards') { lbl.textContent = 'Карточки: каждая строка — «вопрос | ответ»'; body.placeholder = 'Что такое спрос? | Желание и возможность купить товар по цене'; note.textContent = ''; }
+          if (t === 'page') { lbl.textContent = 'HTML-код страницы'; body.placeholder = '<!doctype html>…'; note.textContent = 'Откроется в защищённой рамке. Скрипты работают.'; }
+          if (t === 'url') { lbl.textContent = 'Адрес'; body.placeholder = 'https://… или ../index.html'; note.textContent = 'Некоторые сайты запрещают встраивание; тогда используй «Открыть в новой вкладке».'; body.style.minHeight = '44px'; }
+        }
+        type.onchange = sync; sync();
+        m.querySelector('#f-title').focus();
+        m.querySelector('#f-ok').onclick = function () {
+          var title = m.querySelector('#f-title').value.trim(), val = body.value.trim(), t = type.value;
+          if (!title || !val) return toast('Заполни название и содержимое');
+          var it = { id: uid('i'), sectionId: m.querySelector('#f-sec').value, title: title };
+          if (t === 'markdown') { it.type = 'markdown'; it.text = val; }
+          else if (t === 'cards') {
+            it.type = 'cards';
+            it.cards = val.split('\n').map(function (l) { var p = l.split('|'); return { q: (p.shift() || '').trim(), a: p.join('|').trim() }; }).filter(function (c) { return c.q && c.a; });
+            if (!it.cards.length) return toast('Нужна хотя бы одна строка «вопрос | ответ»');
+          }
+          else if (t === 'page') { it.type = 'page'; it.html = val; }
+          else { it.type = 'page'; it.url = val; }
+          user.items.push(it); save(); closeModal(); open(it.sectionId, it.id); toast('Добавлено');
+        };
+      });
+  }
+
+  /* ---------- export / import ---------- */
+  function doExport() {
+    var data = JSON.stringify(user, null, 2);
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+    a.download = 'hub-my-data.json'; a.click();
+    if (navigator.clipboard) navigator.clipboard.writeText(data).catch(function () {});
+    toast('Файл скачан, копия в буфере');
+  }
+  $('#exportBtn').onclick = doExport;
+  $('#importBtn').onclick = function () { $('#fileIn').click(); };
+  $('#fileIn').onchange = function () {
+    var f = this.files[0]; if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      try {
+        var v = JSON.parse(r.result);
+        if (!v.sections || !v.items) throw 0;
+        user = v; save(); renderNav(); showHome(); toast('Импортировано');
+      } catch (e) { toast('Это не файл экспорта хаба'); }
+    };
+    r.readAsText(f); this.value = '';
   };
-  addEventListener("scroll", measure, { passive: true });
-  addEventListener("resize", measure);
-  addEventListener("load", measure);
-  function camera() {
-    pos += (target - pos) * 0.075;
-    fill.style.width = (pos / (scenes.length - 1) * 100) + "%";
-    let flashAmt = 0;
-    scenes.forEach((sc, i) => {
-      const d = pos - i;
-      // once the next photo is fully opaque (d > .8) the old one is hidden, so at most two layers paint
-      const show = d > -0.8 && d < 0.8;
-      if (!show) {
-        if (sc.style.visibility !== "hidden") { sc.style.visibility = "hidden"; sc.style.opacity = 0; }
-        return;
-      }
-      sc.style.visibility = "visible";
-      let scale, op;
-      if (d >= 0) {
-        // leaving: rush forward into the picture
-        scale = 1 + ease(clamp(d / 0.8, 0, 1)) * 0.9; op = 1;
-      } else {
-        // arriving: comes out of the depth and settles
-        const t = ease(clamp(1 + d, 0, 1));
-        scale = 0.86 + t * 0.14; op = clamp((d + 0.8) / 0.55, 0, 1);
-        flashAmt = Math.max(flashAmt, Math.sin(Math.PI * clamp((d + 0.8) / 0.6, 0, 1)) * .3);
-      }
-      sc.style.zIndex = i;
-      sc.style.opacity = op.toFixed(3);
-      sc.style.transform = `scale(${scale.toFixed(4)})`;
-    });
-    flash.style.opacity = flashAmt.toFixed(3);
-    // idle once the camera has settled: no style writes while the page just sits
-    if (Math.abs(target - pos) < 0.0005) { pos = target; settled = true; return; }
-    requestAnimationFrame(camera);
-  }
-  measure(); settled = false; camera();
 
-  /* ---------- particles: dust in the light ---------- */
-  const cv = document.getElementById("particles"), ctx = cv.getContext("2d");
-  let W, H, dpr;
-  const motes = [], sparks = [];
-  const mouse = { x: -999, y: -999 };
-  function resize() {
-    // keep the canvas around 2 MP at most; on 4K it is drawn at lower resolution and stretched
-    dpr = Math.min(1, Math.sqrt(2e6 / (innerWidth * innerHeight)));
-    W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr;
-    cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
-  }
-  resize(); addEventListener("resize", resize);
-  addEventListener("pointermove", e => { mouse.x = e.clientX * dpr; mouse.y = e.clientY * dpr; });
-  const N = reduced ? 0 : (innerWidth < 760 ? 40 : physPx() > 5e6 ? 50 : 80);
-  for (let i = 0; i < N; i++) motes.push({
-    x: Math.random() * W, y: Math.random() * H,
-    r: (Math.random() * 1.4 + .3) * dpr, vx: (Math.random() - .5) * .2, vy: -(Math.random() * .3 + .04),
-    a: Math.random() * .5 + .15, tw: Math.random() * Math.PI * 2
-  });
-  function burst() {
-    if (reduced) return;
-    const cx = W * .5, cy = H * .45;
-    for (let i = 0; i < 140; i++) {
-      const ang = Math.random() * Math.PI * 2, sp = (Math.random() * 10 + 2) * dpr;
-      sparks.push({ x: cx, y: cy, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, life: 1 });
-    }
-  }
-  function frame() {
-    ctx.clearRect(0, 0, W, H);
-    for (const m of motes) {
-      m.tw += .03;
-      const dx = m.x - mouse.x, dy = m.y - mouse.y, d2 = dx * dx + dy * dy, R = 120 * dpr;
-      if (d2 < R * R) { const f = (1 - Math.sqrt(d2) / R) * 1.5; m.x += dx / Math.sqrt(d2 + 1) * f; m.y += dy / Math.sqrt(d2 + 1) * f; }
-      m.x += m.vx; m.y += m.vy;
-      if (m.y < -10) { m.y = H + 10; m.x = Math.random() * W; }
-      if (m.x < -10) m.x = W + 10; if (m.x > W + 10) m.x = -10;
-      ctx.globalAlpha = m.a * (.6 + .4 * Math.sin(m.tw));
-      ctx.fillStyle = "#fff0cf";
-      ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, 7); ctx.fill();
-    }
-    ctx.lineCap = "round";
-    for (let i = sparks.length - 1; i >= 0; i--) {
-      const s = sparks[i];
-      s.x += s.vx; s.y += s.vy; s.vx *= .95; s.vy *= .95; s.life -= .014;
-      if (s.life <= 0) { sparks.splice(i, 1); continue; }
-      ctx.globalAlpha = s.life * .8;
-      ctx.strokeStyle = "#f6dca0";
-      ctx.lineWidth = 1.3 * dpr;
-      ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x - s.vx * 4, s.y - s.vy * 4); ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-    requestAnimationFrame(frame);
-  }
-  frame();
+  /* ---------- top bar actions ---------- */
+  $('#askBtn').onclick = function () {
+    var ctx;
+    if (current) {
+      ctx = 'Раздел «' + current.section.title + '», материал «' + current.item.title + '».';
+      if (current.item.user) ctx += ' Этот материал сейчас хранится только у меня в браузере, добавь его в репозиторий.';
+    } else ctx = 'Общий вопрос по сайту.';
+    var prompt = 'Сайт «Учебный хаб» из репозитория ' + REPO + ' (корень репозитория). ' + ctx + '\n\nМой запрос: ';
+    window.open('https://claude.ai/new?q=' + encodeURIComponent(prompt), '_blank', 'noopener');
+  };
+  $('#delBtn').onclick = function () {
+    if (!current || !current.item.user) return;
+    if (!confirm('Удалить «' + current.item.title + '»?')) return;
+    user.items = user.items.filter(function (i) { return i.id !== current.item.id; });
+    save(); showHome(); toast('Удалено');
+  };
+  $('#fsBtn').onclick = function () { var f = $('#view iframe'); if (f && f.requestFullscreen) f.requestFullscreen(); };
+  $('#menuBtn').onclick = function () { document.body.classList.toggle('nav-open'); };
+  $('#addSection').onclick = sectionForm;
+  $('#addItem').onclick = itemForm;
+  $('#search').oninput = function () { query = this.value; renderNav(); };
+  $('.brand').onclick = showHome;
 
-  /* keyboard: arrows / space jump whole slides */
-  addEventListener("keydown", e => {
-    if (!["ArrowDown", "ArrowUp", "PageDown", "PageUp", " "].includes(e.key)) return;
-    e.preventDefault();
-    const dir = ["ArrowUp", "PageUp"].includes(e.key) ? -1 : 1;
-    const n = Math.max(0, Math.min(slides.length - 1, current + dir));
-    slides[n].scrollIntoView({ behavior: "smooth" });
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-toggle],[data-go],[data-open-sec]');
+    if (!t) return;
+    if (t.dataset.toggle) { closedSecs[t.dataset.toggle] = !closedSecs[t.dataset.toggle]; renderNav(); }
+    else if (t.dataset.go) { var p = t.dataset.go.split('/'); open(p[0], p[1]); }
+    else if (t.dataset.openSec) {
+      var s = merged().filter(function (x) { return x.id === t.dataset.openSec; })[0];
+      if (s && s.items.length) open(s.id, s.items[0].id); else toast('В разделе пока нет материалов');
+    }
   });
+
+  window.addEventListener('hashchange', route);
+  function route() {
+    var h = location.hash.replace('#', '');
+    if (!h) { if (current) showHome(); return; }
+    var p = h.split('/');
+    if (!current || current.section.id !== p[0] || current.item.id !== p[1]) open(p[0], p[1]);
+  }
+
+  /* ---------- start ---------- */
+  fetch('data/sections.json').then(function (r) { return r.json(); })
+    .then(function (d) { base = d; })
+    .catch(function () { toast('Не удалось загрузить data/sections.json'); })
+    .then(function () { renderNav(); if (location.hash) route(); else showHome(); });
 })();
 </script>
 </body>
