@@ -2,7 +2,7 @@
 var CACHE = 'hub-v14';
 var SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'data/sections.json',
-  'lib/marked.min.js', 'lib/purify.min.js', 'lib/mammoth.browser.min.js', 'lib/widgets.js', 'lib/scene3d.js', 'lib/history-russia.js', 'lib/widgets3d.js', 'lib/filosofiya3d.js', 'lib/ekonomika3d.js', 'lib/politucheniya3d.js', 'lib/politucheniya3d-2.js', 'lib/upravlenie3d-1.js', 'lib/upravlenie3d-2.js', 'lib/upravlenie3d-3.js', 'lib/upravlenie3d-4.js', 'lib/upravlenie3d-common.js', 'lib/upravlenie3d-1b.js', 'lib/upravlenie3d-2b.js', 'lib/upravlenie3d-3b.js', 'lib/upravlenie3d-4b.js', 'lib/upravlenie2d.js', 'lib/three.min.js',
+  'lib/marked.min.js', 'lib/purify.min.js', 'lib/mammoth.browser.min.js', 'lib/widgets.js', 'lib/scene3d.js', 'lib/history-russia.js', 'lib/widgets3d.js', 'lib/filosofiya3d.js', 'lib/ekonomika3d.js', 'lib/politucheniya3d.js', 'lib/politucheniya3d-2.js', 'lib/pravovedenie3d.js', 'lib/upravlenie3d-1.js', 'lib/upravlenie3d-2.js', 'lib/upravlenie3d-3.js', 'lib/upravlenie3d-4.js', 'lib/upravlenie3d-common.js', 'lib/upravlenie3d-1b.js', 'lib/upravlenie3d-2b.js', 'lib/upravlenie3d-3b.js', 'lib/upravlenie3d-4b.js', 'lib/upravlenie2d.js', 'lib/three.min.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
 ];
 
