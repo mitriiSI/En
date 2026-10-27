@@ -1,8 +1,8 @@
 /* Офлайн-режим: сначала сеть (чтобы обновления доходили сразу), при её отсутствии — кэш. */
-var CACHE = 'hub-v6';
+var CACHE = 'hub-v7';
 var SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'data/sections.json',
-  'lib/marked.min.js', 'lib/purify.min.js', 'lib/mammoth.browser.min.js', 'lib/widgets.js', 'lib/scene3d.js', 'lib/history-russia.js', 'lib/three.min.js',
+  'lib/marked.min.js', 'lib/purify.min.js', 'lib/mammoth.browser.min.js', 'lib/widgets.js', 'lib/scene3d.js', 'lib/history-russia.js', 'lib/widgets3d.js', 'lib/three.min.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
 ];
 
