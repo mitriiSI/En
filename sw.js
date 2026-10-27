@@ -1,5 +1,5 @@
 /* Офлайн-режим: сначала сеть (чтобы обновления доходили сразу), при её отсутствии — кэш. */
-var CACHE = 'hub-v4';
+var CACHE = 'hub-v5';
 var SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'data/sections.json',
   'lib/marked.min.js', 'lib/purify.min.js', 'lib/mammoth.browser.min.js', 'lib/widgets.js',
