@@ -2,271 +2,372 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Учебный хаб</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Учебный хаб">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f1220">
 <style>
   :root {
-    --bg: #0f1220; --panel: #161a2c; --panel2: #1d2238; --line: #2a3050;
-    --ink: #eef0f8; --muted: #9aa2c0; --accent: #7aa2ff; --accent2: #f0c36b; --ok: #4cc38a; --bad: #ef6b5b;
-    --r: 14px;
+    --bg: #0f1220; --panel: #171b30; --panel2: #1f2440; --line: #2b3154;
+    --ink: #eef0f8; --muted: #9aa2c0; --accent: #7aa2ff; --gold: #f0c36b; --ok: #4cc38a; --bad: #ef6b5b;
+    --top: env(safe-area-inset-top, 0px); --bot: env(safe-area-inset-bottom, 0px);
   }
   @media (prefers-color-scheme: light) {
-    :root { --bg:#f4f5fa; --panel:#fff; --panel2:#eef0f8; --line:#dfe2ef; --ink:#1b1f33; --muted:#626a8a; --accent:#2f5bd9; --accent2:#a86f00; }
+    :root { --bg:#f3f4fa; --panel:#fff; --panel2:#eceef8; --line:#dcdff0; --ink:#1b1f33; --muted:#626a8a; --accent:#2f5bd9; --gold:#a86f00; }
   }
-  * { box-sizing: border-box; }
-  html, body { height: 100%; margin: 0; }
-  body { background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; display: flex; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
+  body { font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
   button, input, select, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; }
 
-  /* sidebar */
-  aside { width: 300px; flex: none; background: var(--panel); border-right: 1px solid var(--line); display: flex; flex-direction: column; height: 100%; }
-  .brand { padding: 18px 18px 10px; font-weight: 800; font-size: 20px; letter-spacing: .2px; }
-  .brand small { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
-  .search { margin: 6px 14px 10px; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); width: calc(100% - 28px); }
-  nav { flex: 1; overflow-y: auto; padding: 0 8px 12px; }
-  .sec { margin-top: 6px; }
-  .sec-h { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; font-weight: 700; cursor: pointer; user-select: none; }
-  .sec-h:hover { background: var(--panel2); }
-  .sec-h .chev { margin-left: auto; color: var(--muted); transition: transform .2s; }
-  .sec.closed .chev { transform: rotate(-90deg); }
-  .sec.closed .items { display: none; }
-  .item { display: flex; align-items: center; gap: 8px; padding: 7px 10px 7px 34px; border-radius: 10px; cursor: pointer; color: var(--muted); font-size: 15px; }
-  .item:hover { background: var(--panel2); color: var(--ink); }
-  .item.active { background: color-mix(in srgb, var(--accent) 20%, transparent); color: var(--ink); }
-  .item .t { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .tag { font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 8px; padding: 0 6px; }
-  .side-foot { padding: 12px 14px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .btn { border: 1px solid var(--line); background: var(--panel2); border-radius: 10px; padding: 8px 12px; font-size: 14px; }
-  .btn:hover { border-color: var(--accent); }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
-  .btn.danger:hover { border-color: var(--bad); color: var(--bad); }
-  .btn.wide { grid-column: 1 / -1; }
+  header { display: flex; align-items: center; gap: 8px; padding: calc(var(--top) + 10px) 14px 10px; background: var(--panel); border-bottom: 1px solid var(--line); flex: none; }
+  header h1 { flex: 1; margin: 0; font-size: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ib { border: 1px solid var(--line); background: var(--panel2); border-radius: 12px; min-width: 42px; height: 42px; padding: 0 12px; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .ib:active { transform: scale(.96); }
+  .ib.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .ib.danger { color: var(--bad); }
+  #back { display: none; font-size: 22px; padding: 0 14px; }
+  body.sub #back { display: inline-flex; }
 
-  /* main */
-  main { flex: 1; min-width: 0; display: flex; flex-direction: column; height: 100%; }
-  .topbar { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); }
-  .topbar h1 { font-size: 18px; margin: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .menu-btn { display: none; }
-  .view { flex: 1; overflow-y: auto; }
-  .doc { max-width: 820px; margin: 0 auto; padding: 28px 22px 80px; }
-  .doc h1 { font-size: 30px; line-height: 1.2; }
-  .doc h2 { margin-top: 2em; padding-top: .4em; border-top: 1px solid var(--line); color: var(--accent2); }
-  .doc blockquote { margin: 1em 0; padding: .6em 1em; border-left: 4px solid var(--accent); background: var(--panel2); border-radius: 0 10px 10px 0; }
+  #view { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: var(--bot); }
+  .page { max-width: 860px; margin: 0 auto; padding: 18px 16px 60px; }
+
+  /* home */
+  .hello { font-size: 28px; font-weight: 800; margin: 4px 0 2px; }
+  .sub-t { color: var(--muted); margin: 0 0 18px; }
+  .search { width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel); margin-bottom: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 16px; cursor: pointer; min-height: 130px; display: flex; flex-direction: column; justify-content: space-between; transition: transform .15s, border-color .15s; }
+  .tile:active { transform: scale(.97); }
+  .tile:hover { border-color: var(--accent); }
+  .tile .ico { font-size: 34px; line-height: 1; }
+  .tile h3 { margin: 10px 0 0; font-size: 18px; }
+  .tile small { color: var(--muted); }
+  .tile.add { border-style: dashed; align-items: center; justify-content: center; text-align: center; color: var(--muted); }
+  .hits { display: grid; gap: 8px; }
+
+  /* list */
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
+  .list { display: grid; gap: 8px; }
+  .row { display: flex; align-items: center; gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; cursor: pointer; }
+  .row:active { transform: scale(.99); }
+  .row .num { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--panel2); display: grid; place-items: center; font-size: 13px; color: var(--muted); font-weight: 700; }
+  .row .tt { flex: 1; min-width: 0; }
+  .row .tt b { display: block; font-weight: 600; overflow-wrap: anywhere; }
+  .row .tt small { color: var(--muted); }
+  .row .go { color: var(--muted); font-size: 20px; }
+  .row .tools { display: flex; gap: 6px; }
+  .row .tools .ib { min-width: 38px; height: 38px; padding: 0 8px; }
+  .empty { text-align: center; color: var(--muted); padding: 40px 10px; border: 1px dashed var(--line); border-radius: 18px; }
+  .foot-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+
+  /* documents */
+  .doc h1 { font-size: 28px; line-height: 1.2; margin-top: 0; }
+  .doc h2 { margin-top: 1.8em; padding-top: .4em; border-top: 1px solid var(--line); color: var(--gold); }
+  .doc blockquote { margin: 1em 0; padding: .5em 1em; border-left: 4px solid var(--accent); background: var(--panel2); border-radius: 0 12px 12px 0; }
   .doc blockquote p { margin: .3em 0; }
   .doc table { border-collapse: collapse; width: 100%; font-size: 15px; display: block; overflow-x: auto; }
   .doc th, .doc td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
   .doc th { background: var(--panel2); }
   .doc code { background: var(--panel2); padding: 1px 5px; border-radius: 6px; }
-  .doc pre { background: var(--panel2); padding: 12px; border-radius: 10px; overflow-x: auto; white-space: pre-wrap; }
-  .doc strong { color: var(--ink); }
+  .doc pre { background: var(--panel2); padding: 12px; border-radius: 12px; overflow-x: auto; white-space: pre-wrap; }
+  .doc img { max-width: 100%; height: auto; }
+  .pn { display: flex; gap: 10px; margin-top: 32px; }
+  .pn .ib { flex: 1; height: auto; min-height: 46px; padding: 8px 12px; text-align: left; justify-content: flex-start; }
+
   .pagewrap { width: 100%; height: 100%; background: #fff; }
-  iframe.page { width: 100%; height: 100%; border: 0; background: #fff; display: block; }
+  iframe.pf { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
   body.fs .pagewrap { position: fixed; inset: 0; z-index: 50; }
-  #fsExit { display: none; position: fixed; top: 10px; right: 10px; z-index: 60; background: rgba(0,0,0,.7); color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 12px; padding: 8px 14px; }
+  #fsExit { display: none; position: fixed; top: calc(var(--top) + 10px); right: 10px; z-index: 60; background: rgba(0,0,0,.72); color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 12px; padding: 10px 14px; }
   body.fs #fsExit { display: block; }
 
-  /* home */
-  .home { max-width: 900px; margin: 0 auto; padding: 36px 22px 80px; }
-  .home h1 { font-size: 32px; margin: 0 0 6px; }
-  .home p.sub { color: var(--muted); margin: 0 0 24px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; cursor: pointer; transition: transform .15s, border-color .15s; }
-  .card:hover { transform: translateY(-2px); border-color: var(--accent); }
-  .card .ico { font-size: 26px; }
-  .card h3 { margin: 6px 0 2px; font-size: 17px; }
-  .card p { margin: 0; color: var(--muted); font-size: 14px; }
-
   /* flashcards */
-  .fc { max-width: 640px; margin: 0 auto; padding: 28px 22px 60px; text-align: center; }
-  .fc .progress { color: var(--muted); margin-bottom: 14px; }
+  .fc { max-width: 640px; margin: 0 auto; padding: 22px 16px 60px; text-align: center; }
+  .fc .progress { color: var(--muted); margin-bottom: 12px; }
   .fc .bar { height: 6px; background: var(--panel2); border-radius: 6px; overflow: hidden; margin-bottom: 18px; }
   .fc .bar i { display: block; height: 100%; background: var(--ok); transition: width .3s; }
   .flip { perspective: 1200px; height: 280px; cursor: pointer; }
   .flip-in { position: relative; width: 100%; height: 100%; transition: transform .5s; transform-style: preserve-3d; }
   .flip.on .flip-in { transform: rotateY(180deg); }
-  .face { position: absolute; inset: 0; backface-visibility: hidden; display: grid; place-items: center; padding: 24px; border-radius: 20px; border: 1px solid var(--line); background: var(--panel); font-size: 21px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+  .face { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: grid; place-items: center; padding: 24px; border-radius: 22px; border: 1px solid var(--line); background: var(--panel); font-size: 21px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
   .face.back { transform: rotateY(180deg); background: color-mix(in srgb, var(--accent) 16%, var(--panel)); font-weight: 500; }
   .face small { position: absolute; top: 12px; left: 16px; color: var(--muted); font-size: 12px; font-weight: 400; text-transform: uppercase; letter-spacing: .08em; }
-  .fc .row { display: flex; gap: 10px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+  .fc .brow { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
   .fc .hint { margin-top: 14px; color: var(--muted); font-size: 13px; }
 
   /* modal */
-  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; place-items: center; z-index: 30; padding: 16px; }
-  .modal-bg.on { display: grid; }
-  .modal { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px; width: min(560px, 100%); max-height: 92vh; overflow-y: auto; }
-  .modal h2 { margin: 0 0 12px; font-size: 20px; }
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: flex-end; justify-content: center; z-index: 30; }
+  .modal-bg.on { display: flex; }
+  .modal { background: var(--panel); border: 1px solid var(--line); border-radius: 22px 22px 0 0; padding: 20px 18px calc(18px + var(--bot)); width: min(600px, 100%); max-height: 92dvh; overflow-y: auto; }
+  @media (min-width: 700px) { .modal-bg { align-items: center; } .modal { border-radius: 22px; } }
+  .modal h2 { margin: 0 0 8px; font-size: 20px; }
   .modal label { display: block; margin: 12px 0 4px; font-size: 13px; color: var(--muted); }
-  .modal input, .modal select, .modal textarea { width: 100%; padding: 9px 11px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); }
+  .modal input[type=text], .modal select, .modal textarea { width: 100%; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel2); }
   .modal textarea { min-height: 150px; resize: vertical; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 14px; }
   .modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
   .modal .note { font-size: 13px; color: var(--muted); margin-top: 6px; }
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; opacity: 0; transition: all .25s; z-index: 40; pointer-events: none; }
+  .modal .or { text-align: center; color: var(--muted); margin: 14px 0 0; font-size: 13px; }
+  .toast { position: fixed; bottom: calc(24px + var(--bot)); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; opacity: 0; transition: all .25s; z-index: 70; pointer-events: none; max-width: 90vw; text-align: center; }
   .toast.on { opacity: 1; transform: translateX(-50%); }
-
-  @media (max-width: 800px) {
-    aside { position: fixed; z-index: 20; left: 0; top: 0; transform: translateX(-100%); transition: transform .25s; width: 86vw; max-width: 340px; }
-    body.nav-open aside { transform: none; box-shadow: 0 0 40px rgba(0,0,0,.5); }
-    .menu-btn { display: inline-block; }
-    .doc h1 { font-size: 25px; }
-    .flip { height: 240px; }
-  }
 </style>
 </head>
 <body>
 
-<aside>
-  <div class="brand">Учебный хаб<small>конспекты · презентации · карточки</small></div>
-  <input class="search" id="search" type="search" placeholder="Поиск по материалам…">
-  <nav id="nav"></nav>
-  <div class="side-foot">
-    <button class="btn primary" id="addSection">+ Раздел</button>
-    <button class="btn primary" id="addItem">+ Материал</button>
-    <button class="btn" id="exportBtn">Экспорт</button>
-    <button class="btn" id="importBtn">Импорт</button>
-  </div>
-</aside>
+<header>
+  <button class="ib" id="back" aria-label="Назад">‹</button>
+  <h1 id="title">Учебный хаб</h1>
+  <span id="acts" style="display:flex;gap:8px"></span>
+</header>
+<div id="view"></div>
 
-<main>
-  <div class="topbar">
-    <button class="btn menu-btn" id="menuBtn" aria-label="Меню">☰</button>
-    <h1 id="title">Главная</h1>
-    <button class="btn" id="fsBtn" style="display:none">⛶ На весь экран</button>
-    <button class="btn" id="delBtn" style="display:none">Удалить</button>
-  </div>
-  <div class="view" id="view"></div>
-</main>
-
-<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
 <button id="fsExit">✕ Закрыть</button>
+<div class="modal-bg" id="modalBg"><div class="modal" id="modal"></div></div>
 <div class="toast" id="toast"></div>
-<input type="file" id="fileIn" accept="application/json" hidden>
+<input type="file" id="fileIn" multiple accept=".docx,.md,.markdown,.txt,.html,.htm" hidden>
 
-<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+<script src="lib/marked.min.js"></script>
+<script src="lib/purify.min.js"></script>
 <script>
 (function () {
   'use strict';
-  var REPO = 'mitriiSI/En';
-  var KEY = 'hub.user.v1';
   var base = { sections: [] };
-  var user = load();
-  var current = null;          // {section, item}
-  var query = '';
-  var cache = {};
+  var user = { sections: [], items: [], order: {} };
+  var editing = false;
+  var cardKeys = null;
 
   var $ = function (s) { return document.querySelector(s); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
-  var uid = function (p) { return p + Date.now().toString(36) + Math.floor(Math.random() * 1000).toString(36); };
-
-  function load() {
-    try { var v = JSON.parse(localStorage.getItem(KEY)); if (v && v.sections && v.items) return v; } catch (e) {}
-    return { sections: [], items: [] };
-  }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(user)); } catch (e) { toast('Не удалось сохранить в браузере'); } }
+  var uid = function (p) { return p + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36); };
+  var TYPE = { markdown: 'конспект', doc: 'конспект', cards: 'карточки', page: 'страница', link: 'ссылка' };
 
   function toast(msg) {
     var t = $('#toast'); t.textContent = msg; t.classList.add('on');
-    clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove('on'); }, 2400);
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove('on'); }, 2600);
   }
+
+  /* ---------- storage (IndexedDB, запасной вариант — localStorage) ---------- */
+  var LS = 'hub.user.v1', DB = 'hub-db', ST = 'kv';
+  function idb() {
+    return new Promise(function (res, rej) {
+      if (!window.indexedDB) return rej();
+      var r = indexedDB.open(DB, 1);
+      r.onupgradeneeded = function () { r.result.createObjectStore(ST); };
+      r.onsuccess = function () { res(r.result); };
+      r.onerror = function () { rej(r.error); };
+    });
+  }
+  function idbGet() {
+    return idb().then(function (db) {
+      return new Promise(function (res, rej) {
+        var q = db.transaction(ST).objectStore(ST).get('user');
+        q.onsuccess = function () { res(q.result); }; q.onerror = function () { rej(q.error); };
+      });
+    });
+  }
+  function idbPut(v) {
+    return idb().then(function (db) {
+      return new Promise(function (res, rej) {
+        var tx = db.transaction(ST, 'readwrite'); tx.objectStore(ST).put(v, 'user');
+        tx.oncomplete = res; tx.onerror = function () { rej(tx.error); };
+      });
+    });
+  }
+  function norm(v) { v = v || {}; return { sections: v.sections || [], items: v.items || [], order: v.order || {} }; }
+  function loadUser() {
+    return idbGet().then(function (v) { if (v) return norm(v); throw 0; })
+      .catch(function () { try { return norm(JSON.parse(localStorage.getItem(LS))); } catch (e) { return norm(); } });
+  }
+  function save() {
+    idbPut(user).catch(function () {
+      try { localStorage.setItem(LS, JSON.stringify(user)); } catch (e) { toast('Не удалось сохранить'); }
+    });
+  }
+  if (navigator.storage && navigator.storage.persist) { try { navigator.storage.persist(); } catch (e) {} }
 
   /* ---------- data ---------- */
-  function merged() {
-    var out = base.sections.map(function (s) {
-      var extra = user.items.filter(function (i) { return i.sectionId === s.id; }).map(function (i) { return Object.assign({ user: true }, i); });
-      return Object.assign({}, s, { items: s.items.concat(extra) });
-    });
-    user.sections.forEach(function (s) {
-      var items = user.items.filter(function (i) { return i.sectionId === s.id; }).map(function (i) { return Object.assign({ user: true }, i); });
-      out.push(Object.assign({}, s, { user: true, items: items }));
-    });
+  function sections() {
+    var out = base.sections.map(function (s) { return { id: s.id, title: s.title, icon: s.icon, user: false }; });
+    user.sections.forEach(function (s) { out.push({ id: s.id, title: s.title, icon: s.icon, user: true }); });
     return out;
   }
-  function find(sid, iid) {
-    var secs = merged();
-    for (var i = 0; i < secs.length; i++) {
-      if (secs[i].id !== sid) continue;
-      for (var j = 0; j < secs[i].items.length; j++) if (secs[i].items[j].id === iid) return { section: secs[i], item: secs[i].items[j] };
+  function section(id) { return sections().filter(function (s) { return s.id === id; })[0]; }
+  function itemsOf(sid) {
+    var items = [];
+    base.sections.forEach(function (s) { if (s.id === sid) s.items.forEach(function (i) { items.push(i); }); });
+    user.items.forEach(function (i) { if (i.sectionId === sid) items.push(Object.assign({ user: true }, i)); });
+    var ord = user.order[sid];
+    if (ord && ord.length) {
+      var pos = function (i) { var k = ord.indexOf(i.id); return k < 0 ? 1e6 : k; };
+      items = items.map(function (i, n) { return [i, n]; }).sort(function (a, b) { return (pos(a[0]) - pos(b[0])) || (a[1] - b[1]); }).map(function (p) { return p[0]; });
     }
-    return null;
+    return items;
   }
-  var TYPE_LABEL = { markdown: 'конспект', cards: 'карточки', page: 'страница', link: 'ссылка' };
-
-  /* ---------- sidebar ---------- */
-  var closedSecs = {};
-  function renderNav() {
-    var q = query.trim().toLowerCase();
-    var html = '';
-    merged().forEach(function (s) {
-      var items = s.items.filter(function (i) { return !q || (i.title + ' ' + s.title).toLowerCase().indexOf(q) > -1; });
-      if (q && !items.length) return;
-      var closed = !q && closedSecs[s.id];
-      html += '<div class="sec' + (closed ? ' closed' : '') + '" data-sec="' + esc(s.id) + '">' +
-        '<div class="sec-h" data-toggle="' + esc(s.id) + '"><span>' + esc(s.icon || '📁') + '</span><span>' + esc(s.title) + '</span><span class="chev">▾</span></div>' +
-        '<div class="items">' + (items.length ? items.map(function (i) {
-          var act = current && current.section.id === s.id && current.item.id === i.id;
-          return '<div class="item' + (act ? ' active' : '') + '" data-go="' + esc(s.id) + '/' + esc(i.id) + '"><span class="t">' + esc(i.title) + '</span><span class="tag">' + (TYPE_LABEL[i.type] || i.type) + '</span></div>';
-        }).join('') : '<div class="item" style="cursor:default">пока пусто</div>') + '</div></div>';
-    });
-    $('#nav').innerHTML = html || '<div class="item" style="padding-left:12px">ничего не найдено</div>';
+  function itemById(sid, iid) { return itemsOf(sid).filter(function (i) { return i.id === iid; })[0]; }
+  function move(sid, iid, d) {
+    var ids = itemsOf(sid).map(function (i) { return i.id; });
+    var k = ids.indexOf(iid), n = k + d;
+    if (k < 0 || n < 0 || n >= ids.length) return;
+    var t = ids[k]; ids[k] = ids[n]; ids[n] = t;
+    user.order[sid] = ids; save(); render();
   }
 
-  /* ---------- views ---------- */
-  function showHome() {
-    current = null; location.hash = '';
-    $('#title').textContent = 'Главная';
-    $('#fsBtn').style.display = 'none'; $('#delBtn').style.display = 'none';
-    var secs = merged();
-    $('#view').innerHTML = '<div class="home"><h1>Учебный хаб</h1><p class="sub">Выбери раздел слева или добавь свой. Всё, что добавишь, сохраняется в этом браузере; для переноса на другие устройства есть экспорт и импорт.</p><div class="grid">' +
-      secs.map(function (s) {
-        return '<div class="card" data-open-sec="' + esc(s.id) + '"><div class="ico">' + esc(s.icon || '📁') + '</div><h3>' + esc(s.title) + '</h3><p>' + s.items.length + ' матер.</p></div>';
-      }).join('') + '</div></div>';
-    renderNav();
+  /* ---------- routing ---------- */
+  function parse() {
+    var p = location.hash.replace(/^#\/?/, '').split('/');
+    if (p[0] === 's' && p[1]) return { v: p[2] ? 'item' : 'sub', sid: p[1], iid: p[2] };
+    return { v: 'home' };
   }
+  function go(h) { if (location.hash === h) render(); else location.hash = h; }
+  window.addEventListener('hashchange', render);
+  $('#back').onclick = function () {
+    var r = parse();
+    if (r.v === 'item') go('#/s/' + r.sid); else go('#/');
+  };
 
-  function open(sid, iid) {
-    var f = find(sid, iid);
-    if (!f) return showHome();
-    current = f;
-    location.hash = sid + '/' + iid;
-    $('#title').textContent = f.item.title;
-    $('#delBtn').style.display = f.item.user ? '' : 'none';
-    $('#fsBtn').style.display = f.item.type === 'page' ? '' : 'none';
-    document.body.classList.remove('nav-open'); exitFs();
-    var v = $('#view');
-    if (f.item.type === 'markdown') renderMarkdown(f.item, v);
-    else if (f.item.type === 'cards') renderCards(f.item, v);
-    else if (f.item.type === 'page') renderPage(f.item, v);
-    else if (f.item.type === 'link') { v.innerHTML = '<div class="home"><p><a href="' + esc(f.item.url) + '" target="_blank" rel="noopener" style="color:var(--accent)">Открыть: ' + esc(f.item.url) + '</a></p></div>'; }
+  /* ---------- rendering ---------- */
+  function setHead(title, acts) {
+    $('#title').textContent = title;
+    $('#acts').innerHTML = acts || '';
+    document.body.classList.toggle('sub', parse().v !== 'home');
+  }
+  function render() {
+    exitFs(); cardKeys = null;
+    var r = parse(), v = $('#view');
+    if (r.v === 'home') home(v);
+    else if (r.v === 'sub') sub(v, r.sid);
+    else item(v, r.sid, r.iid);
     v.scrollTop = 0;
-    renderNav();
   }
 
-  function md(text) {
-    if (window.marked) {
-      var raw = marked.parse(text);
-      return window.DOMPurify ? DOMPurify.sanitize(raw) : raw;
-    }
-    return '<pre>' + esc(text) + '</pre>';
+  /* home */
+  function home(v) {
+    editing = false;
+    setHead('Учебный хаб', '');
+    var secs = sections();
+    v.innerHTML = '<div class="page"><div class="hello">Привет 👋</div><p class="sub-t">Выбери тему и открой нужный конспект.</p>' +
+      '<input class="search" id="q" type="search" placeholder="Поиск по всем материалам…">' +
+      '<div id="hits"></div><div class="grid" id="tiles">' +
+      secs.map(function (s) {
+        var n = itemsOf(s.id).length;
+        return '<div class="tile" data-sec="' + esc(s.id) + '"><div class="ico">' + esc(s.icon || '📁') + '</div><div><h3>' + esc(s.title) + '</h3><small>' + n + ' ' + plural(n) + '</small></div></div>';
+      }).join('') + '<div class="tile add" id="newSec"><div><div class="ico">＋</div><h3>Новая тема</h3></div></div></div></div>';
+    v.querySelector('#newSec').onclick = sectionForm;
+    v.querySelector('#q').oninput = function () {
+      var q = this.value.trim().toLowerCase(), hits = [];
+      if (q) secs.forEach(function (s) { itemsOf(s.id).forEach(function (i) { if ((i.title + ' ' + s.title).toLowerCase().indexOf(q) > -1) hits.push([s, i]); }); });
+      $('#tiles').style.display = q ? 'none' : '';
+      $('#hits').innerHTML = q ? (hits.length ? '<div class="hits">' + hits.map(function (h) {
+        return '<div class="row" data-item="' + esc(h[0].id) + '/' + esc(h[1].id) + '"><div class="tt"><b>' + esc(h[1].title) + '</b><small>' + esc(h[0].title) + '</small></div><span class="go">›</span></div>';
+      }).join('') + '</div>' : '<div class="empty">Ничего не найдено</div>') : '';
+    };
   }
-  function renderMarkdown(item, v) {
-    var put = function (t) { v.innerHTML = '<article class="doc">' + md(t) + '</article>'; };
-    if (item.text != null) return put(item.text);
-    if (cache[item.src]) return put(cache[item.src]);
-    v.innerHTML = '<div class="doc">Загрузка…</div>';
-    fetch(item.src).then(function (r) { if (!r.ok) throw 0; return r.text(); })
-      .then(function (t) { cache[item.src] = t; if (current && current.item === item || current && current.item.id === item.id) put(t); })
-      .catch(function () { v.innerHTML = '<div class="doc">Не удалось загрузить файл ' + esc(item.src) + '. Если открываешь локально, запусти <code>python3 -m http.server</code> в папке репозитория.</div>'; });
+  function plural(n) { var a = n % 10, b = n % 100; return (a === 1 && b !== 11) ? 'материал' : (a >= 2 && a <= 4 && (b < 10 || b >= 20)) ? 'материала' : 'материалов'; }
+
+  /* subject */
+  function sub(v, sid) {
+    var s = section(sid);
+    if (!s) return go('#/');
+    setHead((s.icon || '') + ' ' + s.title, '<button class="ib' + (editing ? ' primary' : '') + '" id="edBtn">' + (editing ? 'Готово' : 'Порядок') + '</button>');
+    $('#edBtn').onclick = function () { editing = !editing; render(); };
+    var items = itemsOf(sid);
+    var html = '<div class="page"><div class="toolbar">' +
+      '<button class="ib primary" id="upBtn">⬆ Загрузить файлы</button>' +
+      '<button class="ib" id="addBtn">＋ Создать</button></div>';
+    if (!items.length) html += '<div class="empty">Здесь пока пусто.<br>Загрузи конспекты (.docx, .md, .txt, .html) или создай материал.</div>';
+    else {
+      html += '<div class="list">' + items.map(function (i, n) {
+        var tools = editing ? '<span class="tools">' +
+          '<button class="ib" data-mv="-1" data-id="' + esc(i.id) + '"' + (n === 0 ? ' disabled style="opacity:.35"' : '') + '>▲</button>' +
+          '<button class="ib" data-mv="1" data-id="' + esc(i.id) + '"' + (n === items.length - 1 ? ' disabled style="opacity:.35"' : '') + '>▼</button>' +
+          (i.user ? '<button class="ib" data-ren="' + esc(i.id) + '">✎</button><button class="ib danger" data-del="' + esc(i.id) + '">🗑</button>' : '') + '</span>' : '<span class="go">›</span>';
+        return '<div class="row" ' + (editing ? '' : 'data-item="' + esc(sid) + '/' + esc(i.id) + '"') + '><span class="num">' + (n + 1) + '</span>' +
+          '<div class="tt"><b>' + esc(i.title) + '</b><small>' + (TYPE[i.type] || i.type) + (i.user ? ' · мой' : '') + '</small></div>' + tools + '</div>';
+      }).join('') + '</div>';
+    }
+    if (editing) {
+      html += '<div class="foot-tools"><button class="ib" id="cpOrder">Скопировать порядок</button>' +
+        '<button class="ib" id="rstOrder">Сбросить порядок</button>' +
+        (s.user ? '<button class="ib danger" id="delSec">Удалить тему</button>' : '') + '</div>' +
+        '<p class="sub-t" style="margin-top:12px">Двигай стрелками. Материалы из репозитория удалить здесь нельзя: напиши мне, и я уберу или переставлю их там.</p>';
+    }
+    v.innerHTML = html + '</div>';
+    v.querySelector('#upBtn').onclick = function () { pickFiles(sid); };
+    v.querySelector('#addBtn').onclick = function () { itemForm(sid); };
+    if (editing) {
+      v.onclick = function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        if (b.dataset.mv) move(sid, b.dataset.id, +b.dataset.mv);
+        else if (b.dataset.ren) {
+          var it = user.items.filter(function (x) { return x.id === b.dataset.ren; })[0];
+          var nt = it && prompt('Новое название', it.title);
+          if (nt && nt.trim()) { it.title = nt.trim(); save(); render(); }
+        } else if (b.dataset.del) {
+          var it2 = user.items.filter(function (x) { return x.id === b.dataset.del; })[0];
+          if (it2 && confirm('Удалить «' + it2.title + '»?')) { user.items = user.items.filter(function (x) { return x !== it2; }); save(); render(); toast('Удалено'); }
+        }
+      };
+      v.querySelector('#cpOrder').onclick = function () {
+        var txt = s.title + ':\n' + itemsOf(sid).map(function (i, n) { return (n + 1) + '. ' + i.title; }).join('\n');
+        if (navigator.clipboard) navigator.clipboard.writeText(txt).then(function () { toast('Порядок скопирован'); }, function () { toast('Не удалось скопировать'); });
+      };
+      v.querySelector('#rstOrder').onclick = function () { delete user.order[sid]; save(); render(); toast('Порядок сброшен'); };
+      var ds = v.querySelector('#delSec');
+      if (ds) ds.onclick = function () {
+        if (!confirm('Удалить тему «' + s.title + '» со всеми моими материалами?')) return;
+        user.sections = user.sections.filter(function (x) { return x.id !== sid; });
+        user.items = user.items.filter(function (x) { return x.sectionId !== sid; });
+        delete user.order[sid]; save(); go('#/');
+      };
+    } else v.onclick = null;
   }
 
-  function renderPage(item, v) {
-    exitFs();
-    if (item.html != null) {
-      v.innerHTML = '<div class="pagewrap"><iframe class="page" allowfullscreen allow="fullscreen" sandbox="allow-scripts allow-popups allow-forms"></iframe></div>';
-      v.querySelector('iframe').srcdoc = item.html;
-    } else {
-      v.innerHTML = '<div class="pagewrap"><iframe class="page" allowfullscreen allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" src="' + esc(item.url) + '"></iframe></div>';
-    }
+  /* item */
+  function item(v, sid, iid) {
+    v.onclick = null;
+    var it = itemById(sid, iid), s = section(sid);
+    if (!it || !s) return go('#/s/' + sid);
+    var acts = '';
+    if (it.type === 'page') acts += '<button class="ib" id="fsBtn">⛶</button>';
+    setHead(it.title, acts);
+    var fb = $('#fsBtn'); if (fb) fb.onclick = enterFs;
+    if (it.type === 'markdown') renderMd(it, v, sid);
+    else if (it.type === 'doc') v.innerHTML = '<div class="page doc">' + clean(it.html) + pn(sid, iid) + '</div>';
+    else if (it.type === 'cards') cards(it, v);
+    else if (it.type === 'page') pageView(it, v);
+    else v.innerHTML = '<div class="page"><a style="color:var(--accent)" target="_blank" rel="noopener" href="' + esc(it.url) + '">Открыть: ' + esc(it.url) + '</a></div>';
+  }
+  function clean(h) { return window.DOMPurify ? DOMPurify.sanitize(h) : esc(h); }
+  function md(t) { return window.marked ? clean(marked.parse(t)) : '<pre>' + esc(t) + '</pre>'; }
+  function pn(sid, iid) {
+    var items = itemsOf(sid), k = items.map(function (i) { return i.id; }).indexOf(iid);
+    var p = items[k - 1], n = items[k + 1];
+    if (!p && !n) return '';
+    return '<div class="pn">' + (p ? '<button class="ib" data-item="' + esc(sid) + '/' + esc(p.id) + '">‹ ' + esc(p.title) + '</button>' : '') +
+      (n ? '<button class="ib" style="justify-content:flex-end;text-align:right" data-item="' + esc(sid) + '/' + esc(n.id) + '">' + esc(n.title) + ' ›</button>' : '') + '</div>';
+  }
+  var cache = {};
+  function renderMd(it, v, sid) {
+    var put = function (t) { if (parse().iid === it.id) v.innerHTML = '<div class="page doc">' + md(t) + pn(sid, it.id) + '</div>'; };
+    if (it.text != null) return put(it.text);
+    if (cache[it.src]) return put(cache[it.src]);
+    v.innerHTML = '<div class="page">Загрузка…</div>';
+    fetch(it.src).then(function (r) { if (!r.ok) throw 0; return r.text(); })
+      .then(function (t) { cache[it.src] = t; put(t); })
+      .catch(function () { v.innerHTML = '<div class="page">Не удалось загрузить файл ' + esc(it.src) + '.</div>'; });
+  }
+  function pageView(it, v) {
+    var f = it.html != null
+      ? '<iframe class="pf" allowfullscreen allow="fullscreen" sandbox="allow-scripts allow-popups allow-forms"></iframe>'
+      : '<iframe class="pf" allowfullscreen allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" src="' + esc(it.url) + '"></iframe>';
+    v.innerHTML = '<div class="pagewrap">' + f + '</div>';
+    if (it.html != null) v.querySelector('iframe').srcdoc = it.html;
   }
   function enterFs() {
     var w = document.querySelector('.pagewrap'); if (!w) return;
@@ -277,180 +378,151 @@
     document.body.classList.remove('fs');
     try { if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen(); } catch (e) {}
   }
+  $('#fsExit').onclick = exitFs;
   document.addEventListener('fullscreenchange', function () { if (!document.fullscreenElement) document.body.classList.remove('fs'); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') exitFs(); });
-
-  /* flashcards */
-  function renderCards(item, v) {
-    var deck = (item.cards || []).slice();
-    var idx = 0, known = {}, flipped = false;
-    if (!deck.length) { v.innerHTML = '<div class="doc">В колоде нет карточек.</div>'; return; }
-    function draw() {
-      var c = deck[idx], done = Object.keys(known).length;
-      v.innerHTML = '<div class="fc">' +
-        '<div class="progress">Карточка ' + (idx + 1) + ' из ' + deck.length + ' · знаю: ' + done + '</div>' +
-        '<div class="bar"><i style="width:' + (done / deck.length * 100) + '%"></i></div>' +
-        '<div class="flip' + (flipped ? ' on' : '') + '" id="flip"><div class="flip-in">' +
-        '<div class="face"><small>вопрос</small>' + esc(c.q) + '</div>' +
-        '<div class="face back"><small>ответ</small>' + esc(c.a) + '</div></div></div>' +
-        '<div class="row"><button class="btn" id="prev">← Назад</button>' +
-        '<button class="btn danger" id="again">Повторить</button>' +
-        '<button class="btn primary" id="know">Знаю ✓</button>' +
-        '<button class="btn" id="next">Далее →</button></div>' +
-        '<div class="row"><button class="btn" id="shuf">Перемешать</button><button class="btn" id="reset">Сначала</button></div>' +
-        '<div class="hint">Нажми на карточку, чтобы перевернуть. Клавиши: ← → и пробел.</div></div>';
-      v.querySelector('#flip').onclick = function () { flipped = !flipped; this.classList.toggle('on', flipped); };
-      v.querySelector('#prev').onclick = function () { go(-1); };
-      v.querySelector('#next').onclick = function () { go(1); };
-      v.querySelector('#know').onclick = function () { known[idx] = 1; if (Object.keys(known).length === deck.length) { toast('Вся колода пройдена 🎉'); draw(); } else go(1); };
-      v.querySelector('#again').onclick = function () { delete known[idx]; go(1); };
-      v.querySelector('#shuf').onclick = function () { deck.sort(function () { return Math.random() - .5; }); idx = 0; known = {}; flipped = false; draw(); };
-      v.querySelector('#reset').onclick = function () { idx = 0; known = {}; flipped = false; draw(); };
-    }
-    function go(d) { idx = (idx + d + deck.length) % deck.length; flipped = false; draw(); }
-    draw();
-    cardKeys = function (e) {
-      if (!current || current.item.id !== item.id) return;
-      if (e.key === 'ArrowRight') go(1);
-      else if (e.key === 'ArrowLeft') go(-1);
-      else if (e.key === ' ') { e.preventDefault(); flipped = !flipped; var f = v.querySelector('#flip'); if (f) f.classList.toggle('on', flipped); }
-    };
-  }
-  var cardKeys = null;
   document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') exitFs();
     if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
     if (cardKeys) cardKeys(e);
   });
 
+  /* flashcards */
+  function cards(it, v) {
+    var deck = (it.cards || []).slice(), idx = 0, known = {}, flipped = false;
+    if (!deck.length) { v.innerHTML = '<div class="page">В колоде нет карточек.</div>'; return; }
+    function draw() {
+      var c = deck[idx], done = Object.keys(known).length;
+      v.innerHTML = '<div class="fc"><div class="progress">Карточка ' + (idx + 1) + ' из ' + deck.length + ' · знаю: ' + done + '</div>' +
+        '<div class="bar"><i style="width:' + (done / deck.length * 100) + '%"></i></div>' +
+        '<div class="flip' + (flipped ? ' on' : '') + '" id="flip"><div class="flip-in"><div class="face"><small>вопрос</small>' + esc(c.q) + '</div><div class="face back"><small>ответ</small>' + esc(c.a) + '</div></div></div>' +
+        '<div class="brow"><button class="ib" id="prev">‹ Назад</button><button class="ib danger" id="again">Повторить</button><button class="ib primary" id="know">Знаю ✓</button><button class="ib" id="next">Далее ›</button></div>' +
+        '<div class="brow"><button class="ib" id="shuf">Перемешать</button><button class="ib" id="reset">Сначала</button></div>' +
+        '<div class="hint">Нажми на карточку, чтобы перевернуть.</div></div>';
+      v.querySelector('#flip').onclick = function () { flipped = !flipped; this.classList.toggle('on', flipped); };
+      v.querySelector('#prev').onclick = function () { step(-1); };
+      v.querySelector('#next').onclick = function () { step(1); };
+      v.querySelector('#know').onclick = function () { known[idx] = 1; if (Object.keys(known).length === deck.length) { toast('Вся колода пройдена 🎉'); draw(); } else step(1); };
+      v.querySelector('#again').onclick = function () { delete known[idx]; step(1); };
+      v.querySelector('#shuf').onclick = function () { deck.sort(function () { return Math.random() - .5; }); idx = 0; known = {}; flipped = false; draw(); };
+      v.querySelector('#reset').onclick = function () { idx = 0; known = {}; flipped = false; draw(); };
+    }
+    function step(d) { idx = (idx + d + deck.length) % deck.length; flipped = false; draw(); }
+    draw();
+    cardKeys = function (e) {
+      if (e.key === 'ArrowRight') step(1); else if (e.key === 'ArrowLeft') step(-1);
+      else if (e.key === ' ') { e.preventDefault(); flipped = !flipped; var f = v.querySelector('#flip'); if (f) f.classList.toggle('on', flipped); }
+    };
+  }
+
   /* ---------- modals ---------- */
-  function modal(html, onReady) {
+  function modal(html, ready) {
     $('#modal').innerHTML = html; $('#modalBg').classList.add('on');
     var c = $('#modal').querySelector('[data-close]'); if (c) c.onclick = closeModal;
-    if (onReady) onReady($('#modal'));
+    if (ready) ready($('#modal'));
   }
   function closeModal() { $('#modalBg').classList.remove('on'); }
   $('#modalBg').addEventListener('mousedown', function (e) { if (e.target === this) closeModal(); });
 
   function sectionForm() {
-    modal('<h2>Новый раздел</h2>' +
-      '<label>Название</label><input id="f-title" placeholder="Например: История">' +
-      '<label>Значок (эмодзи)</label><input id="f-icon" value="📁" maxlength="4">' +
-      '<div class="actions"><button class="btn" data-close>Отмена</button><button class="btn primary" id="f-ok">Создать</button></div>',
+    modal('<h2>Новая тема</h2><label>Название</label><input type="text" id="f-title" placeholder="Например: История">' +
+      '<label>Значок (эмодзи)</label><input type="text" id="f-icon" value="📁" maxlength="4">' +
+      '<div class="actions"><button class="ib" data-close>Отмена</button><button class="ib primary" id="f-ok">Создать</button></div>',
       function (m) {
-        m.querySelector('#f-title').focus();
         m.querySelector('#f-ok').onclick = function () {
           var t = m.querySelector('#f-title').value.trim();
           if (!t) return toast('Введи название');
-          user.sections.push({ id: uid('s'), title: t, icon: m.querySelector('#f-icon').value || '📁' });
-          save(); closeModal(); renderNav(); toast('Раздел создан');
+          var s = { id: uid('s'), title: t, icon: m.querySelector('#f-icon').value || '📁' };
+          user.sections.push(s); save(); closeModal(); go('#/s/' + s.id);
         };
       });
   }
 
-  function itemForm() {
-    var secs = merged();
+  function itemForm(sid) {
     modal('<h2>Новый материал</h2>' +
-      '<label>Раздел</label><select id="f-sec">' + secs.map(function (s) { return '<option value="' + esc(s.id) + '"' + (current && current.section.id === s.id ? ' selected' : '') + '>' + esc(s.title) + '</option>'; }).join('') + '</select>' +
-      '<label>Название</label><input id="f-title" placeholder="Например: Тема II. Метод экономической теории">' +
-      '<label>Тип</label><select id="f-type">' +
-      '<option value="markdown">Конспект / текст (Markdown)</option>' +
-      '<option value="cards">Карточки для повторения</option>' +
-      '<option value="page">Страница или презентация (HTML-код)</option>' +
-      '<option value="url">Страница по ссылке / путь в репозитории</option></select>' +
-      '<label id="f-lbl">Текст</label><textarea id="f-body"></textarea>' +
-      '<div class="note" id="f-note"></div>' +
-      '<div class="actions"><button class="btn" data-close>Отмена</button><button class="btn primary" id="f-ok">Добавить</button></div>',
+      '<label>Название</label><input type="text" id="f-title" placeholder="Например: Тема II. Метод экономической теории">' +
+      '<label>Тип</label><select id="f-type"><option value="markdown">Конспект / текст (Markdown)</option><option value="cards">Карточки для повторения</option><option value="page">Страница или презентация (HTML-код)</option><option value="url">Страница по адресу</option></select>' +
+      '<label id="f-lbl"></label><textarea id="f-body"></textarea><div class="note" id="f-note"></div>' +
+      '<div class="actions"><button class="ib" data-close>Отмена</button><button class="ib primary" id="f-ok">Добавить</button></div>',
       function (m) {
         var type = m.querySelector('#f-type'), lbl = m.querySelector('#f-lbl'), body = m.querySelector('#f-body'), note = m.querySelector('#f-note');
         function sync() {
-          var t = type.value;
-          if (t === 'markdown') { lbl.textContent = 'Текст (поддерживается Markdown: # заголовки, **жирный**, списки, таблицы)'; body.placeholder = ''; note.textContent = ''; body.style.minHeight = '220px'; }
-          if (t === 'cards') { lbl.textContent = 'Карточки: каждая строка — «вопрос | ответ»'; body.placeholder = 'Что такое спрос? | Желание и возможность купить товар по цене'; note.textContent = ''; }
-          if (t === 'page') { lbl.textContent = 'HTML-код страницы'; body.placeholder = '<!doctype html>…'; note.textContent = 'Откроется в защищённой рамке. Скрипты работают.'; }
-          if (t === 'url') { lbl.textContent = 'Адрес'; body.placeholder = 'https://… или ../index.html'; note.textContent = 'Некоторые сайты запрещают встраивание; тогда используй «Открыть в новой вкладке».'; body.style.minHeight = '44px'; }
+          var t = type.value; note.textContent = ''; body.style.minHeight = '150px';
+          if (t === 'markdown') { lbl.textContent = 'Текст (Markdown: # заголовки, **жирный**, списки, таблицы)'; body.placeholder = ''; }
+          if (t === 'cards') { lbl.textContent = 'Карточки: каждая строка — «вопрос | ответ»'; body.placeholder = 'Что такое спрос? | Желание и возможность купить товар'; }
+          if (t === 'page') { lbl.textContent = 'HTML-код'; body.placeholder = '<!doctype html>…'; note.textContent = 'Откроется в защищённой рамке, скрипты работают.'; }
+          if (t === 'url') { lbl.textContent = 'Адрес'; body.placeholder = 'https://…'; body.style.minHeight = '44px'; note.textContent = 'Некоторые сайты запрещают встраивание.'; }
         }
         type.onchange = sync; sync();
-        m.querySelector('#f-title').focus();
         m.querySelector('#f-ok').onclick = function () {
           var title = m.querySelector('#f-title').value.trim(), val = body.value.trim(), t = type.value;
           if (!title || !val) return toast('Заполни название и содержимое');
-          var it = { id: uid('i'), sectionId: m.querySelector('#f-sec').value, title: title };
+          var it = { id: uid('i'), sectionId: sid, title: title };
           if (t === 'markdown') { it.type = 'markdown'; it.text = val; }
           else if (t === 'cards') {
             it.type = 'cards';
             it.cards = val.split('\n').map(function (l) { var p = l.split('|'); return { q: (p.shift() || '').trim(), a: p.join('|').trim() }; }).filter(function (c) { return c.q && c.a; });
             if (!it.cards.length) return toast('Нужна хотя бы одна строка «вопрос | ответ»');
-          }
-          else if (t === 'page') { it.type = 'page'; it.html = val; }
+          } else if (t === 'page') { it.type = 'page'; it.html = val; }
           else { it.type = 'page'; it.url = val; }
-          user.items.push(it); save(); closeModal(); open(it.sectionId, it.id); toast('Добавлено');
+          user.items.push(it); save(); closeModal(); go('#/s/' + sid + '/' + it.id);
         };
       });
   }
 
-  /* ---------- export / import ---------- */
-  function doExport() {
-    var data = JSON.stringify(user, null, 2);
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
-    a.download = 'hub-my-data.json'; a.click();
-    if (navigator.clipboard) navigator.clipboard.writeText(data).catch(function () {});
-    toast('Файл скачан, копия в буфере');
+  /* ---------- file upload ---------- */
+  var uploadSid = null;
+  function pickFiles(sid) { uploadSid = sid; $('#fileIn').click(); }
+  function loadScript(src) {
+    return new Promise(function (res, rej) { var s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
   }
-  $('#exportBtn').onclick = doExport;
-  $('#importBtn').onclick = function () { $('#fileIn').click(); };
-  $('#fileIn').onchange = function () {
-    var f = this.files[0]; if (!f) return;
-    var r = new FileReader();
-    r.onload = function () {
-      try {
-        var v = JSON.parse(r.result);
-        if (!v.sections || !v.items) throw 0;
-        user = v; save(); renderNav(); showHome(); toast('Импортировано');
-      } catch (e) { toast('Это не файл экспорта хаба'); }
-    };
-    r.readAsText(f); this.value = '';
-  };
-
-  /* ---------- top bar actions ---------- */
-  $('#delBtn').onclick = function () {
-    if (!current || !current.item.user) return;
-    if (!confirm('Удалить «' + current.item.title + '»?')) return;
-    user.items = user.items.filter(function (i) { return i.id !== current.item.id; });
-    save(); showHome(); toast('Удалено');
-  };
-  $('#fsBtn').onclick = enterFs;
-  $('#fsExit').onclick = exitFs;
-  $('#menuBtn').onclick = function () { document.body.classList.toggle('nav-open'); };
-  $('#addSection').onclick = sectionForm;
-  $('#addItem').onclick = itemForm;
-  $('#search').oninput = function () { query = this.value; renderNav(); };
-  $('.brand').onclick = showHome;
-
-  document.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-toggle],[data-go],[data-open-sec]');
-    if (!t) return;
-    if (t.dataset.toggle) { closedSecs[t.dataset.toggle] = !closedSecs[t.dataset.toggle]; renderNav(); }
-    else if (t.dataset.go) { var p = t.dataset.go.split('/'); open(p[0], p[1]); }
-    else if (t.dataset.openSec) {
-      var s = merged().filter(function (x) { return x.id === t.dataset.openSec; })[0];
-      if (s && s.items.length) open(s.id, s.items[0].id); else toast('В разделе пока нет материалов');
+  function readText(f) { return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(r.result); }; r.onerror = rej; r.readAsText(f); }); }
+  function readBuf(f) { return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(r.result); }; r.onerror = rej; r.readAsArrayBuffer(f); }); }
+  function fileItem(f, sid) {
+    var name = f.name.replace(/\.[^.]+$/, ''), ext = (f.name.split('.').pop() || '').toLowerCase();
+    var it = { id: uid('i'), sectionId: sid, title: name };
+    if (ext === 'md' || ext === 'markdown' || ext === 'txt') {
+      return readText(f).then(function (t) { it.type = 'markdown'; it.text = t; var m = /^#\s+(.+)$/m.exec(t); if (m && ext !== 'txt') it.title = m[1].trim(); return it; });
     }
+    if (ext === 'html' || ext === 'htm') return readText(f).then(function (t) { it.type = 'page'; it.html = t; return it; });
+    if (ext === 'docx') {
+      return (window.mammoth ? Promise.resolve() : loadScript('lib/mammoth.browser.min.js'))
+        .then(function () { return readBuf(f); })
+        .then(function (b) { return mammoth.convertToHtml({ arrayBuffer: b }); })
+        .then(function (r) { it.type = 'doc'; it.html = clean(r.value); return it; });
+    }
+    return Promise.reject(new Error('Формат .' + ext + ' не поддерживается'));
+  }
+  $('#fileIn').onchange = function () {
+    var files = Array.prototype.slice.call(this.files), sid = uploadSid; this.value = '';
+    if (!files.length || !sid) return;
+    toast('Загружаю…');
+    var ok = 0, bad = [];
+    files.reduce(function (p, f) {
+      return p.then(function () { return fileItem(f, sid).then(function (it) { user.items.push(it); ok++; }, function (e) { bad.push(f.name + ' (' + (e && e.message || 'ошибка') + ')'); }); });
+    }, Promise.resolve()).then(function () {
+      if (ok) save();
+      render();
+      toast(ok ? 'Добавлено: ' + ok + (bad.length ? '. Не удалось: ' + bad.join(', ') : '') : 'Не удалось: ' + bad.join(', '));
+    });
+  };
+
+  /* ---------- global clicks ---------- */
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-sec],[data-item]');
+    if (!t || e.target.closest('.tools')) return;
+    if (t.dataset.sec) go('#/s/' + t.dataset.sec);
+    else if (t.dataset.item) go('#/s/' + t.dataset.item);
   });
 
-  window.addEventListener('hashchange', route);
-  function route() {
-    var h = location.hash.replace('#', '');
-    if (!h) { if (current) showHome(); return; }
-    var p = h.split('/');
-    if (!current || current.section.id !== p[0] || current.item.id !== p[1]) open(p[0], p[1]);
-  }
-
   /* ---------- start ---------- */
-  fetch('data/sections.json').then(function (r) { return r.json(); })
-    .then(function (d) { base = d; })
-    .catch(function () { toast('Не удалось загрузить data/sections.json'); })
-    .then(function () { renderNav(); if (location.hash) route(); else showHome(); });
+  Promise.all([
+    fetch('data/sections.json').then(function (r) { return r.json(); }).catch(function () { toast('Не удалось загрузить список материалов'); return { sections: [] }; }),
+    loadUser()
+  ]).then(function (res) { base = res[0]; user = res[1]; render(); });
+
+  if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  }
 })();
 </script>
 </body>

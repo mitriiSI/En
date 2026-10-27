@@ -1,0 +1,50 @@
+/* Офлайн-режим: сначала сеть (чтобы обновления доходили сразу), при её отсутствии — кэш. */
+var CACHE = 'hub-v1';
+var SHELL = [
+  './', 'index.html', 'manifest.webmanifest', 'data/sections.json',
+  'lib/marked.min.js', 'lib/purify.min.js', 'lib/mammoth.browser.min.js',
+  'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
+];
+
+self.addEventListener('install', function (e) {
+  e.waitUntil(
+    caches.open(CACHE).then(function (c) {
+      return Promise.all(SHELL.map(function (u) { return c.add(u).catch(function () {}); }))
+        .then(function () { return fetch('data/sections.json'); })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var urls = [];
+          (d.sections || []).forEach(function (s) {
+            (s.items || []).forEach(function (i) { var u = i.src || (i.url && i.url.indexOf('http') !== 0 ? i.url : null); if (u) urls.push(u); });
+          });
+          return Promise.all(urls.map(function (u) { return c.add(u).catch(function () {}); }));
+        })
+        .catch(function () {});
+    }).then(function () { return self.skipWaiting(); })
+  );
+});
+
+self.addEventListener('activate', function (e) {
+  e.waitUntil(
+    caches.keys().then(function (keys) {
+      return Promise.all(keys.filter(function (k) { return k !== CACHE; }).map(function (k) { return caches.delete(k); }));
+    }).then(function () { return self.clients.claim(); })
+  );
+});
+
+self.addEventListener('fetch', function (e) {
+  var req = e.request;
+  if (req.method !== 'GET') return;
+  var url = new URL(req.url);
+  if (url.origin !== location.origin) return;
+  e.respondWith(
+    fetch(req).then(function (res) {
+      if (res && res.ok) { var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put(req, copy); }); }
+      return res;
+    }).catch(function () {
+      return caches.match(req, { ignoreSearch: true }).then(function (m) {
+        return m || (req.mode === 'navigate' ? caches.match('index.html') : Response.error());
+      });
+    })
+  );
+});
