@@ -490,6 +490,12 @@
           "src": "content/istoriya-rossii-aleksandr-nikolaj.md"
         },
         {
+          "id": "velikie-reformy",
+          "title": "Лекция 17. «Великие реформы» и контрреформы II половины XIX века (28.10)",
+          "type": "markdown",
+          "src": "content/istoriya-rossii-velikie-reformy.md"
+        },
+        {
           "id": "petrovskaya-modernizaciya-cards",
           "title": "Петровская модернизация (07.10)",
           "type": "cards",
@@ -806,6 +812,12 @@
               "a": "Решения николаевского времени были предложены ещё в XVIII веке и только теперь воплощались. Лидер создаёт инновации, догоняющий — повторяет."
             }
           ]
+        },
+        {
+          "id": "velikie-reformy-cards",
+          "title": "Великие реформы и контрреформы (28.10)",
+          "type": "cards",
+          "cards": []
         }
       ]
     },
