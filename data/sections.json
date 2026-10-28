@@ -1061,6 +1061,12 @@
           "src": "content/istoriya-rossii-xviii-vek.md"
         },
         {
+          "id": "kultura",
+          "title": "Лекция 14. Культура России в XVIII веке: от Византии к Риму, барокко, классицизм (16.10)",
+          "type": "markdown",
+          "src": "content/istoriya-rossii-kultura-xviii.md"
+        },
+        {
           "id": "aleksandr-nikolaj",
           "title": "Александр I и Николай I: идеологии и политика (21.10)",
           "type": "markdown",
@@ -1501,6 +1507,12 @@
               "a": "Только самодержавную власть: «Вельможа — тот, с кем я говорю, и пока я с ним говорю»."
             }
           ]
+        },
+        {
+          "id": "kultura-cards",
+          "title": "Культура России в XVIII веке (16.10)",
+          "type": "cards",
+          "cards": []
         },
         {
           "id": "aleksandr-nikolaj-cards",
