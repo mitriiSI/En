@@ -15,17 +15,19 @@
           "id": "dengi",
           "title": "Деньги: происхождение, функции, виды, денежная система (12.10)",
           "type": "markdown",
-          "src": "content/ekonomika-dengi.md"
+          "src": "content/ekonomika-dengi.md",
+          "date": "2026-10-12"
         },
         {
           "id": "spros-predlozhenie",
           "title": "Спрос и предложение: факторы, закон спроса и исключения, закон предложения (19.10)",
           "type": "markdown",
-          "src": "content/ekonomika-spros-predlozhenie.md"
+          "src": "content/ekonomika-spros-predlozhenie.md",
+          "date": "2026-10-19"
         },
         {
           "id": "tema1-cards",
-          "title": "Тема I. Карточки для повторения",
+          "title": "Тема I. Предмет экономической теории",
           "type": "cards",
           "cards": [
             {
@@ -239,7 +241,8 @@
               "q": "Тип денежной системы сейчас?",
               "a": "Бумажно-кредитная: золото ушло из обращения, деньги держатся на доверии к государству."
             }
-          ]
+          ],
+          "date": "2026-10-12"
         },
         {
           "id": "spros-predlozhenie-cards",
@@ -418,7 +421,14 @@
               "q": "Почему кривая предложения труда загибается назад?",
               "a": "Сначала действует эффект замещения (работаю больше), потом эффект дохода (денег хватает — выбираю отдых)."
             }
-          ]
+          ],
+          "date": "2026-10-19"
+        },
+        {
+          "id": "test",
+          "title": "Тест по предмету (все темы, с разбором ответов)",
+          "type": "test",
+          "src": "data/tests/ekonomika.json"
         }
       ]
     },
@@ -431,17 +441,19 @@
           "id": "shopengauer",
           "title": "Философия жизни: Шопенгауэр (21.10)",
           "type": "markdown",
-          "src": "content/filosofiya-shopengauer.md"
+          "src": "content/filosofiya-shopengauer.md",
+          "date": "2026-10-21"
         },
         {
           "id": "nicshe",
           "title": "Философия жизни: Ницше (28.10)",
           "type": "markdown",
-          "src": "content/filosofiya-nicshe.md"
+          "src": "content/filosofiya-nicshe.md",
+          "date": "2026-10-28"
         },
         {
           "id": "shopengauer-cards",
-          "title": "Философия жизни: Шопенгауэр и Ницше (21.10)",
+          "title": "Философия жизни: Шопенгауэр (21.10)",
           "type": "cards",
           "cards": [
             {
@@ -524,7 +536,8 @@
               "q": "Аполлоническое и дионисийское?",
               "a": "Аполлон — мера, форма, разум. Дионис — хаос, экстаз, поток. Дионисийство — творчество, а творчество — свобода."
             }
-          ]
+          ],
+          "date": "2026-10-21"
         },
         {
           "id": "nicshe-cards",
@@ -719,7 +732,14 @@
               "q": "Шопенгауэр и Ницше: главное различие?",
               "a": "Шопенгауэр — отказаться от воли; Ницше — утвердить волю к жизни."
             }
-          ]
+          ],
+          "date": "2026-10-28"
+        },
+        {
+          "id": "test",
+          "title": "Тест по предмету (все темы, с разбором ответов)",
+          "type": "test",
+          "src": "data/tests/filosofiya.json"
         }
       ]
     },
@@ -732,25 +752,29 @@
           "id": "avgustin",
           "title": "Средневековье и Аврелий Августин: «О граде Божием» (07.10)",
           "type": "markdown",
-          "src": "content/istoriya-ucheniy-avgustin.md"
+          "src": "content/istoriya-ucheniy-avgustin.md",
+          "date": "2026-10-07"
         },
         {
           "id": "foma",
           "title": "Фома Аквинский и схоластика (13.10)",
           "type": "markdown",
-          "src": "content/istoriya-ucheniy-foma.md"
+          "src": "content/istoriya-ucheniy-foma.md",
+          "date": "2026-10-13"
         },
         {
           "id": "marsilij",
           "title": "Марсилий Падуанский. «Защитник мира» (21.10)",
           "type": "markdown",
-          "src": "content/istoriya-ucheniy-marsilij.md"
+          "src": "content/istoriya-ucheniy-marsilij.md",
+          "date": "2026-10-21"
         },
         {
           "id": "vozrozhdenie",
           "title": "Эпоха Возрождения и Реформации (27.10)",
           "type": "markdown",
-          "src": "content/istoriya-ucheniy-vozrozhdenie.md"
+          "src": "content/istoriya-ucheniy-vozrozhdenie.md",
+          "date": "2026-10-27"
         },
         {
           "id": "avgustin-cards",
@@ -949,7 +973,8 @@
               "q": "Формационный и цивилизационный подходы?",
               "a": "Формационный — по способу производства (Маркс). Цивилизационный — по культурам, которые рождаются и угасают (Шпенглер, Тойнби)."
             }
-          ]
+          ],
+          "date": "2026-10-07"
         },
         {
           "id": "foma-cards",
@@ -1172,7 +1197,8 @@
               "q": "Что, по лектору, принесли европейцы в Америку?",
               "a": "Классовое неравенство «под копирку» (собственники и работники) и болезни."
             }
-          ]
+          ],
+          "date": "2026-10-13"
         },
         {
           "id": "marsilij-cards",
@@ -1291,7 +1317,8 @@
               "q": "Кто через 200 лет использовал идеи Марсилия?",
               "a": "Протестантские страны в эпоху Реформации."
             }
-          ]
+          ],
+          "date": "2026-10-21"
         },
         {
           "id": "vozrozhdenie-cards",
@@ -1446,7 +1473,14 @@
               "q": "Когда система устойчива, по лектору?",
               "a": "Когда есть канал обратной связи (открытая) или когда она полностью закрыта. Закрытая плохо адаптируется."
             }
-          ]
+          ],
+          "date": "2026-10-27"
+        },
+        {
+          "id": "test",
+          "title": "Тест по предмету (все темы, с разбором ответов)",
+          "type": "test",
+          "src": "data/tests/politucheniya.json"
         }
       ]
     },
@@ -1460,37 +1494,43 @@
           "title": "🎬 Видеолекция 15: Александр I и Николай I (с 3D-моделями)",
           "type": "video",
           "video": "istoriya-rossii/lekciya-15-aleksandr-nikolaj.mp4?v=2",
-          "poster": "istoriya-rossii/lekciya-15-poster.jpg"
+          "poster": "istoriya-rossii/lekciya-15-poster.jpg",
+          "date": "2026-10-21"
         },
         {
           "id": "petrovskaya-modernizaciya",
           "title": "Лекция 11. Россия в I четверти XVIII века: петровская модернизация (07.10)",
           "type": "markdown",
-          "src": "content/istoriya-rossii-petrovskaya-modernizaciya.md"
+          "src": "content/istoriya-rossii-petrovskaya-modernizaciya.md",
+          "date": "2026-10-07"
         },
         {
           "id": "xviii-vek",
           "title": "Лекция 12. Российская империя в XVIII веке (1725–1801): перевороты и просвещённый абсолютизм (09.10)",
           "type": "markdown",
-          "src": "content/istoriya-rossii-xviii-vek.md"
+          "src": "content/istoriya-rossii-xviii-vek.md",
+          "date": "2026-10-09"
         },
         {
           "id": "kultura",
-          "title": "Лекция 14. Культура России в XVIII веке: от Византии к Риму, барокко, классицизм (16.10)",
+          "title": "Лекция 14. Культура России в XVIII веке: от Византии к Риму, барокко, классицизм, сентиментализм (16.10)",
           "type": "markdown",
-          "src": "content/istoriya-rossii-kultura-xviii.md"
+          "src": "content/istoriya-rossii-kultura-xviii.md",
+          "date": "2026-10-16"
         },
         {
           "id": "aleksandr-nikolaj",
-          "title": "Александр I и Николай I: идеологии и политика (21.10)",
+          "title": "Лекция 15. Александр I и Николай I: идеологии и политика (21.10)",
           "type": "markdown",
-          "src": "content/istoriya-rossii-aleksandr-nikolaj.md"
+          "src": "content/istoriya-rossii-aleksandr-nikolaj.md",
+          "date": "2026-10-21"
         },
         {
           "id": "velikie-reformy",
           "title": "Лекция 17. «Великие реформы» и контрреформы II половины XIX века (28.10)",
           "type": "markdown",
-          "src": "content/istoriya-rossii-velikie-reformy.md"
+          "src": "content/istoriya-rossii-velikie-reformy.md",
+          "date": "2026-10-28"
         },
         {
           "id": "petrovskaya-modernizaciya-cards",
@@ -1641,7 +1681,8 @@
               "q": "Какой институт стал воплощением движения к прогрессу?",
               "a": "Санкт-Петербург — столица европейского типа."
             }
-          ]
+          ],
+          "date": "2026-10-07"
         },
         {
           "id": "xviii-vek-cards",
@@ -1920,7 +1961,8 @@
               "q": "Какой институт признавал Павел I?",
               "a": "Только самодержавную власть: «Вельможа — тот, с кем я говорю, и пока я с ним говорю»."
             }
-          ]
+          ],
+          "date": "2026-10-09"
         },
         {
           "id": "kultura-cards",
@@ -2175,7 +2217,8 @@
               "q": "Традиция имени Лизы по лектору?",
               "a": "Петрарка (Лаура) → Руссо (Юлия) → Карамзин (Лиза)."
             }
-          ]
+          ],
+          "date": "2026-10-16"
         },
         {
           "id": "aleksandr-nikolaj-cards",
@@ -2342,7 +2385,8 @@
               "q": "Что такое «опоздавшая модернизация»?",
               "a": "Решения николаевского времени были предложены ещё в XVIII веке и только теперь воплощались. Лидер создаёт инновации, догоняющий — повторяет."
             }
-          ]
+          ],
+          "date": "2026-10-21"
         },
         {
           "id": "velikie-reformy-cards",
@@ -2577,7 +2621,14 @@
               "q": "Что нового в национализме Александра III, по лектору?",
               "a": "Преимущества русских православных — раньше этого в Российской империи не было."
             }
-          ]
+          ],
+          "date": "2026-10-28"
+        },
+        {
+          "id": "test",
+          "title": "Тест по предмету (все темы, с разбором ответов)",
+          "type": "test",
+          "src": "data/tests/istoriya-rossii.json"
         }
       ]
     },
@@ -2590,13 +2641,15 @@
           "id": "formy-prava",
           "title": "Формы права: законы, подзаконные акты, нормативные договоры (06.10)",
           "type": "markdown",
-          "src": "content/pravovedenie-formy-prava.md"
+          "src": "content/pravovedenie-formy-prava.md",
+          "date": "2026-10-06"
         },
         {
           "id": "pravovye-akty",
           "title": "Правовые акты: нормативные, правоприменительные, толкование (27.10)",
           "type": "markdown",
-          "src": "content/pravovedenie-pravovye-akty.md"
+          "src": "content/pravovedenie-pravovye-akty.md",
+          "date": "2026-10-27"
         },
         {
           "id": "formy-prava-cards",
@@ -2731,7 +2784,8 @@
               "q": "Почему спорят о корпоративных и локальных актах?",
               "a": "Их принимает не государство, а организация. Одни считают их формой права (ТК, ст. 8), другие — внутренними правилами."
             }
-          ]
+          ],
+          "date": "2026-10-06"
         },
         {
           "id": "pravovye-akty-cards",
@@ -2858,7 +2912,14 @@
               "q": "Что будет с неопубликованным актом о правах граждан?",
               "a": "Он не применяется (ч. 3 ст. 15 Конституции)."
             }
-          ]
+          ],
+          "date": "2026-10-27"
+        },
+        {
+          "id": "test",
+          "title": "Тест по предмету (все темы, с разбором ответов)",
+          "type": "test",
+          "src": "data/tests/pravovedenie.json"
         }
       ]
     },
@@ -2871,29 +2932,33 @@
           "id": "l1",
           "title": "Лекция 1. Понятие управления (08.09)",
           "type": "markdown",
-          "src": "content/upravlenie-l1.md"
+          "src": "content/upravlenie-l1.md",
+          "date": "2026-09-08"
         },
         {
           "id": "l2",
           "title": "Лекция 2. Западные школы управления (22.09)",
           "type": "markdown",
-          "src": "content/upravlenie-l2.md"
+          "src": "content/upravlenie-l2.md",
+          "date": "2026-09-22"
         },
         {
           "id": "l3",
           "title": "Лекция 3. Отечественные школы управления (06.10)",
           "type": "markdown",
-          "src": "content/upravlenie-l3.md"
+          "src": "content/upravlenie-l3.md",
+          "date": "2026-10-06"
         },
         {
           "id": "l4",
           "title": "Лекция 4. Системный подход (20.10)",
           "type": "markdown",
-          "src": "content/upravlenie-l4.md"
+          "src": "content/upravlenie-l4.md",
+          "date": "2026-10-20"
         },
         {
           "id": "l1-cards",
-          "title": "Лекция 1. Карточки",
+          "title": "Лекция 1. Понятие управления (08.09)",
           "type": "cards",
           "cards": [
             {
@@ -2952,11 +3017,12 @@
               "q": "Суть смены парадигмы управления?",
               "a": "От труда, капитала, земли и функционирования — к информации, знаниям, качеству и управлению развитием."
             }
-          ]
+          ],
+          "date": "2026-09-08"
         },
         {
           "id": "l2-cards",
-          "title": "Лекция 2. Карточки",
+          "title": "Лекция 2. Западные школы (22.09)",
           "type": "cards",
           "cards": [
             {
@@ -3019,11 +3085,12 @@
               "q": "Механистическая и органическая структура?",
               "a": "Бёрнс и Сталкер: механистическая (жёсткая иерархия) — для стабильной среды, органическая (гибкая, горизонтальная) — для бурной."
             }
-          ]
+          ],
+          "date": "2026-09-22"
         },
         {
           "id": "l3-cards",
-          "title": "Лекция 3. Карточки",
+          "title": "Лекция 3. Отечественные школы (06.10)",
           "type": "cards",
           "cards": [
             {
@@ -3086,11 +3153,12 @@
               "q": "Когда создан факультет государственного управления МГУ?",
               "a": "В 2000 году."
             }
-          ]
+          ],
+          "date": "2026-10-06"
         },
         {
           "id": "l4-cards",
-          "title": "Лекция 4. Карточки",
+          "title": "Лекция 4. Системный подход (20.10)",
           "type": "cards",
           "cards": [
             {
@@ -3149,7 +3217,14 @@
               "q": "Три типичные ошибки системного подхода?",
               "a": "Псевдосистемный подход, чрезмерное усложнение, «переупрощение»."
             }
-          ]
+          ],
+          "date": "2026-10-20"
+        },
+        {
+          "id": "test",
+          "title": "Тест по предмету (все темы, с разбором ответов)",
+          "type": "test",
+          "src": "data/tests/upravlenie.json"
         }
       ]
     },

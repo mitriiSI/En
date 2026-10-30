@@ -88,6 +88,35 @@
   #fsExit { display: none; position: fixed; top: calc(var(--top) + 10px); right: 10px; z-index: 60; background: rgba(0,0,0,.72); color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 12px; padding: 10px 14px; }
   body.fs #fsExit { display: block; }
 
+  /* тесты */
+  .tq-bar { height: 6px; background: var(--panel2); border-radius: 6px; overflow: hidden; margin: 4px 0 14px; }
+  .tq-bar i { display: block; height: 100%; background: var(--accent); transition: width .3s; }
+  .tq-q { font-size: 18px; font-weight: 600; line-height: 1.45; margin-bottom: 12px; }
+  .tq-q small { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 4px; }
+  .tq-opts { display: flex; flex-direction: column; gap: 8px; }
+  .tq-o { display: flex; gap: 10px; align-items: flex-start; text-align: left; width: 100%; border: 2px solid var(--line); background: var(--panel2); border-radius: 14px; padding: 11px 12px; font-size: 16px; line-height: 1.4; color: var(--ink); }
+  .tq-o .tq-l { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; background: var(--panel); border: 1px solid var(--line); }
+  .tq-o.ok { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 18%, var(--panel2)); }
+  .tq-o.bad { border-color: #e5484d; background: color-mix(in srgb, #e5484d 16%, var(--panel2)); }
+  .tq-o.dim { opacity: .55; }
+  .tq-why { margin: 12px 0; padding: 12px 14px; border-radius: 14px; background: var(--panel2); border-left: 4px solid var(--ok); font-size: 15px; line-height: 1.5; }
+  .tq-why.bad { border-left-color: #e5484d; }
+  .tq-why p { margin: 0 0 8px; }
+  .tq-why details { margin-top: 6px; }
+  .tq-why summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+  .tq-why ul { margin: 8px 0 0; padding-left: 4px; list-style: none; }
+  .tq-why li { margin: 6px 0; }
+  .tq-next { width: 100%; }
+  .tq-res { text-align: center; padding: 14px; background: var(--panel2); border-radius: 16px; margin: 8px 0 12px; }
+  .tq-score { font-size: 38px; font-weight: 800; color: var(--accent); }
+  .tq-h4 { margin: 14px 0 6px; }
+  .tq-err { padding-left: 20px; font-size: 15px; line-height: 1.5; }
+  .tq-err li { margin: 8px 0; }
+  .tq-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .tq-topics { display: flex; flex-direction: column; gap: 8px; }
+  .tq-topic { text-align: left; border: 2px solid var(--line); background: var(--panel2); border-radius: 14px; padding: 10px 12px; color: var(--ink); }
+  .tq-topic small { display: block; color: var(--muted); margin-top: 2px; }
+  .tq-topic.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--panel2)); }
   /* flashcards */
   .fc { max-width: 640px; margin: 0 auto; padding: 22px 16px 60px; text-align: center; }
   .fc .progress { color: var(--muted); margin-bottom: 12px; }
@@ -178,8 +207,10 @@
 <script src="lib/marked.min.js"></script>
 <script src="lib/purify.min.js"></script>
 <script src="lib/widgets.js"></script>
+<script src="lib/tests.js"></script>
 <script src="lib/scene3d.js"></script>
 <script src="lib/history-russia.js"></script>
+<script src="lib/istoriya-rossii-an3d.js"></script>
 <script src="lib/istoriya-rossii-petr3d.js"></script>
 <script src="lib/istoriya-rossii-xviii3d.js"></script>
 <script src="lib/istoriya-rossii-kultura3d.js"></script>
@@ -217,7 +248,7 @@
   var $ = function (s) { return document.querySelector(s); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var uid = function (p) { return p + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36); };
-  var TYPE = { markdown: 'конспект', doc: 'конспект', cards: 'карточки', page: 'страница', link: 'ссылка' };
+  var TYPE = { markdown: 'конспект', doc: 'конспект', cards: 'карточки', page: 'страница', link: 'ссылка', test: 'тест с разбором ответов', video: 'видео' };
 
   function toast(msg) {
     var t = $('#toast'); t.textContent = msg; t.classList.add('on');
@@ -274,6 +305,8 @@
     var items = [];
     base.sections.forEach(function (s) { if (s.id === sid) s.items.forEach(function (i) { items.push(i); }); });
     user.items.forEach(function (i) { if (i.sectionId === sid) items.push(Object.assign({ user: true }, i)); });
+    /* по умолчанию — по дате лекции, от старой к новой (материалы без даты — в начале) */
+    items = items.map(function (i, n) { return [i, n]; }).sort(function (a, b) { var x = a[0].date || '', y = b[0].date || ''; return x < y ? -1 : x > y ? 1 : a[1] - b[1]; }).map(function (p) { return p[0]; });
     var ord = user.order[sid];
     if (ord && ord.length) {
       var pos = function (i) { var k = ord.indexOf(i.id); return k < 0 ? 1e6 : k; };
@@ -283,8 +316,8 @@
   }
   function itemById(sid, iid) { return itemsOf(sid).filter(function (i) { return i.id === iid; })[0]; }
   /* блоки внутри предмета: конспекты, карточки, презентации */
-  var GROUPS = [{ id: 'videos', title: 'Видеолекции', icon: '🎬' }, { id: 'notes', title: 'Конспекты', icon: '📝' }, { id: 'cards', title: 'Карточки', icon: '🃏' }, { id: 'pages', title: 'Презентации', icon: '🎞️' }, { id: 'other', title: 'Другое', icon: '📎' }];
-  function groupOf(i) { return i.group || (i.type === 'video' ? 'videos' : i.type === 'cards' ? 'cards' : (i.type === 'markdown' || i.type === 'doc') ? 'notes' : i.type === 'page' ? 'pages' : 'other'); }
+  var GROUPS = [{ id: 'videos', title: 'Видеолекции', icon: '🎬' }, { id: 'notes', title: 'Конспекты', icon: '📝' }, { id: 'cards', title: 'Карточки', icon: '🃏' }, { id: 'tests', title: 'Тесты', icon: '✅' }, { id: 'pages', title: 'Презентации', icon: '🎞️' }, { id: 'other', title: 'Другое', icon: '📎' }];
+  function groupOf(i) { return i.group || (i.type === 'video' ? 'videos' : i.type === 'cards' ? 'cards' : i.type === 'test' ? 'tests' : (i.type === 'markdown' || i.type === 'doc') ? 'notes' : i.type === 'page' ? 'pages' : 'other'); }
   function groupsOf(sid) { var items = itemsOf(sid); return GROUPS.filter(function (g) { return items.some(function (i) { return groupOf(i) === g.id; }); }); }
   function group(gid) { return GROUPS.filter(function (g) { return g.id === gid; })[0]; }
   function siblings(sid, iid) {
@@ -446,6 +479,7 @@
     if (it.type === 'markdown') renderMd(it, v, sid);
     else if (it.type === 'doc') v.innerHTML = '<div class="page doc">' + clean(it.html) + pn(sid, iid) + '</div>';
     else if (it.type === 'cards') cards(it, v);
+    else if (it.type === 'test' && window.HubTests) HubTests.page(v, it, pn(sid, iid));
     else if (it.type === 'page') pageView(it, v);
     else if (it.type === 'video') v.innerHTML = '<div class="page"><video controls playsinline preload="metadata" style="width:100%;border-radius:16px;background:#000;display:block"' +
       (it.poster ? ' poster="' + esc(it.poster) + '"' : '') + ' src="' + esc(it.video) + '"></video>' +
