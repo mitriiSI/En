@@ -3325,14 +3325,6 @@
           "date": "2026-10-27"
         },
         {
-          "id": "test-seminar-1",
-          "title": "Тест: Семинар — правотворчество, систематизация, толкование",
-          "type": "test",
-          "src": "data/tests/pravovedenie.json",
-          "topic": "seminar-1",
-          "date": "2026-10-31"
-        },
-        {
           "id": "test",
           "title": "Итоговый тест по всем темам предмета",
           "type": "test",
