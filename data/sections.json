@@ -3030,6 +3030,14 @@
           "date": "2026-10-27"
         },
         {
+          "id": "seminar-1",
+          "title": "Семинар: правотворчество, систематизация законодательства, толкование права",
+          "type": "markdown",
+          "src": "content/pravovedenie-seminar-1.md",
+          "group": "seminars",
+          "date": "2026-10-31"
+        },
+        {
           "id": "formy-prava-cards",
           "title": "Формы права (06.10)",
           "type": "cards",
@@ -3308,6 +3316,14 @@
           "src": "data/tests/pravovedenie.json",
           "topic": "pravovye-akty",
           "date": "2026-10-27"
+        },
+        {
+          "id": "test-seminar-1",
+          "title": "Тест: Семинар — правотворчество, систематизация, толкование",
+          "type": "test",
+          "src": "data/tests/pravovedenie.json",
+          "topic": "seminar-1",
+          "date": "2026-10-31"
         },
         {
           "id": "test",

@@ -228,6 +228,7 @@
 <script src="lib/politucheniya3d-4.js"></script>
 <script src="lib/pravovedenie3d.js"></script>
 <script src="lib/pravovedenie3d-2.js"></script>
+<script src="lib/pravovedenie-seminar.js"></script>
 <script src="lib/upravlenie3d-1.js"></script>
 <script src="lib/upravlenie3d-2.js"></script>
 <script src="lib/upravlenie3d-3.js"></script>
@@ -318,7 +319,7 @@
   }
   function itemById(sid, iid) { return itemsOf(sid).filter(function (i) { return i.id === iid; })[0]; }
   /* блоки внутри предмета: конспекты, карточки, презентации */
-  var GROUPS = [{ id: 'videos', title: 'Видеолекции', icon: '🎬' }, { id: 'notes', title: 'Конспекты', icon: '📝' }, { id: 'cards', title: 'Карточки', icon: '🃏' }, { id: 'tests', title: 'Тесты', icon: '✅' }, { id: 'pages', title: 'Презентации', icon: '🎞️' }, { id: 'other', title: 'Другое', icon: '📎' }];
+  var GROUPS = [{ id: 'videos', title: 'Видеолекции', icon: '🎬' }, { id: 'notes', title: 'Конспекты', icon: '📝' }, { id: 'cards', title: 'Карточки', icon: '🃏' }, { id: 'seminars', title: 'Семинар', icon: '🎓' }, { id: 'tests', title: 'Тесты', icon: '✅' }, { id: 'pages', title: 'Презентации', icon: '🎞️' }, { id: 'other', title: 'Другое', icon: '📎' }];
   function groupOf(i) { return i.group || (i.type === 'video' ? 'videos' : i.type === 'cards' ? 'cards' : i.type === 'test' ? 'tests' : (i.type === 'markdown' || i.type === 'doc') ? 'notes' : i.type === 'page' ? 'pages' : 'other'); }
   function groupsOf(sid) { var items = itemsOf(sid); return GROUPS.filter(function (g) { return items.some(function (i) { return groupOf(i) === g.id; }); }); }
   function group(gid) { return GROUPS.filter(function (g) { return g.id === gid; })[0]; }
