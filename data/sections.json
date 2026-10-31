@@ -1572,6 +1572,13 @@
           "date": "2026-10-21"
         },
         {
+          "id": "nikolaj-i-prezentaciya",
+          "title": "🎞️ Презентация: Николай I — внутренняя политика (два спикера)",
+          "type": "page",
+          "url": "presentations/nikolaj-i/index.html",
+          "date": "2026-10-21"
+        },
+        {
           "id": "petrovskaya-modernizaciya",
           "title": "Лекция 11. Россия в I четверти XVIII века: петровская модернизация (07.10)",
           "type": "markdown",
@@ -3718,6 +3725,12 @@
           "title": "University of Glasgow",
           "type": "page",
           "url": "presentations/glasgow/index.html"
+        },
+        {
+          "id": "nikolaj-i",
+          "title": "Николай I: внутренняя политика (История России)",
+          "type": "page",
+          "url": "presentations/nikolaj-i/index.html"
         }
       ]
     }
