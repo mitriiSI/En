@@ -29,7 +29,11 @@
   /* цветовые сцены */
   .scene.c-navy { background: radial-gradient(90% 80% at 75% 40%, #1d2a52 0%, #0b1024 55%, #05070f 100%); }
   .scene.c-crimson { background: radial-gradient(90% 80% at 78% 35%, #5a1620 0%, #22080d 55%, #08040a 100%); }
-  .scene.c-navy::after, .scene.c-crimson::after {
+  .scene.c-forest { background: radial-gradient(90% 80% at 75% 40%, #17402f 0%, #0a1a14 55%, #05070a 100%); }
+  .scene.c-slate { background: radial-gradient(90% 80% at 75% 40%, #2c3346 0%, #12151f 55%, #05070f 100%); }
+  .scene.c-ash { background: radial-gradient(90% 80% at 75% 40%, #3a3a3e 0%, #161618 55%, #060607 100%); }
+  .scene.c-umber { background: radial-gradient(90% 80% at 75% 40%, #4d3612 0%, #1d1408 55%, #070504 100%); }
+  .scene[class*=" c-"]::after {
     content: ""; position: absolute; inset: 0; opacity: .5;
     background-image: linear-gradient(rgba(240, 195, 107, .06) 1px, transparent 1px), linear-gradient(90deg, rgba(240, 195, 107, .06) 1px, transparent 1px);
     background-size: 64px 64px;
@@ -80,7 +84,7 @@
     display: flex; align-items: center; padding: 12vh 7vw 14vh;
   }
   .content { width: min(1020px, 70vw); }
-  .cover { justify-content: center; text-align: center; }
+  .cover { justify-content: flex-start; text-align: left; }
   .cover .content { width: auto; max-width: 1000px; }
 
   /* маленькое название слайда */
@@ -289,23 +293,22 @@
 
 <!-- фоны: подлинные изображения (Wikimedia Commons) и цветовые сцены -->
 <div class="scenes" id="scenes">
-  <div class="scene"><img alt="" src="img/00-zimniy-dvorec.jpg"></div>
+  <div class="scene"><img alt="" src="img/00-nikolaj-i.jpg" style="object-position:85% 50%"></div>
   <div class="scene c-navy"><div class="emblem">⟷</div></div>
   <div class="scene"><img alt="" src="img/02-dekabristy.jpg"></div>
   <div class="scene c-crimson"><div class="emblem">1833</div></div>
-  <div class="scene"><img alt="" src="img/04-universitet.jpg"></div>
-  <div class="scene"><img alt="" src="img/05-aleksandrinskiy.jpg"></div>
-  <div class="scene"><img alt="" src="img/06-publichnaya-biblioteka.jpg"></div>
+  <div class="scene c-forest"><div class="emblem">1828</div></div>
+  <div class="scene c-slate"><div class="emblem">1826</div></div>
+  <div class="scene c-ash"><div class="emblem">1848</div></div>
   <div class="scene"><img alt="" src="img/07-petrashevcy.jpg"></div>
   <div class="scene"><img alt="" src="img/08-zheleznaya-doroga.jpg"></div>
   <div class="scene"><img alt="" src="img/09-venecianov-pashnya.jpg"></div>
   <div class="scene"><img alt="" src="img/10-venecianov-gumno.jpg"></div>
   <div class="scene"><img alt="" src="img/11-polsha-1831.jpg"></div>
-  <div class="scene"><img alt="" src="img/12-pamyatnik.jpg" style="object-position:60% 30%"></div>
+  <div class="scene c-umber"><div class="emblem">1855</div></div>
 </div>
 <div class="grade"></div>
 <div class="shade"></div>
-<div class="scrim"></div>
 <div class="grain"></div>
 <canvas id="particles"></canvas>
 
@@ -318,7 +321,7 @@
   <!-- обложка -->
   <section class="slide cover" data-label="Начало">
     <div class="content">
-      <p class="kicker pc" style="justify-content:center;--d:.2s">История России · Внутренняя политика</p>
+      <p class="kicker pc fl" style="--d:.2s">История России · Внутренняя политика</p>
       <h1 class="split">Николай <span class="gold">I</span></h1>
       <p class="sub pc" style="--d:1.1s">1825 — 1855</p>
     </div>
@@ -355,10 +358,6 @@
         <div class="pc" style="--d:1.3s"><b>1830</b><span>Полное собрание законов</span></div>
         <div class="pc" style="--d:1.45s"><b>1832</b><span>Свод законов, 15 томов</span></div>
       </div>
-    </div>
-    <div class="people">
-      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="А. Х. Бенкендорф" src="img/p-benkendorf.jpg"></div><h3>Бенкендорф</h3></div>
-      <div class="person pc fr" style="--d:1.4s"><div class="photo"><img alt="М. М. Сперанский" src="img/p-speranskiy.jpg"></div><h3>Сперанский</h3></div>
     </div>
   </section>
 
@@ -422,7 +421,7 @@
       <div class="flow">
         <div class="st pc" style="--d:1s">Цензор пропустил</div><span class="ar pc" style="--d:1.05s">→</span>
         <div class="st pc" style="--d:1.15s">Текст напечатан</div><span class="ar pc" style="--d:1.2s">→</span>
-        <div class="st pc hot" style="--d:1.3s">Наказаны все</div>
+        <div class="st pc hot" style="--d:1.3s">Отвечают автор, издатель, цензор</div>
       </div>
       <div class="tl">
         <div class="pc" style="--d:1.5s"><b>1850</b><span>Закрыты кафедры философии</span></div>
@@ -437,7 +436,7 @@
       <h2 class="split">22 декабря 1849 — казнь, <span class="gold">которой не было</span></h2>
       <div class="tl red">
         <div class="pc" style="--d:1s"><b>I</b><span>Приговор</span></div>
-        <div class="pc" style="--d:1.2s"><b>II</b><span>Тройка у столбов</span></div>
+        <div class="pc" style="--d:1.2s"><b>II</b><span>Первая тройка — к расстрелу</span></div>
         <div class="pc" style="--d:1.4s"><b>III</b><span>Помилование, решённое заранее</span></div>
       </div>
     </div>
@@ -454,7 +453,7 @@
       <div class="tl">
         <div class="pc" style="--d:1s"><b>1837</b><span>Царскосельская дорога</span></div>
         <div class="pc" style="--d:1.15s"><b>1851</b><span>Петербург — Москва</span></div>
-        <div class="pc" style="--d:1.3s"><b>1853–56</b><span>Война обесценила рубль</span></div>
+        <div class="pc" style="--d:1.3s"><b>1853–56</b><span>Крымская война — бумажные деньги дешевеют</span></div>
       </div>
     </div>
     <div class="people">
@@ -466,7 +465,7 @@
   <section class="slide" data-label="Крестьянский вопрос">
     <div class="content">
       <p class="kicker pc fl"><span class="num">09</span>Николай I, 1842</p>
-      <h2 class="quote split">«Крепостное право — зло… но трогать его — зло <span class="gold">ещё более гибельное</span>»</h2>
+      <h2 class="quote split">«Крепостное право… есть зло… но прикасаться к оному теперь — было бы злом <span class="gold">ещё более гибельным</span>»</h2>
       <p class="lbl pc" style="--d:1.2s">Реформа Киселёва · 1837–1841</p>
       <div class="cards" style="--n:2">
         <div class="card pc fl" style="--d:1.3s"><h3>Дала</h3><p>самоуправление, школы</p></div>
@@ -500,7 +499,7 @@
       <p class="kicker pc fl"><span class="num">11</span>Царство Польское</p>
       <h2 class="split">Ноябрь 1830 — <span class="gold">Варшава восстаёт</span></h2>
       <div class="tl red">
-        <div class="pc" style="--d:1s"><b>1831</b><span>Сейм низлагает царя</span></div>
+        <div class="pc" style="--d:1s"><b>1831</b><span>Сейм лишает Николая I польского престола</span></div>
         <div class="pc" style="--d:1.15s"><b>09.1831</b><span>Взятие Варшавы</span></div>
         <div class="pc" style="--d:1.3s"><b>1832</b><span>Органический статут</span></div>
       </div>
@@ -516,10 +515,10 @@
       <p class="kicker pc fl"><span class="num">12</span>Итоги царствования</p>
       <h2 class="split">1855 — крестьянский вопрос <span class="gold">не решён</span></h2>
       <div class="cards" style="--n:2">
-        <div class="card pc fl" style="--d:1s"><h3>Сделано</h3><p>законы, рубль, железные дороги</p></div>
-        <div class="card minus pc fr" style="--d:1.15s"><h3>Сохранено</h3><p>крепостное право, цензура</p></div>
+        <div class="card pc fl" style="--d:1s"><h3>Сделано</h3><p>Свод законов, денежная реформа, железные дороги</p></div>
+        <div class="card minus pc fr" style="--d:1.15s"><h3>Сохранено</h3><p>крепостное право, сословное неравенство</p></div>
       </div>
-      <p class="credits pc" style="--d:1.6s">Изображения: <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a> — картины, гравюры и рисунки XIX века (общественное достояние): К. Кольман, А. Венецианов, Б. Покровский, В. Коссак, портреты Т. Райта, В. Тропинина, А. Брюллова, Ф. Моллера, К. Трутовского; фото зданий и памятника — CC BY / CC BY-SA.</p>
+      <p class="credits pc" style="--d:1.6s">Изображения: <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a>, общественное достояние — Ф. Крюгер (портрет Николая I), К. Кольман, Б. Покровский, А. Венецианов, В. Коссак; портреты Т. Райта, В. Тропинина, А. Брюллова, Ф. Моллера, К. Трутовского.</p>
     </div>
   </section>
 </main>
@@ -593,7 +592,7 @@
     slides.forEach((s, j) => { s.classList.toggle("active", j === i); s.classList.remove("done"); });
     clearTimeout(doneTimer);
     doneTimer = setTimeout(() => el.classList.add("done"), 4200);
-    document.body.classList.toggle("reading", i > 0);
+    document.body.classList.add("reading");
     dots.forEach((d, j) => { d.classList.toggle("on", j <= i); d.classList.toggle("cur", j === i); });
     cur.textContent = String(i).padStart(2, "0");
   };
