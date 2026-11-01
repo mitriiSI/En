@@ -234,6 +234,53 @@
     .pc { transition: none; opacity: 1; transform: none; }
     .scene img, .pendulum .arm { animation: none; }
   }
+  /* ---------- крупная типографика: событие — главное, детали читаются с экрана ---------- */
+  .content { width: min(1100px, 72vw); }
+  .kicker { font-size: clamp(.85rem, 1vw, 1rem); letter-spacing: .22em; margin-bottom: 1.2rem; }
+  .num { font-size: 1rem; }
+  h2 { font-size: clamp(2.6rem, 5.4vw, 5.2rem); margin-bottom: 2.2rem; }
+  h2.quote { font-size: clamp(2.1rem, 4vw, 3.8rem); }
+  .tl { margin-top: 1.4rem; gap: 1.4rem; grid-auto-columns: minmax(0, 260px); }
+  .tl::before { top: 11px; }
+  .tl > div { padding-top: 36px; }
+  .tl > div::before { width: 18px; height: 18px; top: 3px; }
+  .tl b { font-size: clamp(2rem, 3vw, 2.9rem); margin-bottom: .35rem; }
+  .tl span { font-size: clamp(1.1rem, 1.45vw, 1.4rem); line-height: 1.3; }
+  .flow { margin: .4rem 0 1rem; gap: .8rem; }
+  .flow .st { font-size: clamp(1.15rem, 1.5vw, 1.45rem); padding: 1.1rem 1.2rem; min-width: 170px; }
+  .flow .ar { font-size: 1.8rem; }
+  .cards { gap: 1.2rem; margin-top: 1.4rem; max-width: 820px; }
+  .card { padding: 1.3rem 1.4rem; }
+  .card h3 { font-size: clamp(1.6rem, 2.3vw, 2.2rem); margin-bottom: .4rem; }
+  .card p { font-size: clamp(1.1rem, 1.4vw, 1.35rem); color: #e6e8ef; line-height: 1.35; }
+  .lbl { font-size: .9rem; letter-spacing: .18em; margin-bottom: 0; color: var(--gold); }
+  .against { font-size: clamp(1.3rem, 2vw, 1.9rem); color: var(--muted); margin: -1rem 0 1rem; }
+  .against .strike { display: inline-block; color: var(--ink); opacity: .8; }
+  .against .strike::after { top: 58%; transform: rotate(-1deg) scaleX(0); }
+  .active .against .strike::after { transform: rotate(-1deg) scaleX(1); }
+  .tl { width: fit-content; max-width: 100%; }
+  .sub { font-size: clamp(1.2rem, 1.6vw, 1.5rem); }
+  .cover .sub { font-size: 1.1rem; }
+  .pend-row { grid-template-columns: 260px 1fr; gap: 2.4rem; }
+  .pendulum { width: 260px; height: 200px; }
+  .pendulum .arm { height: 150px; }
+  .pendulum .axis { font-size: .85rem; }
+  .swings { font-size: clamp(1.15rem, 1.5vw, 1.45rem); gap: .6rem; }
+  .swings div { padding: .7rem 1rem; }
+  .stairs { gap: 1.2rem; max-width: 820px; }
+  .stairs .stp:nth-child(1) { min-height: 110px; } .stairs .stp:nth-child(2) { min-height: 150px; } .stairs .stp:nth-child(3) { min-height: 190px; }
+  .stairs h3 { font-size: clamp(1.5rem, 2.1vw, 2rem); }
+  .stairs p { font-size: clamp(1.05rem, 1.3vw, 1.25rem); color: #e6e8ef; }
+  .person { width: clamp(140px, min(12vw, 24vh), 200px); }
+  .person h3 { font-size: 1.2rem; margin-top: .6rem; }
+  @media (max-width: 760px) {
+    .content { width: 100%; }
+    h2 { font-size: 2.3rem; margin-bottom: 1.4rem; }
+    .tl b { font-size: 1.8rem; }
+    .tl > div { padding: 0 0 1rem 32px; }
+    .pend-row { grid-template-columns: 1fr; }
+    .flow .st { min-width: 0; }
+  }
 </style>
 </head>
 <body>
@@ -277,253 +324,202 @@
     </div>
   </section>
 
-  <!-- 1 -->
+  <!-- 1 · спикер 1 -->
   <section class="slide" data-label="Маятник">
     <div class="content">
       <p class="kicker pc fl"><span class="num">01</span>Политический маятник</p>
-      <h2 class="split">За реформами приходит <span class="gold">контроль</span> — за контролем реформы</h2>
+      <h2 class="split">За реформами приходит <span class="gold">контроль</span></h2>
       <div class="pend-row">
         <div class="pendulum pc fz" style="--d:.7s" aria-hidden="true">
           <span class="pivot"></span><span class="arm"></span>
-          <div class="axis"><b class="l">Преобразования</b><b class="r">Контроль</b></div>
+          <div class="axis"><b class="l">Реформы</b><b class="r">Контроль</b></div>
         </div>
         <div class="swings">
           <div class="pc fr" style="--d:.9s"><span>Александр I</span><i>→</i><span>Николай I</span></div>
-          <div class="pc fr" style="--d:1s"><span>Александр II</span><i>→</i><span>Александр III</span></div>
-          <div class="pc fr" style="--d:1.1s"><span>Оттепель, Хрущёв</span><i>→</i><span>Брежнев</span></div>
-          <div class="pc fr" style="--d:1.2s"><span>Горбачёв, Ельцин</span><i>→</i><span>2000-е</span></div>
+          <div class="pc fr" style="--d:1.05s"><span>Александр II</span><i>→</i><span>Александр III</span></div>
+          <div class="pc fr" style="--d:1.2s"><span>Хрущёв</span><i>→</i><span>Брежнев</span></div>
+          <div class="pc fr" style="--d:1.35s"><span>Горбачёв, Ельцин</span><i>→</i><span>2000-е</span></div>
         </div>
-      </div>
-      <div class="flow">
-        <div class="st pc" style="--d:1.3s"><small>1</small>Либерализация</div><span class="ar pc" style="--d:1.35s">→</span>
-        <div class="st pc" style="--d:1.4s"><small>2</small>Конфликты при слабых институтах</div><span class="ar pc" style="--d:1.45s">→</span>
-        <div class="st pc hot" style="--d:1.5s"><small>3</small>Запрос на порядок</div><span class="ar pc" style="--d:1.55s">→</span>
-        <div class="st pc hot" style="--d:1.6s"><small>4</small>Централизация</div><span class="ar pc" style="--d:1.65s">→</span>
-        <div class="st pc hot" style="--d:1.7s"><small>5</small>Инициатива подавлена</div><span class="ar pc" style="--d:1.75s">↺</span>
       </div>
     </div>
   </section>
 
-  <!-- 2 -->
+  <!-- 2 · спикер 2 -->
   <section class="slide" data-label="Надзор и законы">
     <div class="content">
-      <p class="kicker pc fl"><span class="num">02</span>Начало царствования</p>
+      <p class="kicker pc fl"><span class="num">02</span>Надзор и кодификация</p>
       <h2 class="split">14 декабря 1825 — восстание <span class="gold">декабристов</span></h2>
-      <p class="sub pc" style="--d:.8s">Пятеро казнены, многие — на каторге и в ссылке. Ответ власти:</p>
       <div class="tl">
-        <div class="pc" style="--d:1s"><b>1826</b><span>III отделение — политический сыск</span></div>
+        <div class="pc" style="--d:1s"><b>1826</b><span>III отделение</span></div>
         <div class="pc" style="--d:1.15s"><b>1827</b><span>Корпус жандармов</span></div>
-        <div class="pc" style="--d:1.3s"><b>1830</b><span>Полное собрание законов — акты с 1649 г.</span></div>
-        <div class="pc" style="--d:1.45s"><b>1832</b><span>Свод законов в 15 томах</span></div>
-        <div class="pc" style="--d:1.6s"><b>1835</b><span>Свод вступил в силу</span></div>
+        <div class="pc" style="--d:1.3s"><b>1830</b><span>Полное собрание законов</span></div>
+        <div class="pc" style="--d:1.45s"><b>1832</b><span>Свод законов, 15 томов</span></div>
       </div>
     </div>
     <div class="people">
-      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="А. Х. Бенкендорф" src="img/p-benkendorf.jpg"></div><h3>А. Х. Бенкендорф</h3><p>III отделение</p></div>
-      <div class="person pc fr" style="--d:1.4s"><div class="photo"><img alt="М. М. Сперанский" src="img/p-speranskiy.jpg"></div><h3>М. М. Сперанский</h3><p>Кодификация</p></div>
+      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="А. Х. Бенкендорф" src="img/p-benkendorf.jpg"></div><h3>Бенкендорф</h3></div>
+      <div class="person pc fr" style="--d:1.4s"><div class="photo"><img alt="М. М. Сперанский" src="img/p-speranskiy.jpg"></div><h3>Сперанский</h3></div>
     </div>
   </section>
 
-  <!-- 3 -->
+  <!-- 3 · спикер 1 -->
   <section class="slide" data-label="Народность">
     <div class="content">
       <p class="kicker pc fl"><span class="num">03</span>Теория официальной народности · 1833</p>
       <h2 class="split">Православие, самодержавие, <span class="gold">народность</span></h2>
-      <div class="vs" style="margin-bottom:1.3rem">
-        <div class="card pc fl" style="--d:.9s"><p class="lbl">Девиз Французской революции</p><h3 class="strike">Свобода, равенство, братство</h3><p>Права граждан, народный суверенитет</p></div>
-        <div class="mid pc fz" style="--d:1.1s">≠</div>
-        <div class="cards" style="--n:3">
-          <div class="card pc fr" style="--d:1.2s"><h3>☦️</h3><p>Духовная опора государства</p></div>
-          <div class="card pc fr" style="--d:1.3s"><h3>👑</h3><p>Необходимая форма власти</p></div>
-          <div class="card pc fr" style="--d:1.4s"><h3>🤝</h3><p>Единство народа с монархом</p></div>
-        </div>
-      </div>
-      <p class="lbl pc" style="--d:1.5s">Сословные меры</p>
+      <p class="against pc" style="--d:1s">вместо <span class="strike">«Свобода, равенство, братство»</span></p>
       <div class="tl">
-        <div class="pc" style="--d:1.6s"><b>1832</b><span>Почётное гражданство — привилегии без дворянства</span></div>
-        <div class="pc" style="--d:1.75s"><b>1845</b><span>Потомственное дворянство: от майора / статского советника</span></div>
-        <div class="pc" style="--d:1.9s"><b>1845</b><span>Уложение о наказаниях — телесные наказания сохранены</span></div>
+        <div class="pc" style="--d:1.3s"><b>1832</b><span>Почётное гражданство</span></div>
+        <div class="pc" style="--d:1.45s"><b>1845</b><span>Уложение о наказаниях</span></div>
       </div>
     </div>
     <div class="people">
-      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="С. С. Уваров" src="img/p-uvarov.jpg"></div><h3>С. С. Уваров</h3><p>Министр народного просвещения</p></div>
+      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="С. С. Уваров" src="img/p-uvarov.jpg"></div><h3>Уваров</h3></div>
     </div>
   </section>
 
-  <!-- 4 -->
+  <!-- 4 · спикер 2 -->
   <section class="slide" data-label="Образование">
     <div class="content">
       <p class="kicker pc fl"><span class="num">04</span>Образование</p>
       <h2 class="split">Каждому сословию — <span class="gold">своя школа</span></h2>
-      <div class="stairs" style="margin-bottom:1.6rem">
-        <div class="stp pc" style="--d:.9s"><h3>Приходские</h3><p>Дети низших сословий</p></div>
-        <div class="stp pc" style="--d:1.05s"><h3>Уездные</h3><p>Городское население</p></div>
-        <div class="stp pc" style="--d:1.2s"><h3>Гимназии</h3><p>Дворяне и чиновники</p></div>
+      <div class="stairs">
+        <div class="stp pc" style="--d:.9s"><h3>Приходские</h3><p>низшие сословия</p></div>
+        <div class="stp pc" style="--d:1.05s"><h3>Уездные</h3><p>горожане</p></div>
+        <div class="stp pc" style="--d:1.2s"><h3>Гимназии</h3><p>дворяне</p></div>
       </div>
       <div class="tl">
-        <div class="pc" style="--d:1.4s"><b>1828</b><span>Устав гимназий и училищ</span></div>
-        <div class="pc" style="--d:1.5s"><b>1828</b><span>Университет из Або — в Гельсингфорс</span></div>
-        <div class="pc" style="--d:1.6s"><b>1831</b><span>Технологический институт в Петербурге</span></div>
-        <div class="pc" style="--d:1.7s"><b>1834</b><span>Киевский университет св. Владимира</span></div>
-        <div class="pc" style="--d:1.8s"><b>1835</b><span>Университетский устав: меньше самоуправления</span></div>
+        <div class="pc" style="--d:1.4s"><b>1834</b><span>Киевский университет</span></div>
+        <div class="pc" style="--d:1.55s"><b>1835</b><span>Университетский устав</span></div>
       </div>
     </div>
   </section>
 
-  <!-- 5 -->
+  <!-- 5 · спикер 1 -->
   <section class="slide" data-label="Цензура">
     <div class="content">
       <p class="kicker pc fl"><span class="num">05</span>Цензура</p>
-      <h2 class="split">1836 — «Ревизор» на сцене <span class="gold">с разрешения царя</span></h2>
-      <div class="vs" style="margin-bottom:1.3rem">
-        <div class="card pc fl" style="--d:.9s"><p class="lbl">1826 · «Чугунный» устав</p><h3>Двусмысленно — запрет</h3><p>Опасен хотя бы один из смыслов</p></div>
-        <div class="mid pc fz" style="--d:1.1s">→</div>
-        <div class="card pc fr" style="--d:1.2s"><p class="lbl">1828 · § 6 нового устава</p><h3>Читать явный смысл</h3><p>Автор вправе объяснить спорное место</p></div>
+      <h2 class="split">1836 — «Ревизор» <span class="gold">с разрешения царя</span></h2>
+      <div class="tl">
+        <div class="pc" style="--d:1s"><b>1826</b><span>«Чугунный» устав</span></div>
+        <div class="pc" style="--d:1.15s"><b>1828</b><span>Смягчение, § 6</span></div>
       </div>
-      <div class="flow">
-        <div class="st pc" style="--d:1.4s"><small>Рукопись</small>Книга или статья</div><span class="ar pc" style="--d:1.45s">→</span>
-        <div class="st pc hot" style="--d:1.5s"><small>До печати</small>Предварительная цензура</div><span class="ar pc" style="--d:1.55s">→</span>
-        <div class="st pc" style="--d:1.6s"><small>Можно</small>Высмеять взяточника</div>
-        <div class="st pc hot" style="--d:1.7s"><small>Нельзя</small>Оспорить основы строя</div>
+      <div class="cards" style="--n:2">
+        <div class="card pc fl" style="--d:1.35s"><h3>Можно</h3><p>высмеять взяточника</p></div>
+        <div class="card minus pc fr" style="--d:1.5s"><h3>Нельзя</h3><p>оспорить основы строя</p></div>
       </div>
     </div>
     <div class="people">
-      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="Н. В. Гоголь" src="img/p-gogol.jpg"></div><h3>Н. В. Гоголь</h3><p>«Ревизор»</p></div>
+      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="Н. В. Гоголь" src="img/p-gogol.jpg"></div><h3>Гоголь</h3></div>
     </div>
   </section>
 
-  <!-- 6 -->
+  <!-- 6 · спикер 2 -->
   <section class="slide" data-label="Мрачное семилетие">
     <div class="content">
-      <p class="kicker pc fl"><span class="num">06</span>«Мрачное семилетие» · 1848–1855</p>
+      <p class="kicker pc fl"><span class="num">06</span>«Мрачное семилетие» · Бутурлинский комитет</p>
       <h2 class="split">1848 — цензура проверяет <span class="gold">саму цензуру</span></h2>
-      <p class="sub pc" style="--d:.8s">Секретный Бутурлинский комитет пересматривает уже изданное</p>
-      <div class="flow" style="margin-bottom:1.2rem">
-        <div class="st pc" style="--d:1s"><small>Шаг 1</small>Цензор пропустил текст</div><span class="ar pc" style="--d:1.05s">→</span>
-        <div class="st pc" style="--d:1.1s"><small>Шаг 2</small>Текст напечатан</div><span class="ar pc" style="--d:1.15s">→</span>
-        <div class="st pc hot" style="--d:1.2s"><small>Шаг 3</small>Комитет перепроверяет</div><span class="ar pc" style="--d:1.25s">→</span>
-        <div class="st pc hot" style="--d:1.3s"><small>Ответ</small>Автор, издатель и цензор</div>
+      <div class="flow">
+        <div class="st pc" style="--d:1s">Цензор пропустил</div><span class="ar pc" style="--d:1.05s">→</span>
+        <div class="st pc" style="--d:1.15s">Текст напечатан</div><span class="ar pc" style="--d:1.2s">→</span>
+        <div class="st pc hot" style="--d:1.3s">Наказаны все</div>
       </div>
-      <div class="chips">
-        <span class="chip pc" style="--d:1.5s"><b>1848</b>повод — революции в Европе</span>
-        <span class="chip pc" style="--d:1.6s"><b>1850</b>закрыты кафедры философии и метафизики</span>
-        <span class="chip pc" style="--d:1.7s">логика и психология — богословам</span>
-        <span class="chip pc" style="--d:1.8s">меньше студентов, выше плата</span>
+      <div class="tl">
+        <div class="pc" style="--d:1.5s"><b>1850</b><span>Закрыты кафедры философии</span></div>
       </div>
     </div>
   </section>
 
-  <!-- 7 -->
+  <!-- 7 · спикер 1 -->
   <section class="slide" data-label="Петрашевцы">
     <div class="content">
       <p class="kicker pc fl"><span class="num">07</span>Дело петрашевцев · Семёновский плац</p>
       <h2 class="split">22 декабря 1849 — казнь, <span class="gold">которой не было</span></h2>
       <div class="tl red">
-        <div class="pc" style="--d:1s"><b>I</b><span>Зачитан смертный приговор</span></div>
-        <div class="pc" style="--d:1.2s"><b>II</b><span>Первая тройка готова к расстрелу</span></div>
-        <div class="pc" style="--d:1.4s"><b>III</b><span>Достоевский ждёт своей очереди</span></div>
-        <div class="pc" style="--d:1.6s"><b>IV</b><span>Помилование — решённое заранее</span></div>
-        <div class="pc" style="--d:1.8s"><b>4 года</b><span>каторги, затем служба рядовым</span></div>
+        <div class="pc" style="--d:1s"><b>I</b><span>Приговор</span></div>
+        <div class="pc" style="--d:1.2s"><b>II</b><span>Тройка у столбов</span></div>
+        <div class="pc" style="--d:1.4s"><b>III</b><span>Помилование, решённое заранее</span></div>
       </div>
-      <div class="chips"><span class="chip pc" style="--d:2s">Помилование как демонстрация власти монарха</span></div>
     </div>
     <div class="people">
-      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="Ф. М. Достоевский" src="img/p-dostoevskiy.jpg"></div><h3>Ф. М. Достоевский</h3><p>Рисунок К. Трутовского, 1847</p></div>
+      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="Ф. М. Достоевский" src="img/p-dostoevskiy.jpg"></div><h3>Достоевский</h3></div>
     </div>
   </section>
 
-  <!-- 8 -->
+  <!-- 8 · спикер 2 -->
   <section class="slide" data-label="Финансы и дороги">
     <div class="content">
-      <p class="kicker pc fl"><span class="num">08</span>Реформа Е. Ф. Канкрина · 1839–1843</p>
-      <h2 class="split">1 серебряный рубль = <span class="gold">3 р. 50 к.</span> ассигнациями</h2>
+      <p class="kicker pc fl"><span class="num">08</span>Реформа Канкрина · 1839–1843</p>
+      <h2 class="split">1 серебряный рубль = <span class="gold">3,5 рубля</span> ассигнациями</h2>
       <div class="tl">
-        <div class="pc" style="--d:1s"><b>1837</b><span>Царскосельская железная дорога</span></div>
-        <div class="pc" style="--d:1.15s"><b>1839</b><span>Серебряный рубль — основа системы</span></div>
-        <div class="pc" style="--d:1.3s"><b>1843</b><span>Кредитные билеты, разменные на серебро</span></div>
-        <div class="pc" style="--d:1.45s"><b>1851</b><span>Движение Петербург — Москва</span></div>
-        <div class="pc" style="--d:1.6s"><b>1853–56</b><span>Крымская война: эмиссия, обесценение</span></div>
+        <div class="pc" style="--d:1s"><b>1837</b><span>Царскосельская дорога</span></div>
+        <div class="pc" style="--d:1.15s"><b>1851</b><span>Петербург — Москва</span></div>
+        <div class="pc" style="--d:1.3s"><b>1853–56</b><span>Война обесценила рубль</span></div>
       </div>
     </div>
     <div class="people">
-      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="Е. Ф. Канкрин" src="img/p-kankrin.jpg"></div><h3>Е. Ф. Канкрин</h3><p>Министр финансов</p></div>
+      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="Е. Ф. Канкрин" src="img/p-kankrin.jpg"></div><h3>Канкрин</h3></div>
     </div>
   </section>
 
-  <!-- 9 -->
+  <!-- 9 · спикер 1 -->
   <section class="slide" data-label="Крестьянский вопрос">
     <div class="content">
-      <p class="kicker pc fl"><span class="num">09</span>Крестьянский вопрос · Николай I, 1842</p>
-      <h2 class="quote split">«Крепостное право… есть зло… но прикасаться к оному теперь — было бы злом <span class="gold">ещё более гибельным</span>»</h2>
-      <p class="lbl pc" style="--d:1.2s">Реформа государственных крестьян П. Д. Киселёва, 1837–1841</p>
+      <p class="kicker pc fl"><span class="num">09</span>Николай I, 1842</p>
+      <h2 class="quote split">«Крепостное право — зло… но трогать его — зло <span class="gold">ещё более гибельное</span>»</h2>
+      <p class="lbl pc" style="--d:1.2s">Реформа Киселёва · 1837–1841</p>
       <div class="cards" style="--n:2">
-        <div class="card pc fl" style="--d:1.3s"><h3>Что дала</h3><ul><li>Министерство государственных имуществ</li><li>Сельское и волостное самоуправление</li><li>Школы и больницы</li><li>Помощь малоземельным</li></ul></div>
-        <div class="card minus pc fr" style="--d:1.45s"><h3>Чем обернулась</h3><ul><li>Надзор чиновников над деревней</li><li>Принудительные распоряжения</li><li>«Картофельные бунты»</li></ul></div>
+        <div class="card pc fl" style="--d:1.3s"><h3>Дала</h3><p>самоуправление, школы</p></div>
+        <div class="card minus pc fr" style="--d:1.45s"><h3>Вызвала</h3><p>«картофельные бунты»</p></div>
       </div>
     </div>
     <div class="people">
-      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="П. Д. Киселёв" src="img/p-kiselev.jpg"></div><h3>П. Д. Киселёв</h3><p>Министр гос. имуществ</p></div>
+      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="П. Д. Киселёв" src="img/p-kiselev.jpg"></div><h3>Киселёв</h3></div>
     </div>
   </section>
 
-  <!-- 10 -->
+  <!-- 10 · спикер 2 -->
   <section class="slide" data-label="Обязанные крестьяне">
     <div class="content">
       <p class="kicker pc fl"><span class="num">10</span>Указ об обязанных крестьянах · 1842</p>
       <h2 class="split">Свобода — только <span class="gold">по воле помещика</span></h2>
-      <div class="flow" style="margin-bottom:1.3rem">
-        <div class="st pc" style="--d:.9s"><small>Помещик</small>Земля остаётся в его собственности</div><span class="ar pc" style="--d:.95s">→</span>
-        <div class="st pc" style="--d:1s"><small>Крестьянин</small>Личная свобода и надел в пользование</div><span class="ar pc" style="--d:1.05s">→</span>
-        <div class="st pc hot" style="--d:1.1s"><small>Плата</small>Повинности за надел</div>
-      </div>
-      <p class="lbl pc" style="--d:1.3s">Почему крепостное право тормозило экономику</p>
       <div class="flow">
-        <div class="st pc hot" style="--d:1.4s">Зависимость от помещика</div><span class="ar pc" style="--d:1.45s">→</span>
-        <div class="st pc" style="--d:1.5s">Нет свободного рынка труда</div><span class="ar pc" style="--d:1.55s">→</span>
-        <div class="st pc" style="--d:1.6s">Слабый внутренний спрос</div><span class="ar pc" style="--d:1.65s">→</span>
-        <div class="st pc hot" style="--d:1.7s">Отставание к середине XIX века</div>
+        <div class="st pc" style="--d:1s">Земля — помещику</div><span class="ar pc" style="--d:1.05s">→</span>
+        <div class="st pc" style="--d:1.15s">Свобода — крестьянину</div><span class="ar pc" style="--d:1.2s">→</span>
+        <div class="st pc hot" style="--d:1.3s">Повинности остаются</div>
       </div>
-      <div class="chips">
-        <span class="chip pc" style="--d:1.85s"><b>1847–1848</b>инвентарные правила: Киевская, Подольская, Волынская губ.</span>
-        <span class="chip pc" style="--d:1.95s">Северный Кавказ: силой лояльность не обеспечить</span>
+      <div class="tl">
+        <div class="pc" style="--d:1.5s"><b>1847–48</b><span>Инвентарные правила</span></div>
       </div>
     </div>
   </section>
 
-  <!-- 11 -->
+  <!-- 11 · спикер 1 -->
   <section class="slide" data-label="Польша">
     <div class="content">
       <p class="kicker pc fl"><span class="num">11</span>Царство Польское</p>
       <h2 class="split">Ноябрь 1830 — <span class="gold">Варшава восстаёт</span></h2>
       <div class="tl red">
-        <div class="pc" style="--d:1s"><b>11.1830</b><span>Офицеры и курсанты начинают восстание</span></div>
-        <div class="pc" style="--d:1.15s"><b>01.1831</b><span>Сейм лишает Николая I польского престола</span></div>
-        <div class="pc" style="--d:1.3s"><b>1831</b><span>Дибич умирает от холеры — армию ведёт Паскевич</span></div>
-        <div class="pc" style="--d:1.45s"><b>09.1831</b><span>Штурм и взятие Варшавы</span></div>
-        <div class="pc" style="--d:1.6s"><b>1832</b><span>Органический статут: без сейма и армии</span></div>
-      </div>
-      <div class="chips">
-        <span class="chip pc" style="--d:1.8s">ссылки в Сибирь, конфискации</span>
-        <span class="chip pc" style="--d:1.9s"><b>1831</b>закрыт Варшавский университет</span>
-        <span class="chip pc" style="--d:2s"><b>1832</b>закрыт Виленский</span>
+        <div class="pc" style="--d:1s"><b>1831</b><span>Сейм низлагает царя</span></div>
+        <div class="pc" style="--d:1.15s"><b>09.1831</b><span>Взятие Варшавы</span></div>
+        <div class="pc" style="--d:1.3s"><b>1832</b><span>Органический статут</span></div>
       </div>
     </div>
     <div class="people">
-      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="И. Ф. Паскевич" src="img/p-paskevich.jpg"></div><h3>И. Ф. Паскевич</h3><p>Наместник Царства Польского</p></div>
+      <div class="person pc fr" style="--d:1.2s"><div class="photo"><img alt="И. Ф. Паскевич" src="img/p-paskevich.jpg"></div><h3>Паскевич</h3></div>
     </div>
   </section>
 
-  <!-- 12 -->
+  <!-- 12 · спикер 2 -->
   <section class="slide" data-label="Итоги">
     <div class="content">
       <p class="kicker pc fl"><span class="num">12</span>Итоги царствования</p>
-      <h2 class="split">1855 — наследнику остаётся <span class="gold">нерешённый крестьянский вопрос</span></h2>
+      <h2 class="split">1855 — крестьянский вопрос <span class="gold">не решён</span></h2>
       <div class="cards" style="--n:2">
-        <div class="card pc fl" style="--d:1s"><h3>Модернизация</h3><ul><li>Свод законов</li><li>Денежная реформа</li><li>Железные дороги</li><li>Государственная деревня</li></ul></div>
-        <div class="card minus pc fr" style="--d:1.15s"><h3>Что сдерживало</h3><ul><li>Крепостное право</li><li>Сословное неравенство</li><li>Бюрократия и цензура</li><li>Репрессии</li></ul></div>
+        <div class="card pc fl" style="--d:1s"><h3>Сделано</h3><p>законы, рубль, железные дороги</p></div>
+        <div class="card minus pc fr" style="--d:1.15s"><h3>Сохранено</h3><p>крепостное право, цензура</p></div>
       </div>
-      <div class="chips"><span class="chip pc" style="--d:1.4s"><b>1839</b>Полоцкий собор: униатские епархии — к православной церкви</span></div>
-      <p class="credits pc" style="--d:1.6s">Изображения: <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a> — картины, гравюры и рисунки XIX века (общественное достояние): К. Кольман, А. Венецианов, Б. Покровский, В. Коссак, портреты Т. Райта, В. Тропинина, А. Брюллова, Ф. Моллера, К. Трутовского; фотографии зданий и памятника — CC BY / CC BY-SA, по соответствующим лицензиям.</p>
+      <p class="credits pc" style="--d:1.6s">Изображения: <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a> — картины, гравюры и рисунки XIX века (общественное достояние): К. Кольман, А. Венецианов, Б. Покровский, В. Коссак, портреты Т. Райта, В. Тропинина, А. Брюллова, Ф. Моллера, К. Трутовского; фото зданий и памятника — CC BY / CC BY-SA.</p>
     </div>
   </section>
 </main>
