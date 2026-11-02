@@ -3723,6 +3723,12 @@
           "title": "Николай I: внутренняя политика (История России)",
           "type": "page",
           "url": "presentations/nikolaj-i/index.html"
+        },
+        {
+          "id": "symbols-nature",
+          "title": "Symbols of Russia in Nature (English)",
+          "type": "page",
+          "url": "presentations/symbols-nature/index.html"
         }
       ]
     }
