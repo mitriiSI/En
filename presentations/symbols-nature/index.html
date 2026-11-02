@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Symbols of Russia</title>
+<title>Symbols of Russia in Nature</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -285,29 +285,25 @@
     .pend-row { grid-template-columns: 1fr; }
     .flow .st { min-width: 0; }
   }
-  /* флаг из трёх полос, колышется */
-  .flag { width: min(380px, 60vw); aspect-ratio: 3 / 2; display: grid; grid-template-rows: repeat(3, 1fr); border-radius: 6px; overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0,0,0,.55); margin: -.6rem 0 1.4rem; animation: wave 4s ease-in-out infinite alternate; transform-origin: left center; }
-  .flag i:nth-child(1) { background: #f4f4f4; } .flag i:nth-child(2) { background: #0039a6; } .flag i:nth-child(3) { background: #d52b1e; }
-  @keyframes wave { from { transform: perspective(700px) rotateY(-8deg) skewY(-1deg); } to { transform: perspective(700px) rotateY(8deg) skewY(1deg); } }
-  .active .flag.pc { transform: none; }
-  .emblem-img { width: clamp(180px, 17vw, 280px); filter: drop-shadow(0 20px 40px rgba(0,0,0,.6)); }
-  .emblem-img img { width: 100%; display: block; }
+  /* деревня и природа: тёплая палитра леса и спелой пшеницы */
+  :root { --bg: #070b08; --gold: #e9c46a; --gold-soft: rgba(233, 196, 106, .42); --red: #6a994e; --panel: rgba(12, 18, 13, .74); }
+  .shade { background: linear-gradient(90deg, rgba(6, 10, 7, .9) 0%, rgba(6, 10, 7, .7) 45%, rgba(6, 10, 7, .15) 80%, rgba(6, 10, 7, .03) 100%); }
+  .card h3 { color: var(--gold); }
   .cards { max-width: 900px; }
   .cards + .tl, .tl + .cards { margin-top: 1.6rem; }
 </style>
 </head>
 <body>
 
-<div class="loader" id="loader">SYMBOLS OF RUSSIA</div>
+<div class="loader" id="loader">SYMBOLS OF RUSSIA · NATURE</div>
 
 <!-- фоны: подлинные изображения (Wikimedia Commons) и цветовые сцены -->
 <div class="scenes" id="scenes">
-  <div class="scene"><img alt="" src="img/00-kremlin.jpg"></div>
-  <div class="scene"><img alt="" src="img/01-flag.jpg"></div>
-  <div class="scene"><img alt="" src="img/02-kremlin-palace.jpg"></div>
-  <div class="scene"><img alt="" src="img/03-spasskaya.jpg"></div>
-  <div class="scene"><img alt="" src="img/04-matryoshka.jpg"></div>
+  <div class="scene"><img alt="" src="img/00-village.jpg"></div>
+  <div class="scene"><img alt="" src="img/01-birch.jpg"></div>
+  <div class="scene"><img alt="" src="img/02-bear.jpg"></div>
+  <div class="scene"><img alt="" src="img/03-baikal.jpg"></div>
+  <div class="scene"><img alt="" src="img/04-kizhi.jpg"></div>
 </div>
 <div class="grade"></div>
 <div class="shade"></div>
@@ -315,7 +311,7 @@
 <canvas id="particles"></canvas>
 
 <header class="hud-top">
-  <span class="ttl">English · Symbols of Russia</span>
+  <span class="ttl">English · Symbols of Russia in Nature</span>
   <span class="count"><b id="cur">00</b> / <span id="total">12</span></span>
 </header>
 
@@ -324,84 +320,74 @@
   <section class="slide cover" data-label="Intro">
     <div class="content">
       <p class="kicker pc fl" style="--d:.2s">English · Topic</p>
-      <h1 class="split">Symbols of <span class="gold">Russia</span></h1>
-      <p class="sub pc" style="--d:1.1s">Flag · Coat of arms · Anthem · Traditions</p>
+      <h1 class="split">Symbols of Russia <span class="gold">in Nature</span></h1>
+      <p class="sub pc" style="--d:1.1s">Birch · Bear · Baikal · Village</p>
     </div>
   </section>
 
   <!-- 1 -->
-  <section class="slide" data-label="Flag">
+  <section class="slide" data-label="Birch">
     <div class="content">
-      <p class="kicker pc fl"><span class="num">01</span>The national flag</p>
-      <h2 class="split">White, blue and <span class="gold">red</span></h2>
-      <div class="flag pc fz" style="--d:.8s" aria-hidden="true"><i></i><i></i><i></i></div>
+      <p class="kicker pc fl"><span class="num">01</span>The birch tree</p>
+      <h2 class="split">The white birch — <span class="gold">Russia's favourite tree</span></h2>
       <div class="cards" style="--n:3">
-        <div class="card pc" style="--d:1s"><h3>White</h3><p>peace and honesty</p></div>
-        <div class="card pc" style="--d:1.15s"><h3>Blue</h3><p>faith and loyalty</p></div>
-        <div class="card pc" style="--d:1.3s"><h3>Red</h3><p>courage and love</p></div>
+        <div class="card pc" style="--d:1s"><h3>🥤 Sap</h3><p>sweet birch juice in spring</p></div>
+        <div class="card pc" style="--d:1.15s"><h3>📜 Bark</h3><p>old letters were written on it</p></div>
+        <div class="card pc" style="--d:1.3s"><h3>🌿 Banya</h3><p>birch twigs in the bathhouse</p></div>
       </div>
       <div class="tl">
-        <div class="pc" style="--d:1.5s"><b>1690s</b><span>Peter the Great</span></div>
-        <div class="pc" style="--d:1.65s"><b>1991</b><span>The flag returns</span></div>
-        <div class="pc" style="--d:1.8s"><b>22 Aug</b><span>National Flag Day</span></div>
+        <div class="pc" style="--d:1.5s"><b>1913</b><span>Yesenin's poem «The Birch»</span></div>
       </div>
     </div>
   </section>
 
   <!-- 2 -->
-  <section class="slide" data-label="Coat of arms">
+  <section class="slide" data-label="Bear">
     <div class="content">
-      <p class="kicker pc fl"><span class="num">02</span>The coat of arms</p>
-      <h2 class="split">A golden <span class="gold">double-headed eagle</span></h2>
-      <div class="cards" style="--n:3">
-        <div class="card pc" style="--d:1s"><h3>3 crowns</h3><p>above the heads</p></div>
-        <div class="card pc" style="--d:1.15s"><h3>Sceptre &amp; orb</h3><p>in the claws</p></div>
-        <div class="card pc" style="--d:1.3s"><h3>St George</h3><p>defeats the dragon</p></div>
-      </div>
+      <p class="kicker pc fl"><span class="num">02</span>The brown bear</p>
+      <h2 class="split">The master of <span class="gold">the taiga</span></h2>
       <div class="tl">
-        <div class="pc" style="--d:1.5s"><b>1497</b><span>On the seal of Ivan III</span></div>
-        <div class="pc" style="--d:1.65s"><b>1993</b><span>Today's coat of arms</span></div>
+        <div class="pc" style="--d:1s"><b>600 kg</b><span>a big Kamchatka bear</span></div>
+        <div class="pc" style="--d:1.15s"><b>5–6 months</b><span>winter sleep in a den</span></div>
+        <div class="pc" style="--d:1.3s"><b>1980</b><span>Misha — mascot of the Moscow Olympics</span></div>
       </div>
-    </div>
-    <div class="people">
-      <div class="emblem-img pc fz" style="--d:1.2s"><img alt="Coat of arms of Russia" src="img/arms.svg"></div>
     </div>
   </section>
 
   <!-- 3 -->
-  <section class="slide" data-label="Anthem">
+  <section class="slide" data-label="Baikal">
     <div class="content">
-      <p class="kicker pc fl"><span class="num">03</span>The national anthem</p>
-      <h2 class="split">Midnight, 31 December — the Kremlin chimes, <span class="gold">then the anthem</span></h2>
+      <p class="kicker pc fl"><span class="num">03</span>Lake Baikal · Siberia</p>
+      <h2 class="split">The deepest lake <span class="gold">in the world</span></h2>
       <div class="tl">
-        <div class="pc" style="--d:1.1s"><b>1944</b><span>Music by Alexander Alexandrov</span></div>
-        <div class="pc" style="--d:1.25s"><b>2000</b><span>Words by Sergey Mikhalkov</span></div>
+        <div class="pc" style="--d:1s"><b>1,642 m</b><span>deep</span></div>
+        <div class="pc" style="--d:1.15s"><b>25 million</b><span>years old</span></div>
+        <div class="pc" style="--d:1.3s"><b>~20%</b><span>of the world's fresh lake water</span></div>
       </div>
-      <div class="cards" style="--n:3">
-        <div class="card pc" style="--d:1.45s"><h3>🏅</h3><p>sports victories</p></div>
-        <div class="card pc" style="--d:1.6s"><h3>🎖️</h3><p>official ceremonies</p></div>
-        <div class="card pc" style="--d:1.75s"><h3>🧍</h3><p>people stand up</p></div>
+      <div class="cards" style="--n:2">
+        <div class="card pc" style="--d:1.5s"><h3>🦭 Nerpa</h3><p>a seal that lives only here</p></div>
+        <div class="card pc" style="--d:1.65s"><h3>🧊 Clear ice</h3><p>you can see through it in winter</p></div>
       </div>
     </div>
   </section>
 
   <!-- 4 -->
-  <section class="slide" data-label="Traditions">
+  <section class="slide" data-label="Village">
     <div class="content">
-      <p class="kicker pc fl"><span class="num">04</span>Unofficial symbols</p>
-      <h2 class="split">Matryoshka — <span class="gold">a doll inside a doll</span></h2>
-      <div class="tl">
-        <div class="pc" style="--d:1.1s"><b>1890s</b><span>The first matryoshka</span></div>
-      </div>
+      <p class="kicker pc fl"><span class="num">04</span>The Russian village</p>
+      <h2 class="split">Houses made of <span class="gold">wood</span></h2>
       <div class="cards" style="--n:3">
-        <div class="card pc" style="--d:1.3s"><h3>🌳 Birch</h3><p>the tree of Russian songs</p></div>
-        <div class="card pc" style="--d:1.45s"><h3>🐻 Bear</h3><p>strength and power</p></div>
-        <div class="card pc" style="--d:1.6s"><h3>🪕 Balalaika</h3><p>three strings</p></div>
+        <div class="card pc" style="--d:1s"><h3>🪵 Izba</h3><p>a log house</p></div>
+        <div class="card pc" style="--d:1.15s"><h3>🪟 Windows</h3><p>with carved wooden frames</p></div>
+        <div class="card pc" style="--d:1.3s"><h3>🔥 Stove</h3><p>the warm heart of the home</p></div>
+      </div>
+      <div class="tl">
+        <div class="pc" style="--d:1.5s"><b>1714</b><span>Kizhi church: 22 wooden domes</span></div>
       </div>
       <p class="credits pc" style="--d:1.8s">Photos: <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a> (CC BY / CC BY-SA / public domain), used under their respective licences.</p>
     </div>
     <div class="people">
-      <div class="person pc fr" style="--d:1.3s"><div class="photo"><img alt="Birch trees" src="img/birch.jpg"></div><h3>Birch</h3></div>
+      <div class="person pc fr" style="--d:1.3s"><div class="photo"><img alt="A wooden izba" src="img/izba.jpg"></div><h3>Izba</h3></div>
     </div>
   </section>
 </main>
