@@ -318,15 +318,18 @@
   .rv.rv-s { transform: scale(.9); }
   .rv.rv-l.in, .rv.rv-s.in { transform: none; }
   /* полоса у верхнего края: уходящий текст постепенно размывается (и растягивается в Chrome) */
-  #edge { position: fixed; z-index: 15; left: 0; right: 0; top: 0; height: calc(var(--hh) + 56px); pointer-events: none; background: linear-gradient(to bottom, rgba(5,11,30,.5), rgba(5,11,30,.2) 55%, transparent); -webkit-mask: linear-gradient(to bottom, #000 60%, transparent); mask: linear-gradient(to bottom, #000 60%, transparent); }
-  body:not(.sub) #edge { height: calc(var(--top) + 44px); }
-  body.fs #edge { display: none; }
+  /* уход за верхний край по строкам: всё содержимое (текст, 3D, графики) тает и размывается полосой, а не целым блоком */
+  #view { --fz: var(--hh); -webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--fz) - 30px), rgba(0,0,0,.25) calc(var(--fz) + 4px), rgba(0,0,0,.75) calc(var(--fz) + 40px), #000 calc(var(--fz) + 76px)); mask-image: linear-gradient(to bottom, transparent calc(var(--fz) - 30px), rgba(0,0,0,.25) calc(var(--fz) + 4px), rgba(0,0,0,.75) calc(var(--fz) + 40px), #000 calc(var(--fz) + 76px)); }
+  body:not(.sub) #view { --fz: calc(var(--top) + 6px); }
+  body.fs #view, #view:has(.pagewrap) { -webkit-mask-image: none; mask-image: none; }
+  #edge { position: fixed; z-index: 15; left: 0; right: 0; top: 0; height: calc(var(--hh) + 80px); pointer-events: none; }
+  body:not(.sub) #edge { height: calc(var(--top) + 70px); }
+  body.fs #edge, body:has(.pagewrap) #edge { display: none; }
   #edge i { position: absolute; inset: 0; }
-  #edge .e1 { -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); -webkit-mask: linear-gradient(to top, transparent 0, #000 45%); mask: linear-gradient(to top, transparent 0, #000 45%); }
-  #edge .e2 { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); -webkit-mask: linear-gradient(to top, transparent 30%, #000 70%); mask: linear-gradient(to top, transparent 30%, #000 70%); }
-  #edge .e3 { -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%); -webkit-mask: linear-gradient(to top, transparent 55%, #000 90%); mask: linear-gradient(to top, transparent 55%, #000 90%); }
-  html.lg-refract #edge .e0 { -webkit-backdrop-filter: url(#lg-stretch); backdrop-filter: url(#lg-stretch); -webkit-mask: linear-gradient(to top, transparent 0, #000 35%); mask: linear-gradient(to top, transparent 0, #000 35%); }
-  .ex { transition: none !important; transform-origin: 50% 100%; will-change: transform, filter, opacity; }
+  #edge .e1 { -webkit-backdrop-filter: blur(1.5px); backdrop-filter: blur(1.5px); -webkit-mask: linear-gradient(to top, transparent 0, #000 40%); mask: linear-gradient(to top, transparent 0, #000 40%); }
+  #edge .e2 { -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); -webkit-mask: linear-gradient(to top, transparent 22%, #000 62%); mask: linear-gradient(to top, transparent 22%, #000 62%); }
+  #edge .e3 { -webkit-backdrop-filter: blur(12px) saturate(140%); backdrop-filter: blur(12px) saturate(140%); -webkit-mask: linear-gradient(to top, transparent 45%, #000 85%); mask: linear-gradient(to top, transparent 45%, #000 85%); }
+  html.lg-refract #edge .e0 { -webkit-backdrop-filter: url(#lg-stretch); backdrop-filter: url(#lg-stretch); -webkit-mask: linear-gradient(to top, transparent 0, #000 40%); mask: linear-gradient(to top, transparent 0, #000 40%); }
   .tile.rv.in { transform: perspective(700px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); }
   .view-in { animation: viewIn .55s var(--ease); }
   @keyframes viewIn { from { opacity: 0; transform: translateY(10px); } }
@@ -365,7 +368,7 @@
 
 <script src="lib/marked.min.js"></script>
 <script src="lib/purify.min.js"></script>
-<script src="lib/fx.js?v=2"></script>
+<script src="lib/fx.js?v=3"></script>
 <script src="lib/widgets.js"></script>
 <script src="lib/tests.js"></script>
 <script src="lib/scene3d.js?v=40"></script>
