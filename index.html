@@ -91,10 +91,10 @@
   #back { display: none; font-size: 22px; padding: 0 14px; }
   body.sub #back { display: inline-flex; }
 
-  #view { position: relative; z-index: 1; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-top: var(--hh); padding-bottom: var(--bot); scroll-behavior: smooth; }
+  #view { position: relative; z-index: 1; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-top: calc(var(--hh) + 34px); padding-bottom: var(--bot); scroll-behavior: smooth; }
   .page { max-width: 860px; margin: 0 auto; padding: 14px 16px 70px; }
   body:not(.sub) header { display: none; }
-  body:not(.sub) #view { padding-top: calc(var(--top) + 8px); }
+  body:not(.sub) #view { padding-top: calc(var(--top) + 50px); }
   .page.home { padding-top: 14px; }
 
   /* ===== Главная ===== */
@@ -319,11 +319,12 @@
   .rv.rv-l.in, .rv.rv-s.in { transform: none; }
   /* полоса у верхнего края: уходящий текст постепенно размывается (и растягивается в Chrome) */
   /* уход за верхний край по строкам: всё содержимое (текст, 3D, графики) тает и размывается полосой, а не целым блоком */
-  #view { --fz: var(--hh); -webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--fz) - 30px), rgba(0,0,0,.25) calc(var(--fz) + 4px), rgba(0,0,0,.75) calc(var(--fz) + 40px), #000 calc(var(--fz) + 76px)); mask-image: linear-gradient(to bottom, transparent calc(var(--fz) - 30px), rgba(0,0,0,.25) calc(var(--fz) + 4px), rgba(0,0,0,.75) calc(var(--fz) + 40px), #000 calc(var(--fz) + 76px)); }
+  #view { --fz: var(--hh); -webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--fz) - 24px), rgba(0,0,0,.35) calc(var(--fz) + 10px), rgba(0,0,0,.8) calc(var(--fz) + 30px), #000 calc(var(--fz) + 46px)); mask-image: linear-gradient(to bottom, transparent calc(var(--fz) - 24px), rgba(0,0,0,.35) calc(var(--fz) + 10px), rgba(0,0,0,.8) calc(var(--fz) + 30px), #000 calc(var(--fz) + 46px)); }
   body:not(.sub) #view { --fz: calc(var(--top) + 6px); }
   body.fs #view, #view:has(.pagewrap) { -webkit-mask-image: none; mask-image: none; }
-  #edge { position: fixed; z-index: 15; left: 0; right: 0; top: 0; height: calc(var(--hh) + 80px); pointer-events: none; }
-  body:not(.sub) #edge { height: calc(var(--top) + 70px); }
+  #view:has(.pagewrap) { padding-top: var(--hh); }
+  #edge { position: fixed; z-index: 15; left: 0; right: 0; top: 0; height: calc(var(--hh) + 50px); pointer-events: none; }
+  body:not(.sub) #edge { height: calc(var(--top) + 46px); }
   body.fs #edge, body:has(.pagewrap) #edge { display: none; }
   #edge i { position: absolute; inset: 0; }
   #edge .e1 { -webkit-backdrop-filter: blur(1.5px); backdrop-filter: blur(1.5px); -webkit-mask: linear-gradient(to top, transparent 0, #000 40%); mask: linear-gradient(to top, transparent 0, #000 40%); }
@@ -682,7 +683,7 @@
   function normH(t) { return String(t || '').toLowerCase().replace(/ё/g, 'е').replace(/^\s*[\d.)]+\s*/, '').replace(/[^a-zа-я0-9]+/g, ' ').trim(); }
   function scrollToHead(v, h) {
     var y = 0, e = h; while (e && e !== v) { y += e.offsetTop; e = e.offsetParent; }
-    y -= parseFloat(getComputedStyle(v).paddingTop) + 62; /* ниже полосы растворения у края */
+    y -= parseFloat(getComputedStyle(v).paddingTop) + 12; /* ниже полосы растворения у края */
     var far = Math.abs(y - v.scrollTop) > v.clientHeight * 3;      /* далеко — прыгаем сразу, плавная прокрутка рвётся при подгрузке 3D */
     v.style.scrollBehavior = far ? 'auto' : '';
     v.scrollTo({ top: Math.max(0, y), behavior: far ? 'auto' : 'smooth' });
