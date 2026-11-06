@@ -26,14 +26,16 @@
     --hh: calc(var(--top) + 78px);
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
+  html { margin: 0; height: 100%; background: #03071a; color: var(--ink); }
+  body { margin: 0; height: 100%; background: transparent; color: var(--ink); }
   body { font: 16px/1.6 "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; height: 100dvh; overflow: hidden; position: relative; }
   button, input, select, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; }
   ::selection { background: color-mix(in srgb, var(--orange) 55%, transparent); color: #fff; }
 
   /* ===== Живой фон: сияние синего и оранжевого, двигается при прокрутке ===== */
-  #bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: radial-gradient(140% 90% at 50% -10%, #0c1f4d 0%, var(--bg) 55%, #03071a 100%); }
+  /* фон заходит под полоску «Домой» и за край экрана, чтобы снизу не оставалось пустой полосы */
+  #bg { position: fixed; top: 0; left: 0; right: 0; bottom: calc(-1 * (env(safe-area-inset-bottom, 0px) + 120px)); z-index: 0; overflow: hidden; pointer-events: none; background: radial-gradient(140% 90% at 50% -10%, #0c1f4d 0%, var(--bg) 55%, #03071a 100%); }
   #bg i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; will-change: transform; }
   #bg .b1 { width: 62vmax; height: 62vmax; left: -18vmax; top: -22vmax; background: radial-gradient(circle, #1f6bff 0%, transparent 65%); animation: drift1 22s ease-in-out infinite alternate; }
   #bg .b2 { width: 46vmax; height: 46vmax; right: -16vmax; top: 18vh; background: radial-gradient(circle, #ff7a12 0%, transparent 62%); opacity: .38; animation: drift2 26s ease-in-out infinite alternate; }
