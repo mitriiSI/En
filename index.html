@@ -368,7 +368,8 @@
 
 <script src="lib/marked.min.js"></script>
 <script src="lib/purify.min.js"></script>
-<script src="lib/fx.js?v=3"></script>
+<script src="lib/fx.js?v=4"></script>
+<script src="lib/helper.js?v=1" defer></script>
 <script src="lib/widgets.js"></script>
 <script src="lib/tests.js"></script>
 <script src="lib/scene3d.js?v=40"></script>
@@ -674,8 +675,35 @@
       .catch(function () { v.innerHTML = '<div class="page">Не удалось загрузить файл ' + esc(it.src) + '.</div>'; });
   }
   /* оглавление лекции: пункты — заголовки разделов, нажатие плавно переносит к пункту */
+  /* переход к разделу по тексту заголовка (используют помощник и ссылки) */
+  var pendingHead = null;
+  function normH(t) { return String(t || '').toLowerCase().replace(/ё/g, 'е').replace(/^\s*[\d.)]+\s*/, '').replace(/[^a-zа-я0-9]+/g, ' ').trim(); }
+  function scrollToHead(v, h) {
+    var y = 0, e = h; while (e && e !== v) { y += e.offsetTop; e = e.offsetParent; }
+    y -= parseFloat(getComputedStyle(v).paddingTop) + 62; /* ниже полосы растворения у края */
+    var far = Math.abs(y - v.scrollTop) > v.clientHeight * 3;      /* далеко — прыгаем сразу, плавная прокрутка рвётся при подгрузке 3D */
+    v.style.scrollBehavior = far ? 'auto' : '';
+    v.scrollTo({ top: Math.max(0, y), behavior: far ? 'auto' : 'smooth' });
+    if (far) setTimeout(function () { v.style.scrollBehavior = ''; }, 50);
+    h.classList.remove('flash'); void h.offsetWidth; h.classList.add('flash');
+  }
+  function applyPending(v) {
+    if (!pendingHead) return;
+    var p = parse(); if (p.sid + '/' + p.iid !== pendingHead.key) return;
+    var want = normH(pendingHead.text), hs = Array.prototype.slice.call(v.querySelectorAll('.doc h2, .doc h3')), h = null;
+    pendingHead = null;
+    hs.forEach(function (x) { if (!h && normH(x.textContent) === want) h = x; });
+    hs.forEach(function (x) { if (!h && want && normH(x.textContent).indexOf(want) === 0) h = x; });
+    if (h) setTimeout(function () { scrollToHead(v, h); }, 380);
+  }
+  window.HubGoto = function (sid, iid, head) {
+    var target = '#/s/' + sid + '/' + iid;
+    pendingHead = head ? { key: sid + '/' + iid, text: head } : null;
+    if (location.hash === target) { if (head) applyPending($('#view')); } else location.hash = target;
+  };
   function toc(v) {
     var doc = v.querySelector('.doc'); if (!doc) return;
+    applyPending(v);
     var hs = Array.prototype.slice.call(doc.querySelectorAll(':scope > h2, :scope > h3'));
     if (hs.length < 2) return;
     var n2 = 0;
@@ -692,13 +720,7 @@
     var fab = document.createElement('button');
     fab.className = 'toc-fab'; fab.type = 'button'; fab.setAttribute('aria-label', 'Оглавление'); fab.textContent = '☰';
     v.appendChild(fab);
-    function jump(id) {
-      var h = document.getElementById(id); if (!h) return;
-      var y = 0, e = h; while (e && e !== v) { y += e.offsetTop; e = e.offsetParent; } /* без учёта анимаций появления */
-      y -= parseFloat(getComputedStyle(v).paddingTop) + 10;
-      v.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
-      h.classList.remove('flash'); void h.offsetWidth; h.classList.add('flash');
-    }
+    function jump(id) { var h = document.getElementById(id); if (h) scrollToHead(v, h); }
     function onTo(e) { var a = e.target.closest('[data-to]'); if (!a) return; e.preventDefault(); closeModal(); jump(a.dataset.to); }
     nav.addEventListener('click', onTo);
     fab.onclick = function () {
