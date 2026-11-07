@@ -2046,21 +2046,6 @@
       "icon": "🦅",
       "items": [
         {
-          "id": "lekciya-15-video",
-          "title": "🎬 Видеолекция 15: Александр I и Николай I (студия, 3D)",
-          "type": "video",
-          "video": "istoriya-rossii/lekciya-15-aleksandr-nikolaj.mp4?v=3",
-          "poster": "istoriya-rossii/lekciya-15-poster.jpg",
-          "date": "2026-10-21"
-        },
-        {
-          "id": "nikolaj-i-prezentaciya",
-          "title": "🎞️ Презентация: Николай I — внутренняя политика (два спикера)",
-          "type": "page",
-          "url": "presentations/nikolaj-i/index.html",
-          "date": "2026-10-21"
-        },
-        {
           "id": "petrovskaya-modernizaciya",
           "title": "Лекция 11. Россия в I четверти XVIII века: петровская модернизация (07.10)",
           "type": "markdown",
