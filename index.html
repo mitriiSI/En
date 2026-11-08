@@ -395,6 +395,12 @@
 <script src="lib/ekonomika-ravnovesie3d.js"></script>
 <script src="lib/ekonomika-firma3d.js"></script>
 <script src="lib/ekonomika-firma3d-2.js"></script>
+<script src="lib/ekonomika-osnovy-kit.js"></script>
+<script src="lib/ekonomika-metod3d.js"></script>
+<script src="lib/ekonomika-kpv3d.js"></script>
+<script src="lib/ekonomika-sistemy3d.js"></script>
+<script src="lib/ekonomika-sobstvennost3d.js"></script>
+<script src="lib/ekonomika-rynok3d.js"></script>
 <script src="lib/politucheniya3d.js"></script>
 <script src="lib/politucheniya3d-2.js"></script>
 <script src="lib/politucheniya3d-3.js"></script>
@@ -482,7 +488,7 @@
     base.sections.forEach(function (s) { if (s.id === sid) s.items.forEach(function (i) { items.push(i); }); });
     user.items.forEach(function (i) { if (i.sectionId === sid) items.push(Object.assign({ user: true }, i)); });
     /* по умолчанию — по дате лекции, от старой к новой (материалы без даты — в начале) */
-    items = items.map(function (i, n) { return [i, n]; }).sort(function (a, b) { var x = a[0].date || '', y = b[0].date || ''; return x < y ? -1 : x > y ? 1 : a[1] - b[1]; }).map(function (p) { return p[0]; });
+    items = items.map(function (i, n) { return [i, n]; }).sort(function (a, b) { var x = a[0].sort || a[0].date || '', y = b[0].sort || b[0].date || ''; return x < y ? -1 : x > y ? 1 : a[1] - b[1]; }).map(function (p) { return p[0]; });
     var ord = user.order[sid];
     if (ord && ord.length) {
       var pos = function (i) { var k = ord.indexOf(i.id); return k < 0 ? 1e6 : k; };
