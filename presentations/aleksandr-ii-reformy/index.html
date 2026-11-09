@@ -285,10 +285,65 @@
     .pend-row { grid-template-columns: 1fr; }
     .flow .st { min-width: 0; }
   }
-  .stairs.nox .stp + .stp::before { display: none; }
-  .cards[data-w] { max-width: 1020px; } .cards[data-w] h3 { font-size: clamp(1.25rem, 1.7vw, 1.7rem); }
-  @media (max-width: 760px) { .cards[data-w] { grid-template-columns: 1fr; } }
-  @media (max-width: 760px) { .stairs.nox { grid-template-columns: 1fr !important; } .stairs.nox .stp { min-height: 0 !important; } }
+
+  html { scroll-snap-type: none !important; }
+  body { overflow-x: clip; }
+  .slide { scroll-snap-align: none !important; }
+  main { pointer-events: none; }
+  .content, .plates { pointer-events: auto; }
+  .slide.pin { display: block; padding: 0; min-height: 0; }
+  .pin-in { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; align-items: center; padding: 11vh 7vw 13vh; overflow: hidden; }
+  .stepi { opacity: 0; transform: translateY(24px); transition: opacity .55s ease, transform .7s cubic-bezier(.2,.85,.25,1); }
+  .stepi.in { opacity: 1; transform: none; }
+  .side .content { width: min(560px, 41vw); }
+  .side h2 { font-size: clamp(1.8rem, 3.1vw, 3rem); margin-bottom: 1rem; }
+  .side .cards { gap: .55rem; margin-top: .6rem; }
+  .side .card { padding: .62rem .95rem; }
+  .side .card h3 { font-size: clamp(1.05rem, 1.5vw, 1.45rem); margin-bottom: .1rem; }
+  .side .card p { font-size: clamp(.86rem, 1vw, 1rem); }
+  .side .tl { width: 100%; }
+  .side .tl b { font-size: clamp(1rem, 1.45vw, 1.45rem); }
+  .side .tl span { font-size: .8rem; }
+  .side .plate figcaption { white-space: normal; }
+  .bignum { font-family: "Playfair Display", serif; font-weight: 900; color: var(--gold); font-size: clamp(3rem, 6.6vw, 6.4rem); line-height: 1; margin: .1rem 0 1rem; text-shadow: 0 6px 40px rgba(0,0,0,.7); font-variant-numeric: tabular-nums; }
+  #stage { position: fixed; z-index: 6; top: 0; right: 0; width: 49vw; height: 100vh; height: 100svh; opacity: 0; transition: opacity .6s ease; touch-action: pan-y; cursor: grab; pointer-events: none; }
+  #stage.on { opacity: 1; pointer-events: auto; }
+  #stage:active { cursor: grabbing; }
+  .scene.dim img { filter: brightness(.42) saturate(.85); }
+  .plates { position: absolute; right: 6vw; top: 50%; translate: 0 -50%; width: min(40vw, 640px); aspect-ratio: 4 / 3; perspective: 900px; }
+  .plates > .plate { position: absolute; inset: 0; margin: 0; }
+  .plate img { width: 100%; height: 100%; object-fit: cover; display: block; border: 1px solid rgba(240,195,107,.55); border-radius: 6px; box-shadow: 0 24px 70px rgba(0,0,0,.65); }
+  .plate figcaption { position: absolute; left: 0; right: 0; bottom: -1.7rem; font-size: .74rem; color: var(--muted); text-align: right; }
+  .plate.stepi { opacity: 0; transform: translateX(90px) rotate(8deg) rotateY(-18deg); }
+  .plate.stepi.in { opacity: 1; transform: rotate(var(--r)) rotateY(var(--ty, 0deg)) rotateX(var(--tx, 0deg)); }
+  .calc { margin-top: .6rem; padding: .7rem .95rem; border-radius: 14px; background: var(--panel); border: 1px solid var(--gold-soft); }
+  .calc label { font-size: .92rem; } .calc label b { color: var(--gold); }
+  .calc input { width: 100%; accent-color: var(--gold); margin: .35rem 0 .45rem; }
+  .cr { display: grid; grid-template-columns: repeat(4, 1fr); gap: .4rem; }
+  .cr small { display: block; font-size: .66rem; color: var(--muted); }
+  .cr b { font-family: "Playfair Display", serif; font-size: 1.1rem; }
+  .cr .hot b { color: #f2a19b; }
+  .vbtn { margin-top: .55rem; padding: .55rem 1.3rem; border-radius: 99px; border: 1px solid var(--gold); background: rgba(240,195,107,.14); color: var(--gold); font: 600 .95rem Inter, sans-serif; cursor: pointer; }
+  .vres { display: inline-block; margin-left: .8rem; color: #8df0a8; opacity: 0; transition: opacity .6s 1.6s; font-size: .95rem; }
+  .vres.show { opacity: 1; }
+  .more { position: fixed; z-index: 21; left: 50%; bottom: 56px; translate: -50% 0; width: 18px; height: 18px; border-right: 2px solid var(--gold); border-bottom: 2px solid var(--gold); rotate: 45deg; opacity: 0; transition: opacity .4s; animation: nudge 1.5s ease-in-out infinite; pointer-events: none; }
+  .more.on { opacity: .85; }
+  @keyframes nudge { 50% { transform: translate(5px, 5px); } }
+  @media (max-width: 760px) {
+    #stage { top: 52px; width: 100vw; height: 38vh; }
+    .side .pin-in { align-items: flex-end; padding: 0 16px 76px; }
+    .pin-in { padding: 64px 16px 76px; }
+    .side .content { width: 100%; }
+    .side h2 { font-size: 1.65rem; margin-bottom: .6rem; }
+    h2 { font-size: 1.85rem; }
+    .side .stepi.past:not(.keep) { display: none; }
+    .side .tl > div { padding: 0 0 0 28px; }
+    .bignum { font-size: 3.1rem; margin-bottom: .5rem; }
+    .plates { position: absolute; top: 58px; right: 16px; left: 16px; width: auto; translate: none; height: 34vh; aspect-ratio: auto; }
+    .cards { grid-template-columns: 1fr !important; }
+    .cr { grid-template-columns: repeat(2, 1fr); }
+    .kicker { font-size: .62rem; margin-bottom: .5rem; }
+  }
 </style>
 </head>
 <body>
@@ -300,7 +355,7 @@
   <div class="scene"><img alt="" src="img/00-manifest.jpg"></div>
   <div class="scene c-crimson"><div class="emblem">1856</div></div>
   <div class="scene c-slate"><div class="emblem">1857</div></div>
-  <div class="scene c-forest"><div class="emblem">1861</div></div>
+  <div class="scene dim"><img alt="" src="img/00-manifest.jpg"></div>
   <div class="scene"><img alt="" src="../nikolaj-i/img/10-venecianov-gumno.jpg"></div>
   <div class="scene c-umber"><div class="emblem">49</div></div>
   <div class="scene c-navy"><div class="emblem">1861</div></div>
@@ -310,8 +365,8 @@
   <div class="scene c-navy"><div class="emblem">1863</div></div>
   <div class="scene c-forest"><div class="emblem">1864</div></div>
   <div class="scene c-umber"><div class="emblem">1878</div></div>
-  <div class="scene c-forest"><div class="emblem">III</div></div>
-  <div class="scene c-ash"><div class="emblem">1906</div></div>
+  <div class="scene dim"><img alt="" src="../nikolaj-i/img/08-zheleznaya-doroga.jpg"></div>
+  <div class="scene dim"><img alt="" src="img/burlaki.jpg"></div>
   <div class="scene c-crimson"><div class="emblem">1881</div></div>
 </div>
 <div class="grade"></div>
@@ -324,6 +379,8 @@
   <span class="count"><b id="cur">00</b> / <span id="total">15</span></span>
 </header>
 
+<canvas id="stage"></canvas>
+<div class="more" id="more"></div>
 <main>
   <section class="slide cover" data-label="Начало">
     <div class="content">
@@ -333,173 +390,177 @@
     </div>
   </section>
 
-  <section class="slide" data-label="Вызов">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">01</span>Крымская война · начало преобразований</p>
-      <h2 class="split">1856: «лучше <span class="gold">сверху</span>, чем снизу»</h2>
-      <div class="tl"><div class="pc" style="--d:1.00s"><b>1853–56</b><span>Крымская война</span></div>
-<div class="pc" style="--d:1.15s"><b>30.03.1856</b><span>Речь перед московским дворянством</span></div>
-<div class="pc" style="--d:1.30s"><b>20.11.1857</b><span>Рескрипт Назимову</span></div>
-<div class="pc" style="--d:1.45s"><b>1859</b><span>Редакционные комиссии</span></div>
-</div>
+  <section class="slide pin" data-label="Вызов" data-steps="4" style="height:326vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">01</span>Крымская война · начало преобразований</p>
+        <h2 class="split">1856: «лучше <span class="gold">сверху</span>, чем снизу»</h2>
+        <div class="tl"><div class="stepi" data-s="1"><b>1853–56</b><span>Крымская война</span></div><div class="stepi" data-s="2"><b>30.03.1856</b><span>Речь перед московским дворянством</span></div><div class="stepi" data-s="3"><b>20.11.1857</b><span>Рескрипт Назимову</span></div><div class="stepi" data-s="4"><b>1859</b><span>Редакционные комиссии</span></div></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Команда">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">02</span>Кто готовил реформу</p>
-      <h2 class="split">Царь опёрся на <span class="gold">либеральную бюрократию</span></h2>
-      <div class="cards" data-w="1" style="--n:4"><div class="card pc" style="--d:1.00s"><h3>Константин Николаевич</h3><p>брат царя, председатель Главного комитета</p></div>
-<div class="card pc" style="--d:1.15s"><h3>Елена Павловна</h3><p>освободила крестьян в своём имении Карловка</p></div>
-<div class="card pc" style="--d:1.30s"><h3>Я. И. Ростовцев</h3><p>возглавил Редакционные комиссии</p></div>
-<div class="card pc" style="--d:1.45s"><h3>Н. А. Милютин</h3><p>товарищ министра внутренних дел, автор проекта</p></div>
-</div>
+  <section class="slide pin" data-label="Команда" data-steps="4" style="height:326vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">02</span>Кто готовил реформу</p>
+        <h2 class="split">Царь опёрся на <span class="gold">либеральную бюрократию</span></h2>
+        <div class="cards" style="--n:2"><div class="card stepi" data-s="1"><h3>Константин Николаевич</h3><p>брат царя, председатель Главного комитета</p></div><div class="card stepi" data-s="2"><h3>Елена Павловна</h3><p>освободила крестьян в своём имении Карловка</p></div><div class="card stepi" data-s="3"><h3>Я. И. Ростовцев</h3><p>возглавил Редакционные комиссии</p></div><div class="card stepi" data-s="4"><h3>Н. А. Милютин</h3><p>товарищ министра внутренних дел, автор проекта</p></div></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Манифест">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">03</span>Крестьянская реформа · 19 февраля 1861</p>
-      <h2 class="split">Около <span class="gold">23 млн</span> человек получили свободу</h2>
-      <div class="tl"><div class="pc" style="--d:1.00s"><b>19.02.1861</b><span>Манифест и Положения</span></div>
-<div class="pc" style="--d:1.15s"><b>05.03.1861</b><span>Оглашение в Успенском соборе</span></div>
-<div class="pc" style="--d:1.30s"><b>1863</b><span>Удельные крестьяне</span></div>
-<div class="pc" style="--d:1.45s"><b>1866</b><span>Государственные крестьяне</span></div>
-</div>
+  <section class="slide pin side" data-label="Манифест" data-steps="4" data-model="chain" style="height:326vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">03</span>Крестьянская реформа · 19 февраля 1861</p>
+        <h2 class="split">Крепостные получили свободу</h2>
+        <div class="bignum" data-count="23" data-dec="0" data-a="0.0" data-b="0.5" data-suf=" млн">0</div><div class="tl"><div class="stepi" data-s="1"><b>19.02.1861</b><span>Манифест и Положения</span></div><div class="stepi" data-s="2"><b>05.03.1861</b><span>Оглашение в Успенском соборе</span></div><div class="stepi" data-s="3"><b>1863</b><span>Удельные крестьяне</span></div><div class="stepi" data-s="4"><b>1866</b><span>Государственные крестьяне</span></div></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Права">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">04</span>Крестьянская реформа · права</p>
-      <h2 class="split">Крепостной стал <span class="gold">свободным сельским обывателем</span></h2>
-      <div class="cards" style="--n:3"><div class="card pc" style="--d:1.00s"><h3>Личность</h3><p>брак и переход в другое сословие без согласия барина</p></div>
-<div class="card pc" style="--d:1.15s"><h3>Имущество</h3><p>покупка земли, торговля, договоры от своего имени</p></div>
-<div class="card pc" style="--d:1.30s"><h3>Мир</h3><p>сход, староста, волостное правление</p></div>
-</div>
+  <section class="slide pin" data-label="Права" data-steps="3" style="height:264vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">04</span>Крестьянская реформа · права</p>
+        <h2 class="split">Крепостной стал <span class="gold">свободным сельским обывателем</span></h2>
+        <div class="cards" style="--n:3"><div class="card stepi" data-s="1"><h3>Личность</h3><p>брак и переход в другое сословие без согласия барина</p></div><div class="card stepi" data-s="2"><h3>Имущество</h3><p>покупка земли, торговля, договоры от своего имени</p></div><div class="card stepi" data-s="3"><h3>Мир</h3><p>сход, староста, волостное правление</p></div></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Земля">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">05</span>Крестьянская реформа · выкуп</p>
-      <h2 class="split">Земля в надел, <span class="gold">кредит от казны</span></h2>
-      <div class="flow"><div class="st pc" style="--d:1.00s"><small>Шаг 1</small>Уставная грамота</div><span class="ar pc" style="--d:1.05s">→</span><div class="st pc" style="--d:1.15s"><small>Шаг 2</small>20–25 % крестьянин платит помещику</div><span class="ar pc" style="--d:1.20s">→</span><div class="st pc" style="--d:1.30s"><small>Шаг 3</small>75–80 % вносит казна</div><span class="ar pc" style="--d:1.35s">→</span><div class="st pc" style="--d:1.45s"><small>Шаг 4</small>Долг казне: 49 лет, 6 % в год</div></div>
+  <section class="slide pin side" data-label="Земля" data-steps="4" data-model="plot" style="height:326vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">05</span>Крестьянская реформа · выкуп</p>
+        <h2 class="split">Земля в надел, <span class="gold">кредит от казны</span></h2>
+        <div class="cards" style="--n:1"><div class="card stepi" data-s="1"><h3>20–25 %</h3><p>крестьянин платит помещику сам</p></div><div class="card stepi" data-s="2"><h3>75–80 %</h3><p>помещику сразу вносит казна</p></div><div class="card stepi" data-s="3"><h3>49 лет</h3><p>крестьянин возвращает долг казне, 6 % в год</p></div></div><div class="calc stepi" data-s="4"><label>Оценка надела: <b id="cV">400</b> руб.</label><input id="cR" type="range" min="100" max="800" step="20" value="400" aria-label="Оценка надела">
+<div class="cr"><div><small>Сразу помещику</small><b id="c1"></b></div><div><small>Ссуда казны</small><b id="c2"></b></div><div><small>Платёж в год</small><b id="c3"></b></div><div class="hot"><small>За 49 лет</small><b id="c4"></b></div></div></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Сравнение">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">06</span>Крестьянская реформа · сравнение</p>
-      <h2 class="split">Освобождение <span class="gold">без войны</span></h2>
-      <div class="cards" style="--n:2"><div class="card pc" style="--d:1.00s"><h3>Россия, 1861</h3><p>манифест царя; крестьяне получают надел</p></div>
-<div class="card minus pc" style="--d:1.15s"><h3>США, 1861–65</h3><p>гражданская война, более 600 тыс. погибших; освобождённые земли не получили</p></div>
-</div>
+  <section class="slide pin side" data-label="Сравнение" data-steps="2" style="height:202vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">06</span>Крестьянская реформа · сравнение</p>
+        <h2 class="split">Освобождение <span class="gold">без войны</span></h2>
+        <div class="cards" style="--n:1"><div class="card stepi" data-s="1"><h3>Россия, 1861</h3><p>манифест царя; крестьяне получают надел</p></div><div class="card minus stepi" data-s="2"><h3>США, 1861–65</h3><p>гражданская война, более 600 тыс. погибших; освобождённые земли не получили</p></div></div>
+      </div>
+      <div class="plates"><figure class="plate stepi keep" data-s="1" style="--r:-2.5deg"><img alt="" src="../nikolaj-i/img/09-venecianov-pashnya.jpg"><figcaption>А. Венецианов. На пашне. Весна</figcaption></figure></div>
     </div>
   </section>
 
-  <section class="slide" data-label="Судебные уставы">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">07</span>Судебная реформа · 20 ноября 1864</p>
-      <h2 class="split">«Суд скорый, правый, милостивый и <span class="gold">равный для всех</span>»</h2>
-      <div class="flow"><div class="st pc" style="--d:1.00s">Учреждения судебных установлений</div><span class="ar pc" style="--d:1.05s">+</span><div class="st pc" style="--d:1.15s">Устав уголовного судопроизводства</div><span class="ar pc" style="--d:1.20s">+</span><div class="st pc" style="--d:1.30s">Устав гражданского судопроизводства</div><span class="ar pc" style="--d:1.35s">+</span><div class="st pc" style="--d:1.45s">Устав о наказаниях, налагаемых мировыми судьями</div></div>
+  <section class="slide pin side" data-label="Судебные уставы" data-steps="4" data-model="scales" style="height:326vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">07</span>Судебная реформа · 20 ноября 1864</p>
+        <h2 class="split">«Суд скорый, правый, милостивый и <span class="gold">равный для всех</span>»</h2>
+        <div class="cards" style="--n:1"><div class="card stepi" data-s="1"><h3>I</h3><p>Учреждения судебных установлений</p></div><div class="card stepi" data-s="2"><h3>II</h3><p>Устав уголовного судопроизводства</p></div><div class="card stepi" data-s="3"><h3>III</h3><p>Устав гражданского судопроизводства</p></div><div class="card stepi" data-s="4"><h3>IV</h3><p>Устав о наказаниях, налагаемых мировыми судьями</p></div></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Было и стало">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">08</span>Судебная реформа · принципы</p>
-      <h2 class="split">Процесс вышел <span class="gold">из канцелярии в зал</span></h2>
-      <div class="cards" style="--n:2"><div class="card minus pc" style="--d:1.00s"><h3>До 1864</h3><p>сословный, закрытый, письменный; судья зависит от администрации</p></div>
-<div class="card pc" style="--d:1.15s"><h3>После 1864</h3><p>всесословный, гласный, устный, состязательный; судья несменяем</p></div>
-</div>
+  <section class="slide pin side" data-label="Было и стало" data-steps="5" data-model="court" style="height:388vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">08</span>Судебная реформа · принципы</p>
+        <h2 class="split">Процесс вышел <span class="gold">из канцелярии в зал</span></h2>
+        <div class="cards" style="--n:1"><div class="card minus stepi" data-s="1"><h3>До 1864</h3><p>сословный, закрытый, письменный</p></div><div class="card stepi" data-s="2"><h3>Гласность</h3><p>двери открыты для публики и газет</p></div><div class="card stepi" data-s="3"><h3>Присяжные</h3><p>12 заседателей решают вопрос о вине</p></div><div class="card stepi" data-s="4"><h3>Состязательность</h3><p>прокурор и защитник спорят на равных</p></div></div><div class="stepi" data-s="5"><div class="card"><h3>Дело Засулич</h3><p>Публика в зале, решение за присяжными</p></div><button class="vbtn" id="vBtn" type="button">Вердикт</button><p class="vres" id="vRes">31 марта 1878: оправдана</p></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Устройство суда">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">09</span>Судебная реформа · инстанции</p>
-      <h2 class="split">Лестница <span class="gold">судебных инстанций</span></h2>
-      <div class="stairs nox" style="grid-template-columns:repeat(4,1fr);max-width:980px"><div class="stp pc" style="--d:0.90s;min-height:110px"><h3>Мировой суд</h3><p>выборный судья, мелкие дела</p></div>
-<div class="stp pc" style="--d:1.05s;min-height:152px"><h3>Окружной суд</h3><p>12 присяжных заседателей</p></div>
-<div class="stp pc" style="--d:1.20s;min-height:194px"><h3>Судебная палата</h3><p>апелляция</p></div>
-<div class="stp pc" style="--d:1.35s;min-height:236px"><h3>Сенат</h3><p>кассация</p></div>
-</div>
+  <section class="slide pin side" data-label="Устройство суда" data-steps="4" data-model="instances" style="height:326vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">09</span>Судебная реформа · инстанции</p>
+        <h2 class="split">Лестница <span class="gold">судебных инстанций</span></h2>
+        <div class="cards" style="--n:1"><div class="card stepi" data-s="1"><h3>Мировой суд</h3><p>выборный судья, мелкие дела</p></div><div class="card stepi" data-s="2"><h3>Окружной суд</h3><p>12 присяжных заседателей</p></div><div class="card stepi" data-s="3"><h3>Судебная палата</h3><p>апелляция</p></div><div class="card stepi" data-s="4"><h3>Сенат</h3><p>кассация</p></div></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Университеты">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">10</span>Реформа образования · устав 18 июня 1863</p>
-      <h2 class="split">Университеты получили <span class="gold">автономию</span></h2>
-      <div class="cards" style="--n:3"><div class="card pc" style="--d:1.00s"><h3>Совет профессоров</h3><p>избирает ректора и деканов</p></div>
-<div class="card pc" style="--d:1.15s"><h3>Факультеты</h3><p>утверждают учебные планы и присуждают степени</p></div>
-<div class="card pc" style="--d:1.30s"><h3>Университетский суд</h3><p>разбирает проступки студентов</p></div>
-</div>
+  <section class="slide pin side" data-label="Университеты" data-steps="3" data-model="university" style="height:264vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">10</span>Реформа образования · устав 18 июня 1863</p>
+        <h2 class="split">Университеты получили <span class="gold">автономию</span></h2>
+        <div class="cards" style="--n:1"><div class="card stepi" data-s="1"><h3>Совет профессоров</h3><p>избирает ректора и деканов</p></div><div class="card stepi" data-s="2"><h3>Факультеты</h3><p>утверждают учебные планы и присуждают степени</p></div><div class="card stepi" data-s="3"><h3>Университетский суд</h3><p>разбирает проступки студентов</p></div></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Школа">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">11</span>Реформа образования · 1864</p>
-      <h2 class="split">Школа стала <span class="gold">всесословной</span></h2>
-      <div class="stairs nox" style="grid-template-columns:repeat(3,1fr);max-width:980px"><div class="stp pc" style="--d:0.90s;min-height:110px"><h3>Начальные училища</h3><p>открывают земства, общества, частные лица</p></div>
-<div class="stp pc" style="--d:1.05s;min-height:152px"><h3>Гимназии</h3><p>классические и реальные, для всех сословий</p></div>
-<div class="stp pc" style="--d:1.20s;min-height:194px"><h3>Университет и вузы</h3><p>по итогам гимназии</p></div>
-</div>
+  <section class="slide pin side" data-label="Школа" data-steps="3" data-model="lift" style="height:264vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">11</span>Реформа образования · 1864</p>
+        <h2 class="split">Школа стала <span class="gold">всесословной</span></h2>
+        <div class="cards" style="--n:1"><div class="card stepi" data-s="1"><h3>Начальные училища</h3><p>открывают земства, общества, частные лица</p></div><div class="card stepi" data-s="2"><h3>Гимназии</h3><p>классические и реальные, для всех сословий</p></div><div class="card stepi" data-s="3"><h3>Университет и вузы</h3><p>по итогам гимназии</p></div></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Женщины">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">12</span>Реформа образования · женские курсы</p>
-      <h2 class="split">Женщины пришли <span class="gold">в высшую школу</span></h2>
-      <div class="tl"><div class="pc" style="--d:1.00s"><b>1858</b><span>Мариинское женское училище</span></div>
-<div class="pc" style="--d:1.15s"><b>1869</b><span>Лубянские и Аларчинские курсы</span></div>
-<div class="pc" style="--d:1.30s"><b>1872</b><span>Курсы Герье, женские врачебные курсы</span></div>
-<div class="pc" style="--d:1.45s"><b>1878</b><span>Бестужевские курсы</span></div>
-</div>
+  <section class="slide pin side" data-label="Женщины" data-steps="4" data-model="women" style="height:326vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">12</span>Реформа образования · женские курсы</p>
+        <h2 class="split">Женщины пришли <span class="gold">в высшую школу</span></h2>
+        <div class="tl"><div class="stepi" data-s="1"><b>1858</b><span>Мариинское женское училище</span></div><div class="stepi" data-s="2"><b>1869</b><span>Лубянские и Аларчинские курсы</span></div><div class="stepi" data-s="3"><b>1872</b><span>Курсы Герье, женские врачебные курсы</span></div><div class="stepi" data-s="4"><b>1878</b><span>Бестужевские курсы</span></div></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Итоги">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">13</span>Что изменилось</p>
-      <h2 class="split">За три года: <span class="gold">воля, суд, школа</span></h2>
-      <div class="cards" style="--n:3"><div class="card pc" style="--d:1.00s"><h3>Экономика</h3><p>рынки труда, земли и капитала</p></div>
-<div class="card pc" style="--d:1.15s"><h3>Право</h3><p>равенство сословий перед судом</p></div>
-<div class="card pc" style="--d:1.30s"><h3>Общество</h3><p>образование как социальный лифт</p></div>
-</div>
+  <section class="slide pin side" data-label="Итоги" data-steps="3" data-model="pillars" style="height:264vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">13</span>Что изменилось</p>
+        <h2 class="split">За три года: <span class="gold">воля, суд, школа</span></h2>
+        <div class="cards" style="--n:1"><div class="card stepi" data-s="1"><h3>Экономика</h3><p>рынки труда, земли и капитала</p></div><div class="card stepi" data-s="2"><h3>Право</h3><p>равенство сословий перед судом</p></div><div class="card stepi" data-s="3"><h3>Общество</h3><p>образование как социальный лифт</p></div></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Цена свободы">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">14</span>Проблемы · деревня</p>
-      <h2 class="split">Крестьяне заплатили <span class="gold">1,57 млрд рублей</span></h2>
-      <div class="tl red"><div class="pc" style="--d:1.00s"><b>867 млн</b><span>Выкупные платежи</span></div>
-<div class="pc" style="--d:1.15s"><b>703 млн</b><span>Проценты</span></div>
-<div class="pc" style="--d:1.30s"><b>1906</b><span>Отмена платежей</span></div>
-</div><div class="cards" style="--n:2"><div class="card minus pc" style="--d:1.50s"><h3>Отрезки</h3><p>в чернозёмных губерниях около пятой части земли</p></div>
-<div class="card minus pc" style="--d:1.65s"><h3>Община</h3><p>круговая порука, надел нельзя продать</p></div>
-</div>
+  <section class="slide pin side" data-label="Цена свободы" data-steps="4" data-model="coins" style="height:326vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">14</span>Проблемы · деревня</p>
+        <h2 class="split">Сколько заплатили крестьяне</h2>
+        <div class="bignum" data-count="1.57" data-dec="2" data-a="0.02" data-b="0.9" data-suf=" млрд руб.">0</div><div class="tl red"><div class="stepi" data-s="1"><b>867 млн</b><span>Выкупные платежи</span></div><div class="stepi" data-s="2"><b>703 млн</b><span>Проценты</span></div><div class="stepi" data-s="3"><b>1906</b><span>Отмена платежей</span></div></div><div class="cards" style="--n:1"><div class="card minus stepi" data-s="4"><h3>Отрезки и община</h3><p>около пятой части земли в чернозёмных губерниях; круговая порука</p></div></div>
+      </div>
+      
     </div>
   </section>
 
-  <section class="slide" data-label="Незавершённость">
-    <div class="content">
-      <p class="kicker pc fl"><span class="num">15</span>Проблемы · суд, школа, власть</p>
-      <h2 class="split">Реформы остались <span class="gold">незавершёнными</span></h2>
-      <div class="cards" style="--n:3"><div class="card minus pc" style="--d:1.00s"><h3>Суд</h3><p>1872: Особое присутствие Сената; 1878: политические дела в военный суд</p></div>
-<div class="card minus pc" style="--d:1.15s"><h3>Школа</h3><p>1863: нет студенческого самоуправления; 1871: устав Д. А. Толстого</p></div>
-<div class="card minus pc" style="--d:1.30s"><h3>Власть</h3><p>1 марта 1881: царь убит, конституционный проект отвергнут</p></div>
-</div><p class="credits pc" style="--d:1.6s">Изображения: <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a>, общественное достояние — Б. Кустодиев, А. Венецианов.</p>
+  <section class="slide pin" data-label="Незавершённость" data-steps="3" style="height:264vh">
+    <div class="pin-in">
+      <div class="content">
+        <p class="kicker pc fl"><span class="num">15</span>Проблемы · суд, школа, власть</p>
+        <h2 class="split">Реформы остались <span class="gold">незавершёнными</span></h2>
+        <div class="cards" style="--n:1"><div class="card minus stepi" data-s="1"><h3>Суд</h3><p>1872: Особое присутствие Сената; 1878: политические дела в военный суд</p></div><div class="card minus stepi" data-s="2"><h3>Школа</h3><p>1863: нет студенческого самоуправления; 1871: устав Д. А. Толстого</p></div><div class="card minus stepi" data-s="3"><h3>Власть</h3><p>1 марта 1881: царь убит, конституционный проект отвергнут</p></div></div><p class="credits">Изображения: <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a>, общественное достояние — Б. Кустодиев, А. Венецианов, литография XIX в. (железная дорога), И. Репин.</p>
+      </div>
+      
     </div>
   </section>
 </main>
 
 <nav class="progress" id="progress"><div class="fill" id="fill"></div></nav>
 
+<script src="../../lib/three.min.js"></script>
+<script src="models.js"></script>
 <script>
 (() => {
   const slides = [...document.querySelectorAll(".slide")];
@@ -651,11 +712,68 @@
   }
   frame();
 
-  /* клавиатура: стрелки / пробел — к следующему слайду */
+
+  /* шаги внутри слайда, счётчики, 3D */
+  const stage = document.getElementById("stage"), more = document.getElementById("more");
+  const has3d = !!(window.Deck3D && window.THREE && Deck3D.init(stage));
+  const clamp01 = v => Math.max(0, Math.min(1, v));
+  const pOf = s => clamp01((scrollY - s.offsetTop) / Math.max(1, s.offsetHeight - innerHeight));
+  const stepOf = (s, p) => Math.min(+s.dataset.steps, 1 + Math.floor(p * +s.dataset.steps));
+  const fmt = (v, d) => v.toLocaleString("ru-RU", { minimumFractionDigits: d, maximumFractionDigits: d });
+  let shown = null;
+  function tickSteps() {
+    requestAnimationFrame(tickSteps);
+    const el = slides[Math.max(0, current)];
+    const m = el.dataset.model || null;
+    if (has3d && m !== shown) { shown = m; Deck3D.show(m); }
+    if (!el.classList.contains("pin")) { more.classList.remove("on"); return; }
+    const p = pOf(el), cur = stepOf(el, p);
+    if (has3d) Deck3D.progress(p);
+    el.querySelectorAll(".stepi").forEach(x => {
+      const n = +x.dataset.s;
+      x.classList.toggle("in", n <= cur);
+      x.classList.toggle("past", n < cur);
+    });
+    el.querySelectorAll(".bignum").forEach(b => {
+      const k = clamp01((p - +b.dataset.a) / (+b.dataset.b - +b.dataset.a));
+      b.textContent = fmt(+b.dataset.count * k, +b.dataset.dec) + b.dataset.suf;
+    });
+    more.classList.toggle("on", cur < +el.dataset.steps);
+  }
+  tickSteps();
+
+  addEventListener("pointermove", e => {
+    const x = (e.clientX / innerWidth - .5) * 12, y = (e.clientY / innerHeight - .5) * -10;
+    document.querySelectorAll(".plate").forEach(pl => { pl.style.setProperty("--ty", x.toFixed(2) + "deg"); pl.style.setProperty("--tx", y.toFixed(2) + "deg"); });
+  }, { passive: true });
+
+  const cR = document.getElementById("cR");
+  if (cR) {
+    const put = (id, v) => { document.getElementById(id).textContent = fmt(v, v % 1 ? 2 : 0); };
+    const calc = () => {
+      const v = +cR.value; document.getElementById("cV").textContent = v;
+      put("c1", v * .2); put("c2", v * .8); put("c3", +(v * .8 * .06).toFixed(2)); put("c4", Math.round(v * .8 * .06 * 49));
+    };
+    cR.addEventListener("input", calc); calc();
+  }
+  const vBtn = document.getElementById("vBtn"), vRes = document.getElementById("vRes");
+  if (vBtn) vBtn.onclick = () => { vRes.classList.toggle("show", has3d ? Deck3D.action() : !vRes.classList.contains("show")); };
+
+  /* клавиатура: стрелки и пробел идут по шагам */
+  const stops = () => {
+    const a = [];
+    slides.forEach(s => {
+      const n = +s.dataset.steps || 1, L = s.classList.contains("pin") ? s.offsetHeight - innerHeight : 0;
+      for (let i = 0; i < n; i++) a.push(s.offsetTop + L * (i + .02) / n);
+    });
+    return a;
+  };
   addEventListener("keydown", e => {
-    if (!["ArrowDown", "ArrowUp", "PageDown", "PageUp", " "].includes(e.key)) return;
+    if (!["ArrowDown", "ArrowUp", "PageDown", "PageUp", " "].includes(e.key) || e.target.tagName === "INPUT") return;
     e.preventDefault();
-    slides[Math.max(0, Math.min(slides.length - 1, current + (["ArrowUp", "PageUp"].includes(e.key) ? -1 : 1)))].scrollIntoView({ behavior: "smooth" });
+    const a = stops(), y = scrollY, back = ["ArrowUp", "PageUp"].includes(e.key);
+    const t = back ? a.filter(v => v < y - 4).pop() : a.find(v => v > y + 4);
+    if (t !== undefined) scrollTo({ top: t, behavior: "smooth" });
   });
 })();
 </script>
