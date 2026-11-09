@@ -496,7 +496,12 @@
     }
     return items;
   }
-  function itemById(sid, iid) { return itemsOf(sid).filter(function (i) { return i.id === iid; })[0]; }
+  function itemById(sid, iid) {
+    var all = itemsOf(sid), hit = all.filter(function (i) { return i.id === iid; })[0];
+    if (hit) return hit;
+    all.forEach(function (f) { (f.items || []).forEach(function (c) { if (c.id === iid) hit = Object.assign({ parent: f.id }, c); }); });
+    return hit;
+  }
   /* блоки внутри предмета: конспекты, карточки, презентации */
   var GROUPS = [{ id: 'videos', title: 'Видеолекции', icon: '🎬' }, { id: 'notes', title: 'Конспекты', icon: '📝' }, { id: 'cards', title: 'Карточки', icon: '🃏' }, { id: 'seminars', title: 'Семинар', icon: '🎓' }, { id: 'tests', title: 'Тесты', icon: '✅' }, { id: 'pages', title: 'Презентации', icon: '🎞️' }, { id: 'other', title: 'Другое', icon: '📎' }];
   function groupOf(i) { return i.group || (i.type === 'video' ? 'videos' : i.type === 'cards' ? 'cards' : i.type === 'test' ? 'tests' : (i.type === 'markdown' || i.type === 'doc') ? 'notes' : i.type === 'page' ? 'pages' : 'other'); }
@@ -529,6 +534,7 @@
     var r = parse();
     if (r.v === 'item') {
       var it = itemById(r.sid, r.iid);
+      if (it && it.parent) return go('#/s/' + r.sid + '/' + it.parent);
       go(it && groupsOf(r.sid).length > 1 ? '#/s/' + r.sid + '/g/' + groupOf(it) : '#/s/' + r.sid);
     } else if (r.gid) go('#/s/' + r.sid);
     else go('#/');
@@ -658,6 +664,7 @@
     else if (it.type === 'cards') cards(it, v);
     else if (it.type === 'test' && window.HubTests) HubTests.page(v, it, pn(sid, iid));
     else if (it.type === 'page') pageView(it, v);
+    else if (it.type === 'folder') folderView(it, v, sid);
     else if (it.type === 'video') v.innerHTML = '<div class="page"><video controls playsinline preload="metadata" style="width:100%;border-radius:16px;background:#000;display:block"' +
       (it.poster ? ' poster="' + esc(it.poster) + '"' : '') + ' src="' + esc(it.video) + '"></video>' +
       '<p style="margin:14px 0 0"><a class="ib" style="text-decoration:none" href="' + esc(it.video) + '" download>⬇️ Скачать видео</a></p>' + pn(sid, iid) + '</div>';
@@ -750,6 +757,14 @@
     }
     v.onscroll = function () { if (tick) return; tick = true; requestAnimationFrame(function () { tick = false; spy(); }); };
     spy();
+  }
+  function folderView(it, v, sid) {
+    v.innerHTML = '<div class="page"><div class="list">' + it.items.map(function (c, n) {
+      var inner = '<span class="num">' + (n + 1) + '</span><div class="tt"><b>' + esc(c.title) + '</b></div>';
+      return c.type === 'file'
+        ? '<a class="row" style="text-decoration:none;color:inherit" href="' + esc(c.url) + '" download="' + esc(c.filename || '') + '">' + inner + '<span class="go">⬇</span></a>'
+        : '<div class="row" data-item="' + esc(sid) + '/' + esc(c.id) + '">' + inner + '<span class="go">›</span></div>';
+    }).join('') + '</div></div>';
   }
   function pageView(it, v) {
     var f = it.html != null

@@ -5177,6 +5177,27 @@
           "url": "presentations/nikolaj-i/index.html"
         },
         {
+          "id": "aleksandr-ii-reformy",
+          "title": "Реформы Александра II (История России)",
+          "type": "folder",
+          "group": "pages",
+          "items": [
+            {
+              "id": "aleksandr-ii-reformy-slides",
+              "title": "Презентация",
+              "type": "page",
+              "url": "presentations/aleksandr-ii-reformy/index.html"
+            },
+            {
+              "id": "aleksandr-ii-reformy-docx",
+              "title": "Текст выступления (.docx)",
+              "type": "file",
+              "url": "presentations/aleksandr-ii-reformy/reformy-aleksandra-ii.docx",
+              "filename": "Реформы Александра II.docx"
+            }
+          ]
+        },
+        {
           "id": "symbols-nature",
           "title": "Symbols of Russia in Nature (English)",
           "type": "page",
