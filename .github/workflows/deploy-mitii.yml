@@ -1,16 +1,13 @@
-name: Publish lecture materials to mitii.ru via SSH
+name: Publish lecture content to mitii.ru
 
-# Deployment is inactive until the repository variable
-# MITII_DEPLOY_ENABLED is explicitly set to "true".
-# Do not publish site code managed by Codex. Only selected lecture assets may be uploaded.
-# It uses a dedicated deploy key, not a website login password.
+# Disabled until a restricted SSH publisher is configured.
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - "content/**"
       - "data/tests/**"
+      - "data/lecture-registrations.json"
       - "lib/*3d*.js"
       - "media/**"
       - "presentations/**"
@@ -20,104 +17,102 @@ permissions:
   contents: read
 
 concurrency:
-  group: mitii-production
+  group: mitii-lectures-production
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  publish:
     if: ${{ vars.MITII_DEPLOY_ENABLED == 'true' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
-      - name: Check out source
+      - name: Checkout lecture content
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Prepare SSH authentication
-        shell: bash
-        env:
-          SSH_KEY: ${{ secrets.MITII_SSH_KEY }}
-          SSH_KNOWN_HOSTS: ${{ secrets.MITII_SSH_KNOWN_HOSTS }}
-        run: |
-          set -euo pipefail
-          if [[ -z "${SSH_KEY:-}" || -z "${SSH_KNOWN_HOSTS:-}" ]]; then
-            echo "Configure MITII_SSH_KEY and MITII_SSH_KNOWN_HOSTS in Actions secrets." >&2
-            exit 1
-          fi
-          umask 077
-          mkdir -p "$HOME/.ssh"
-          printf '%s\n' "$SSH_KEY" > "$HOME/.ssh/mitii_deploy"
-          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
-          chmod 600 "$HOME/.ssh/mitii_deploy" "$HOME/.ssh/known_hosts"
-
-      - name: Select changed lecture files only
-        id: files
+      - name: Collect changed lecture files
+        id: changed
         shell: bash
         env:
           BEFORE_SHA: ${{ github.event.before }}
         run: |
           set -euo pipefail
-          base="${BEFORE_SHA:-}"
-          if [[ -z "$base" || "$base" =~ ^0+$ ]]; then
-            base="$(git rev-parse HEAD^)"
-          fi
-          git diff --name-only --diff-filter=AM "$base" "$GITHUB_SHA" > "$RUNNER_TEMP/all-changed.txt"
-          : > "$RUNNER_TEMP/lecture-files.txt"
-          while IFS= read -r file; do
-            case "$file" in
-              content/*.md|data/tests/*.json|media/*|presentations/*)
-                [[ -f "$file" ]] && printf '%s\n' "$file" >> "$RUNNER_TEMP/lecture-files.txt"
-                ;;
-              lib/*3d*.js)
-                case "$file" in
-                  lib/scene3d.js|lib/widgets3d.js) ;;
-                  *) [[ -f "$file" ]] && printf '%s\n' "$file" >> "$RUNNER_TEMP/lecture-files.txt" ;;
-                esac
-                ;;
-            esac
-          done < "$RUNNER_TEMP/all-changed.txt"
-          if [[ -s "$RUNNER_TEMP/lecture-files.txt" ]]; then
-            echo "has_changes=true" >> "$GITHUB_OUTPUT"
-            cat "$RUNNER_TEMP/lecture-files.txt"
-          else
-            echo "has_changes=false" >> "$GITHUB_OUTPUT"
-            echo "No lecture files changed; nothing to deploy."
-          fi
+          export BEFORE_SHA GITHUB_SHA RUNNER_TEMP GITHUB_OUTPUT
+          python3 - <<'PY'
+          import json, os, pathlib, re, subprocess
+          old = os.environ.get("BEFORE_SHA", "")
+          if not re.fullmatch(r"[0-9a-f]{40}", old) or old == "0"*40:
+              old = subprocess.check_output(["git", "rev-parse", "HEAD^"], text=True).strip()
+          raw = subprocess.check_output(["git", "diff", "--name-only", "--diff-filter=AM", "-z", old, os.environ["GITHUB_SHA"]])
+          def allowed(s):
+              p = pathlib.PurePosixPath(s)
+              if s == "data/lecture-registrations.json":
+                  return True
+              if len(p.parts) < 2 or ".." in p.parts:
+                  return False
+              if p.parts[0] == "content":
+                  return p.suffix == ".md"
+              if p.parts[0] == "data":
+                  return len(p.parts) >= 3 and p.parts[1] == "tests" and p.suffix == ".json"
+              if p.parts[0] == "lib":
+                  return len(p.parts) == 2 and bool(re.fullmatch(r"[a-zA-Z0-9_-]*3d[a-zA-Z0-9_-]*\.js", p.name)) and p.name not in ("scene3d.js", "widgets3d.js")
+              if p.parts[0] in ("media", "presentations"):
+                  return p.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp", ".svg", ".gif", ".mp4", ".webm", ".glb", ".gltf", ".css", ".js", ".json", ".html")
+              return False
+          files = [v.decode("utf-8") for v in raw.split(b"\0") if v]
+          files = sorted(s for s in files if allowed(s) and pathlib.Path(s).is_file())
+          folder = pathlib.Path(os.environ["RUNNER_TEMP"])
+          (folder / "lecture-files.list").write_bytes(b"".join(s.encode("utf-8") + b"\0" for s in files))
+          (folder / "files.json").write_text(json.dumps(files, ensure_ascii=False, indent=2), encoding="utf-8")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              print("has_changes=" + ("true" if files else "false"), file=output)
+          print("Lecture assets:", *files, sep="\n")
+          PY
 
-      - name: Upload selected lecture files only
-        if: steps.files.outputs.has_changes == 'true'
+      - name: Configure SSH
+        if: steps.changed.outputs.has_changes == 'true'
+        shell: bash
+        env:
+          DEPLOY_KEY: ${{ secrets.MITII_SSH_KEY }}
+          HOST_KEYS: ${{ secrets.MITII_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          : "${DEPLOY_KEY:?Missing MITII_SSH_KEY}"
+          : "${HOST_KEYS:?Missing MITII_SSH_KNOWN_HOSTS}"
+          umask 077
+          mkdir -p "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_KEY" > "$HOME/.ssh/mitii_deploy"
+          printf '%s\n' "$HOST_KEYS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/mitii_deploy" "$HOME/.ssh/known_hosts"
+
+      - name: Stage files without touching live site
+        if: steps.changed.outputs.has_changes == 'true'
         shell: bash
         env:
           DEPLOY_HOST: 193.227.240.200
           DEPLOY_USER: ${{ secrets.MITII_SSH_USER }}
           DEPLOY_PORT: ${{ secrets.MITII_SSH_PORT }}
-          DEPLOY_PATH: ${{ secrets.MITII_REMOTE_DIR }}
         run: |
           set -euo pipefail
-          : "${DEPLOY_USER:?MITII_SSH_USER is missing}"
-          : "${DEPLOY_PATH:?MITII_REMOTE_DIR is missing}"
+          : "${DEPLOY_USER:?Missing MITII_SSH_USER}"
           DEPLOY_PORT="${DEPLOY_PORT:-22}"
-          [[ "$DEPLOY_PORT" =~ ^[0-9]{1,5}$ ]] || exit 1
           [[ "$DEPLOY_USER" =~ ^[a-zA-Z0-9._-]+$ ]] || exit 1
-          if [[ "$DEPLOY_PATH" != "/srv/mitii" ]]; then
-            echo "Only /srv/mitii is an approved publish target." >&2
-            exit 1
-          fi
-          ssh -i "$HOME/.ssh/mitii_deploy" \
-            -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
+          [[ "$DEPLOY_PORT" =~ ^[0-9]{1,5}$ ]] || exit 1
+          [[ "$GITHUB_SHA" =~ ^[0-9a-f]{40}$ ]] || exit 1
+          ssh -i "$HOME/.ssh/mitii_deploy" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
             -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
-            "test -d '$DEPLOY_PATH' && test -w '$DEPLOY_PATH' && test -f /srv/mitii-deploy/compose.yaml"
+            "mkdir -p '/srv/mitii-deploy/lecture-inbox/$GITHUB_SHA'"
           rsync -az --checksum --no-owner --no-group --no-perms \
-            --files-from="$RUNNER_TEMP/lecture-files.txt" \
+            --from0 --files-from="$RUNNER_TEMP/lecture-files.list" \
             -e "ssh -i $HOME/.ssh/mitii_deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -p $DEPLOY_PORT" \
-            ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
-          # Deliberately never copy index.html, data/sections.json, global JS,
-          # configuration, Docker files or other Codex-managed site code.
-          # No --delete, no git reset, and no unrelated container restarts.
+            ./ "$DEPLOY_USER@$DEPLOY_HOST:/srv/mitii-deploy/lecture-inbox/$GITHUB_SHA/"
+          scp -i "$HOME/.ssh/mitii_deploy" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            -P "$DEPLOY_PORT" "$RUNNER_TEMP/files.json" \
+            "$DEPLOY_USER@$DEPLOY_HOST:/srv/mitii-deploy/lecture-inbox/$GITHUB_SHA/files.json"
 
-      - name: Rebuild only the web service
-        if: steps.files.outputs.has_changes == 'true'
+      - name: Check conflicts and publish only lecture materials
+        if: steps.changed.outputs.has_changes == 'true'
         shell: bash
         env:
           DEPLOY_HOST: 193.227.240.200
@@ -126,7 +121,6 @@ jobs:
         run: |
           set -euo pipefail
           DEPLOY_PORT="${DEPLOY_PORT:-22}"
-          ssh -i "$HOME/.ssh/mitii_deploy" \
-            -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
+          ssh -i "$HOME/.ssh/mitii_deploy" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
             -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
-            "docker compose -f /srv/mitii-deploy/compose.yaml up -d --no-deps --build web"
+            "sudo -n /usr/local/sbin/mitii-publish-lectures '$GITHUB_SHA'"
