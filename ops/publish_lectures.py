@@ -194,28 +194,30 @@ def main() -> None:
         updates["data/sections.json"] = registration
 
     backup_root = BACKUPS / ("lectures-" + sha)
-    if backup_root.exists():
-        die("backup for this commit already exists; do not run twice")
-    backup_root.mkdir(parents=True, exist_ok=False)
-    changed = []
-    for rel, data in updates.items():
-        target = SITE / rel
-        if target.exists():
-            backup = backup_root / rel
-            backup.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(target, backup)
-        else:
-            changed.append(rel)
-    (backup_root / "new-files.json").write_text(json.dumps(changed, ensure_ascii=False), encoding="utf-8")
-    if STATE.exists():
-        shutil.copy2(STATE, backup_root / "previous-state.json")
+    retry = backup_root.exists()
+    if retry and updates:
+        die("commit was already published; changed local files require manual review")
+    if not retry:
+        backup_root.mkdir(parents=True, exist_ok=False)
+        created = []
+        for rel in updates:
+            target = SITE / rel
+            if target.exists():
+                backup = backup_root / rel
+                backup.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(target, backup)
+            else:
+                created.append(rel)
+        (backup_root / "new-files.json").write_text(json.dumps(created, ensure_ascii=False), encoding="utf-8")
+        if STATE.exists():
+            shutil.copy2(STATE, backup_root / "previous-state.json")
 
     for rel, data in updates.items():
         atomic_bytes(SITE / rel, data)
     atomic_bytes(STATE, (json.dumps(state, indent=2, ensure_ascii=False) + "\n").encode("utf-8"))
     print("Applied", len(updates), "lecture files; backup:", backup_root, flush=True)
-    if not updates:
-        print("No changed content; no container rebuild required.")
+    if not updates and not retry:
+        print("No changes to apply; no container rebuild required.")
         return
 
     # Only the mitii web service; no pruning, data wipes, volume changes, or other services.
