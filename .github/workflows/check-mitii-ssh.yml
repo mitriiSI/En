@@ -1,0 +1,50 @@
+name: Check SSH connection to mitii.ru
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/check-mitii-ssh.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Set up SSH securely
+        shell: bash
+        env:
+          DEPLOY_KEY: ${{ secrets.MITII_SSH_KEY }}
+          HOST_KEYS: ${{ secrets.MITII_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          : "${DEPLOY_KEY:?MITII_SSH_KEY is missing}"
+          : "${HOST_KEYS:?MITII_SSH_KNOWN_HOSTS is missing}"
+          umask 077
+          mkdir -p "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_KEY" > "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$HOST_KEYS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/id_ed25519" "$HOME/.ssh/known_hosts"
+
+      - name: Verify SSH, lecture inbox, and restricted publisher
+        shell: bash
+        env:
+          DEPLOY_USER: ${{ secrets.MITII_SSH_USER }}
+          DEPLOY_PORT: ${{ secrets.MITII_SSH_PORT }}
+        run: |
+          set -euo pipefail
+          : "${DEPLOY_USER:?MITII_SSH_USER is missing}"
+          DEPLOY_PORT="${DEPLOY_PORT:-22}"
+          if [[ ! "$DEPLOY_USER" =~ ^[a-zA-Z0-9._-]+$ || ! "$DEPLOY_PORT" =~ ^[0-9]{1,5}$ ]]; then
+            echo "Invalid SSH user or port." >&2
+            exit 1
+          fi
+          ssh -i "$HOME/.ssh/id_ed25519" \
+            -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            -o ConnectTimeout=10 -p "$DEPLOY_PORT" \
+            "$DEPLOY_USER@193.227.240.200" \
+            'set -eu; test "$(id -un)" = "mitii-publisher"; test -d /srv/mitii-deploy/lecture-inbox; test -w /srv/mitii-deploy/lecture-inbox; test -x /usr/local/sbin/mitii-publish-lectures; sudo -n -l /usr/local/sbin/mitii-publish-lectures >/dev/null; printf "SSH access and lecture publisher are ready.\n"'
