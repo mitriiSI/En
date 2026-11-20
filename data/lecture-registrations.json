@@ -49,7 +49,7 @@
         "id": "test-dumy-stolypin",
         "title": "Тест: Первые Государственные думы и столыпинская аграрная реформа (20.11)",
         "type": "test",
-        "src": "data/tests/istoriya-rossii.json",
+        "src": "data/tests/istoriya-rossii-dumy-stolypin.json",
         "topic": "dumy-stolypin",
         "date": "2026-11-20"
       }

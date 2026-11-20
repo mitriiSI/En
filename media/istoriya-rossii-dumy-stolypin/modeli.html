@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="../../">
+  <title>Первые Думы и аграрная реформа · 3D-модели</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d1425;
+      --panel2: #1b2942;
+      --muted: #bdc9df;
+      --gold: #efb872;
+      font-family: system-ui, sans-serif;
+      line-height: 1.55;
+      background: var(--bg);
+      color: #eef3ff;
+    }
+    * { box-sizing: border-box; }
+    main { max-width: 880px; margin: auto; padding: 24px clamp(14px, 4vw, 32px) 42px; }
+    a { color: #a5caff; text-underline-offset: 0.22em; }
+    a:hover, a:focus-visible { color: var(--gold); }
+    h1 { font-size: clamp(1.6rem, 5vw, 2.5rem); line-height: 1.14; margin: 18px 0 26px; }
+    section + section { margin-top: 24px; }
+    .wg { border: 1px solid #3c4e73; border-radius: 16px; background: #152038; padding: clamp(12px, 3vw, 20px); }
+    .wg-h { display: flex; align-items: center; gap: 10px; font-size: 1.13rem; }
+    .wg-badge { color: var(--gold); font-size: .83rem; font-weight: 700; }
+    .wg-lead { margin: 8px 0 14px; color: var(--muted); }
+    .wg-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .wg-chip { background: #203454; color: inherit; border: 1px solid #465c82; border-radius: 10px; min-height: 44px; cursor: pointer; font: inherit; padding: 6px 10px; }
+    .wg-chip small { display: block; color: var(--muted); }
+    .wg-chip:hover, .wg-chip.on { border-color: var(--gold); background: #392f37; }
+    .wg-out { background: #10192b; padding: 10px 12px; margin: 12px 0 0; border-radius: 8px; min-height: 4em; }
+    input[type='range'] { accent-color: var(--gold); min-height: 34px; }
+  </style>
+</head>
+<body>
+  <main>
+    <a href="./#/s/istoriya-rossii/dumy-stolypin">← К конспекту</a>
+    <h1>Первые Государственные думы и аграрная реформа</h1>
+    <section id="sozyvy" aria-label="Составы I, II и III Государственных дум">
+      <div id="rx-duma-convocations3d"></div>
+    </section>
+    <section id="zemleustroistvo" aria-label="Чересполосица, отруб и хутор">
+      <div id="rx-land-strip3d"></div>
+    </section>
+  </main>
+  <script src="lib/scene3d.js?v=40"></script>
+  <script src="lib/istoriya-rossii-dumy-stolypin3d.js"></script>
+</body>
+</html>
