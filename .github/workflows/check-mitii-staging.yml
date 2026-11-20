@@ -1,0 +1,58 @@
+name: Test lecture staging without publishing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/check-mitii-staging.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  staging-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Prepare SSH using configured secrets
+        shell: bash
+        env:
+          SSH_KEY: ${{ secrets.MITII_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.MITII_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          : "${SSH_KEY:?Missing MITII_SSH_KEY}"
+          : "${SSH_KNOWN_HOSTS:?Missing MITII_SSH_KNOWN_HOSTS}"
+          umask 077
+          mkdir -p "$HOME/.ssh"
+          printf '%s\n' "$SSH_KEY" > "$HOME/.ssh/mitii_deploy"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/mitii_deploy" "$HOME/.ssh/known_hosts"
+
+      - name: Stage and verify a temporary test file
+        shell: bash
+        env:
+          DEPLOY_USER: ${{ secrets.MITII_SSH_USER }}
+          DEPLOY_PORT: ${{ secrets.MITII_SSH_PORT }}
+        run: |
+          set -euo pipefail
+          : "${DEPLOY_USER:?Missing MITII_SSH_USER}"
+          DEPLOY_PORT="${DEPLOY_PORT:-22}"
+          [[ "$DEPLOY_PORT" =~ ^[0-9]{1,5}$ ]] || exit 1
+          [[ "$DEPLOY_USER" =~ ^[a-zA-Z0-9._-]+$ ]] || exit 1
+          remote="${DEPLOY_USER}@193.227.240.200"
+          test_dir="/srv/mitii-deploy/lecture-inbox/.preflight-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          options=(-i "$HOME/.ssh/mitii_deploy" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -p "$DEPLOY_PORT")
+          ssh "${options[@]}" "$remote" "mkdir -m 700 '$test_dir'"
+          cleanup() {
+            ssh "${options[@]}" "$remote" "rm -f '$test_dir/probe.txt'; rmdir '$test_dir'" || true
+          }
+          trap cleanup EXIT
+          printf 'Lecture staging transport test\n' > "$RUNNER_TEMP/probe.txt"
+          rsync -az --checksum --no-owner --no-group --no-perms \
+            -e "ssh -i $HOME/.ssh/mitii_deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -p $DEPLOY_PORT" \
+            "$RUNNER_TEMP/probe.txt" "$remote:$test_dir/probe.txt"
+          ssh "${options[@]}" "$remote" \
+            "test \"$(cat '$test_dir/probe.txt')\" = 'Lecture staging transport test' && test -x /usr/local/sbin/mitii-publish-lectures && test -f /srv/mitii-deploy/compose.yaml"
+          echo "SSH and rsync staging work. Live site and Docker were not changed."
