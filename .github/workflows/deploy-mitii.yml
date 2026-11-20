@@ -1,0 +1,101 @@
+name: Publish site to mitii.ru via SSH
+
+# Deployment is inactive until the repository variable
+# MITII_DEPLOY_ENABLED is explicitly set to "true".
+# It uses a dedicated deploy key, not a website login password.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "index.html"
+      - "manifest.webmanifest"
+      - "sw.js"
+      - ".nojekyll"
+      - "content/**"
+      - "data/**"
+      - "hub/**"
+      - "icons/**"
+      - "lib/**"
+      - "media/**"
+      - "presentations/**"
+      - "demo/**"
+      - ".github/workflows/deploy-mitii.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mitii-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: ${{ vars.MITII_DEPLOY_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Prepare SSH authentication
+        shell: bash
+        env:
+          SSH_KEY: ${{ secrets.MITII_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.MITII_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${SSH_KEY:-}" || -z "${SSH_KNOWN_HOSTS:-}" ]]; then
+            echo "Configure MITII_SSH_KEY and MITII_SSH_KNOWN_HOSTS in Actions secrets." >&2
+            exit 1
+          fi
+          umask 077
+          mkdir -p "$HOME/.ssh"
+          printf '%s\n' "$SSH_KEY" > "$HOME/.ssh/mitii_deploy"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/mitii_deploy" "$HOME/.ssh/known_hosts"
+
+      - name: Verify target directory and sync static site
+        shell: bash
+        env:
+          DEPLOY_HOST: ${{ secrets.MITII_SSH_HOST }}
+          DEPLOY_USER: ${{ secrets.MITII_SSH_USER }}
+          DEPLOY_PORT: ${{ secrets.MITII_SSH_PORT }}
+          DEPLOY_PATH: ${{ secrets.MITII_REMOTE_DIR }}
+        run: |
+          set -euo pipefail
+          : "${DEPLOY_HOST:?MITII_SSH_HOST is missing}"
+          : "${DEPLOY_USER:?MITII_SSH_USER is missing}"
+          : "${DEPLOY_PATH:?MITII_REMOTE_DIR is missing}"
+          DEPLOY_PORT="${DEPLOY_PORT:-22}"
+          if [[ ! "$DEPLOY_PORT" =~ ^[0-9]{1,5}$ ]]; then
+            echo "SSH port must be numeric." >&2
+            exit 1
+          fi
+          if [[ ! "$DEPLOY_HOST" =~ ^[a-zA-Z0-9._:-]+$ || ! "$DEPLOY_USER" =~ ^[a-zA-Z0-9._-]+$ ]]; then
+            echo "Invalid SSH host or username." >&2
+            exit 1
+          fi
+          if [[ ! "$DEPLOY_PATH" =~ ^/[a-zA-Z0-9._/-]+$ || "$DEPLOY_PATH" == "/" || "$DEPLOY_PATH" == "/var/www" ]]; then
+            echo "MITII_REMOTE_DIR must be a dedicated, absolute site directory." >&2
+            exit 1
+          fi
+          ssh -i "$HOME/.ssh/mitii_deploy" \
+            -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            -p "$DEPLOY_PORT" \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "test -d '$DEPLOY_PATH' && test -w '$DEPLOY_PATH'" || {
+              echo "Target directory is missing or not writable. Nothing was published." >&2
+              exit 1
+            }
+          rsync -az --checksum --no-owner --no-group --no-perms \
+            --exclude='/.git/' \
+            --exclude='/.github/' \
+            --exclude='/AGENTS.md' \
+            --exclude='/server/' \
+            --exclude='/.DS_Store' \
+            --exclude='/README.md' \
+            -e "ssh -i $HOME/.ssh/mitii_deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -p $DEPLOY_PORT" \
+            ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+          # No --delete: unknown server-only files must not be removed.
