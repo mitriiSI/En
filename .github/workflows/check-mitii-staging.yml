@@ -54,5 +54,5 @@ jobs:
             -e "ssh -i $HOME/.ssh/mitii_deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -p $DEPLOY_PORT" \
             "$RUNNER_TEMP/probe.txt" "$remote:$test_dir/probe.txt"
           ssh "${options[@]}" "$remote" \
-            "test \"$(cat '$test_dir/probe.txt')\" = 'Lecture staging transport test' && test -x /usr/local/sbin/mitii-publish-lectures && test -f /srv/mitii-deploy/compose.yaml"
+            "grep -Fxq 'Lecture staging transport test' '$test_dir/probe.txt' && test -x /usr/local/sbin/mitii-publish-lectures && test -f /srv/mitii-deploy/compose.yaml"
           echo "SSH and rsync staging work. Live site and Docker were not changed."
