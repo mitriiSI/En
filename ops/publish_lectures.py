@@ -214,6 +214,7 @@ def main() -> None:
 
     for rel, data in updates.items():
         atomic_bytes(SITE / rel, data)
+    STATE.parent.mkdir(parents=True, exist_ok=True)
     atomic_bytes(STATE, (json.dumps(state, indent=2, ensure_ascii=False) + "\n").encode("utf-8"))
     print("Applied", len(updates), "lecture files; backup:", backup_root, flush=True)
     if not updates and not retry:
