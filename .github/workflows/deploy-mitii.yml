@@ -59,13 +59,12 @@ jobs:
       - name: Verify target directory and sync static site
         shell: bash
         env:
-          DEPLOY_HOST: ${{ secrets.MITII_SSH_HOST }}
+          DEPLOY_HOST: 193.227.240.200
           DEPLOY_USER: ${{ secrets.MITII_SSH_USER }}
           DEPLOY_PORT: ${{ secrets.MITII_SSH_PORT }}
           DEPLOY_PATH: ${{ secrets.MITII_REMOTE_DIR }}
         run: |
           set -euo pipefail
-          : "${DEPLOY_HOST:?MITII_SSH_HOST is missing}"
           : "${DEPLOY_USER:?MITII_SSH_USER is missing}"
           : "${DEPLOY_PATH:?MITII_REMOTE_DIR is missing}"
           DEPLOY_PORT="${DEPLOY_PORT:-22}"
