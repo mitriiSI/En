@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="../">
+  <title>Модели к лекции «Рынки факторов производства»</title>
+  <style>
+    :root{color-scheme:dark;--bg:#101b33;--panel2:#223654;--text:#f4f6ff;--muted:#aebfdd;--gold:#ffac59}
+    *{box-sizing:border-box}
+    body{margin:0;color:var(--text);background:linear-gradient(160deg,#172b4c 0,#0c152a 62%);font:16px/1.55 system-ui,sans-serif}
+    main{width:min(920px,100%);margin:auto;padding:24px clamp(12px,4vw,36px) 48px}
+    a{color:#93b4ff;text-underline-offset:.18em}
+    h1{font-size:clamp(1.55rem,5vw,2.4rem);line-height:1.17;margin:.65em 0}
+    nav{display:flex;flex-wrap:wrap;gap:8px 18px;margin:16px 0 24px}
+    .exercise{margin:16px 0;scroll-margin-top:16px;min-width:0}
+    .wg{margin:0;background:#1d3050b5;border:1px solid #8db0eb43;border-radius:18px;padding:clamp(12px,3vw,18px);overflow:hidden}
+    .wg-h{display:flex;align-items:baseline;gap:10px;font-size:1.12rem}
+    .wg-badge{font-size:.75rem;font-weight:700;color:var(--gold)}
+    .wg-lead{color:var(--muted);margin:.55em 0}
+    .wg-out{margin:8px 0 0;padding:10px 12px;background:#09172dbb;border-radius:11px;overflow-wrap:anywhere}
+    .wg-chips{display:flex;flex-wrap:wrap;gap:8px}
+    .wg-chip,.ib,.tq-o{font:inherit;color:inherit;border:1px solid #9bb8ef58;border-radius:10px;background:#1c2d4b;padding:8px 12px}
+    button,summary,select,input[type="range"]{cursor:pointer}
+    button:disabled{opacity:.45;cursor:default}
+    :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+    summary{font-weight:650}
+    .tq-opts,.tq-btns{display:grid;gap:8px;margin:12px 0}
+    .tq-o{display:flex;text-align:left;gap:10px}
+    .tq-q small{display:block;color:var(--muted)}
+    .tq-o.ok,.tq-why.ok{border-color:#61d8cb}
+    .tq-o.bad,.tq-why.bad{border-color:#ffac59}
+    .tq-why{padding:8px 12px;border:1px solid;border-radius:10px;margin-bottom:9px}
+    .tq-score{font-size:1.6rem;font-weight:700}
+  </style>
+</head>
+<body>
+  <main>
+    <a href="./#/s/ekonomika/faktory-proizvodstva">← К конспекту</a>
+    <h1>Интерактивы к лекции «Рынки факторов производства»</h1>
+    <nav aria-label="Интерактивы">
+      <a href="media/ekonomika-faktory-interaktiv.html#hiring">MRP и MRC</a>
+      <a href="media/ekonomika-faktory-interaktiv.html#production">Кобб — Дуглас</a>
+      <a href="media/ekonomika-faktory-interaktiv.html#funds">Основные фонды</a>
+      <a href="media/ekonomika-faktory-interaktiv.html#capital">Сложные проценты</a>
+      <a href="media/ekonomika-faktory-interaktiv.html#practice">Самопроверка</a>
+      <a href="media/ekonomika-faktory-interaktiv.html#cards">Карточки</a>
+    </nav>
+    <section class="exercise" id="hiring" data-model="ef-hiring3d" aria-label="MRP и MRC"></section>
+    <section class="exercise" id="production" data-model="ef-cobb3d" aria-label="Производственная функция Кобба — Дугласа"></section>
+    <section class="exercise" id="funds" data-model="ef-funds3d" aria-label="Движение основных фондов"></section>
+    <section class="exercise" id="capital" aria-label="Стоимость денег во времени">
+      <div class="exercise" data-model="ef-interest-line"></div>
+      <div class="exercise" data-model="ef-capital3d"></div>
+    </section>
+    <section class="exercise" id="practice" data-model="ef-quiz" aria-label="Самопроверка"></section>
+    <section class="exercise" id="cards" data-model="ef-cards" aria-label="Карточки"></section>
+  </main>
+  <script src="lib/tests.js"></script>
+  <script src="lib/scene3d.js?v=40"></script>
+  <script src="lib/ekonomika-faktory3d.js?v=4"></script>
+  <script>
+    document.querySelectorAll('[data-model]').forEach(element => {
+      const widget = document.createElement('div');
+      element.append(widget);
+      HubFaktory(element.dataset.model, widget);
+    });
+  </script>
+</body>
+</html>

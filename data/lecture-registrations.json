@@ -179,7 +179,7 @@
       "section": "ekonomika",
       "item": {
         "id": "test-faktory-proizvodstva",
-        "title": "Тест: Рынки факторов производства (23.11)",
+        "title": "Рынки факторов производства (23.11)",
         "type": "test",
         "src": "data/tests/ekonomika-faktory-proizvodstva.json",
         "topic": "faktory-proizvodstva",
