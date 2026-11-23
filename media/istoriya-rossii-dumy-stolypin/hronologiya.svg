@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 590 360" role="img" aria-label="Хронология аграрной реформы Столыпина с 1906 по 1917 год">
+  <rect width="590" height="360" rx="24" fill="#14223e"/>
+  <text x="30" y="44" fill="#eef4ff" font-family="system-ui, sans-serif" font-size="24" font-weight="700">Хронология аграрной реформы</text>
+  <text x="30" y="76" fill="#c3d1eb" font-family="system-ui, sans-serif" font-size="17">Схема порядка событий. Интервалы условны.</text>
+  <path d="M45 117V279" stroke="#43648d" stroke-width="3"/>
+  <g font-family="system-ui, sans-serif" font-size="19" fill="#eef4ff">
+    <circle cx="45" cy="124" r="8" fill="#ffad64"/>
+    <text x="68" y="131"><tspan font-weight="700">1906</tspan><tspan dx="16">Право укрепить надел</tspan></text>
+    <circle cx="45" cy="173" r="8" fill="#71b7ff"/>
+    <text x="68" y="180"><tspan font-weight="700">1910</tspan><tspan dx="16">Закон о землевладении</tspan></text>
+    <circle cx="45" cy="226" r="8" fill="#71b7ff"/>
+    <text x="68" y="233"><tspan font-weight="700">1911</tspan><tspan dx="16">Закон о землеустройстве</tspan></text>
+    <circle cx="45" cy="279" r="8" fill="#aab7cc"/>
+    <text x="68" y="286"><tspan font-weight="700">1917</tspan><tspan dx="16">Прекращение реформы</tspan></text>
+  </g>
+  <g font-family="system-ui, sans-serif" font-size="15" fill="#c3d1eb">
+    <circle cx="36" cy="329" r="6" fill="#ffad64"/><text x="49" y="334">Указ</text>
+    <circle cx="129" cy="329" r="6" fill="#71b7ff"/><text x="142" y="334">Закон</text>
+    <circle cx="227" cy="329" r="6" fill="#aab7cc"/><text x="240" y="334">Решение Временного правительства</text>
+  </g>
+</svg>
