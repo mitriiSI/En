@@ -181,7 +181,7 @@
         "id": "test-faktory-proizvodstva",
         "title": "Тест: Рынки факторов производства (23.11)",
         "type": "test",
-        "src": "data/tests/ekonomika.json",
+        "src": "data/tests/ekonomika-faktory-proizvodstva.json",
         "topic": "faktory-proizvodstva",
         "date": "2026-11-23"
       }
