@@ -96,10 +96,28 @@ async function checkAnswer(item, answer) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 65000);
   try {
+    const sameOrigin = proxy.origin === location.origin;
+    const headers = { 'Content-Type': 'text/plain;charset=UTF-8' };
+    const body = { messages };
+    if (sameOrigin) {
+      const session = await fetch('/api/me', {
+        credentials: 'same-origin',
+        cache: 'no-store',
+        signal: controller.signal
+      });
+      if (!session.ok) throw new Error('Для проверки войди в аккаунт на сайте.');
+      const { csrf } = await session.json();
+      if (!csrf) throw new Error('Обнови страницу и повтори проверку.');
+      headers['Content-Type'] = 'application/json';
+      headers['X-CSRF-Token'] = csrf;
+      body.model = 'gigachat';
+      body.stream = false;
+    }
     const response = await fetch(proxy, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-      body: JSON.stringify({ messages }),
+      headers,
+      body: JSON.stringify(body),
+      credentials: 'same-origin',
       signal: controller.signal
     });
     if (!response.ok) throw new Error('Сервис проверки ответил с ошибкой.');
