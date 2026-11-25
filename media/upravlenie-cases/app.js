@@ -71,7 +71,7 @@ async function checkAnswer(item, answer) {
   }
 }
 
-export function mount(root, lesson) {
+export function mount(root, lesson, caseFile = 'cases.json?v=2') {
   root.innerHTML = `<p id="loading" role="status">Загружаются задания…</p>
 <section id="trainer" hidden aria-label="Тренажёр">
   <div class="selection">
@@ -186,7 +186,7 @@ export function mount(root, lesson) {
     }
   });
 
-  fetch(new URL('cases.json?v=2', import.meta.url)).then(response => {
+  fetch(new URL(caseFile, import.meta.url)).then(response => {
     if (!response.ok) throw new Error();
     return response.json();
   }).then(items => {

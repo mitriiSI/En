@@ -324,6 +324,15 @@
         "type": "test",
         "src": "data/tests/upravlenie.json"
       }
+    },
+    {
+      "section": "ekonomika",
+      "item": {
+        "id": "zadaniya",
+        "title": "Задания",
+        "type": "test",
+        "src": "data/tests/ekonomika.json"
+      }
     }
   ]
 }

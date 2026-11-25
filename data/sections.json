@@ -1999,6 +1999,12 @@
           "type": "test",
           "src": "data/tests/ekonomika.json",
           "date": "9999"
+        },
+        {
+          "id": "zadaniya",
+          "title": "Задания",
+          "type": "test",
+          "src": "data/tests/ekonomika.json"
         }
       ]
     },
