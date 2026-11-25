@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 350" role="img" aria-label="Февральская революция по старому стилю. 23 февраля начались массовые выступления. 27 февраля части гарнизона перешли к восставшим, возникли Петросовет и думский комитет. 2 марта Николай II отрёкся, сформировано Временное правительство.">
+  <rect width="620" height="350" rx="22" fill="#101c30"/>
+  <text x="33" y="49" fill="#ecf3ff" font-family="system-ui, sans-serif" font-size="27" font-weight="700">Февральская революция</text>
+  <text x="35" y="76" fill="#b8c8df" font-family="system-ui, sans-serif" font-size="17">Три даты по старому стилю</text>
+  <path d="M46 114v192" fill="none" stroke="#4b6a91" stroke-width="4"/>
+  <g fill="#7db2ff" stroke="#101c30" stroke-width="3">
+    <circle cx="46" cy="120" r="9"/>
+    <circle cx="46" cy="197" r="9"/>
+  </g>
+  <circle cx="46" cy="277" r="9" fill="#ffae64" stroke="#101c30" stroke-width="3"/>
+  <g font-family="system-ui, sans-serif" font-weight="700" font-size="22">
+    <text x="71" y="127" fill="#91beff">23 февраля</text>
+    <text x="71" y="204" fill="#91beff">27 февраля</text>
+    <text x="71" y="284" fill="#ffb674">2 марта</text>
+  </g>
+  <g font-family="system-ui, sans-serif" font-size="21" fill="#ecf3ff">
+    <text x="71" y="156">Массовые выступления в Петрограде</text>
+    <text x="71" y="233">Переход гарнизона. Петросовет и Комитет Думы</text>
+    <text x="71" y="313">Отречение. Временное правительство</text>
+  </g>
+</svg>
