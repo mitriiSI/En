@@ -83,8 +83,8 @@ export function mount(root, lesson) {
     <label for="case">Выбери ситуацию</label>
     <select id="case"></select>
   </div>
-  <article class="wg" aria-labelledby="title">
-    <h2 id="title"></h2>
+  <article class="wg" aria-labelledby="tu-case-title">
+    <h2 id="tu-case-title"></h2>
     <p id="scene"></p>
     <p id="task" class="task"></p>
     <details id="hint-box">
@@ -103,19 +103,13 @@ export function mount(root, lesson) {
       <ul id="criteria"></ul>
       <p id="next-step"></p>
     </section>
-    <details id="example-box">
-      <summary>Открыть пример ответа</summary>
-      <p id="example"></p>
-      <h3>Что проверить в своём ответе</h3>
-      <ul id="rubric"></ul>
-    </details>
     <nav aria-label="Соседние задания">
-      <button class="ib" id="prev" type="button">← Предыдущая</button>
-      <button class="ib" id="next" type="button">Следующая →</button>
+      <button class="ib" id="tu-case-prev" type="button">← Предыдущая</button>
+      <button class="ib" id="tu-case-next" type="button">Следующая →</button>
     </nav>
   </article>
 </section>`;
-  const $ = id => root.querySelector('#' + id);
+  const $ = id => root.querySelector('#' + (['title', 'next', 'prev'].includes(id) ? 'tu-case-' : '') + id);
   let cases;
   let drafts;
   let selected = 0;
@@ -124,17 +118,13 @@ export function mount(root, lesson) {
     selected = index;
     const item = cases[index];
     $('case').value = String(index);
-    for (const key of ['title', 'scene', 'task', 'hint', 'example']) $(key).textContent = item[key];
+    for (const key of ['title', 'scene', 'task']) $(key).textContent = item[key];
     $('hint-box').open = false;
-    $('example-box').open = false;
+    $('hint-box').hidden = !item.hint;
+    $('hint').textContent = item.hint || '';
     $('answer').value = drafts[index].answer;
     $('prev').disabled = index === 0;
     $('next').disabled = index === cases.length - 1;
-    $('rubric').replaceChildren(...item.criteria.map(([label, expectation]) => {
-      const line = document.createElement('li');
-      line.textContent = label + ' — ' + expectation;
-      return line;
-    }));
     renderFeedback();
   }
 
@@ -194,14 +184,14 @@ export function mount(root, lesson) {
       }
     } catch (error) {
       const reason = error.name === 'AbortError' ? 'Проверка заняла слишком много времени.' : error.message;
-      draft.status = reason + ' Можно повторить запрос или открыть пример ответа.';
+      draft.status = reason + ' Можно повторить запрос.';
     } finally {
       draft.pending = false;
       if (root.isConnected && index === selected) renderFeedback();
     }
   });
 
-  fetch(new URL('cases.json', import.meta.url)).then(response => {
+  fetch(new URL('cases.json?v=2', import.meta.url)).then(response => {
     if (!response.ok) throw new Error();
     return response.json();
   }).then(items => {
@@ -209,7 +199,7 @@ export function mount(root, lesson) {
     if (!cases.length) throw new Error();
     drafts = cases.map(() => ({ answer: '', pending: false, status: '', feedback: null }));
     for (const [index, item] of cases.entries()) {
-      $('case').add(new Option(item.title, index));
+      $('case').add(new Option((index + 1) + '. ' + item.title, index));
     }
     $('case').addEventListener('change', event => selectCase(Number(event.target.value)));
     $('prev').addEventListener('click', () => selectCase(selected - 1));
