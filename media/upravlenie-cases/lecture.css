@@ -1,0 +1,3 @@
+.tile[data-grp="upravlenie/g/tests"] { display: none; }
+.tu-assignments { display: block !important; width: 100%; scroll-margin-top: calc(var(--hh, 60px) + 28px); }
+.tu-assignments iframe { display: block; width: 100%; min-height: 18rem; border: 0; }

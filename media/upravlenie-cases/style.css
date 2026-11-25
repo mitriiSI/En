@@ -38,3 +38,8 @@ summary { cursor: pointer; color: var(--link); padding: .55rem 0; }
 #feedback { border-top: 1px solid var(--line); }
 nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; margin-top: 1.15rem; }
 [hidden] { display: none; }
+
+.embedded, .embedded body { background: transparent; }
+.embedded main { width: 100%; padding: .25rem 0 .5rem; }
+.embedded :is(.back, h1, .intro, .topic) { display: none; }
+.embedded .selection { margin: 0 0 .85rem; }

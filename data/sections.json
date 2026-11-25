@@ -7080,61 +7080,6 @@
             }
           ],
           "date": "2026-11-17"
-        },
-        {
-          "id": "test-l1",
-          "title": "Тест: Лекция 1. Понятие управления (08.09)",
-          "type": "test",
-          "src": "data/tests/upravlenie.json",
-          "topic": "l1",
-          "date": "2026-09-08"
-        },
-        {
-          "id": "test-l2",
-          "title": "Тест: Лекция 2. Западные школы управления (22.09)",
-          "type": "test",
-          "src": "data/tests/upravlenie.json",
-          "topic": "l2",
-          "date": "2026-09-22"
-        },
-        {
-          "id": "test-l3",
-          "title": "Тест: Лекция 3. Отечественные школы управления (06.10)",
-          "type": "test",
-          "src": "data/tests/upravlenie.json",
-          "topic": "l3",
-          "date": "2026-10-06"
-        },
-        {
-          "id": "test-l4",
-          "title": "Тест: Лекция 4. Системный подход (20.10)",
-          "type": "test",
-          "src": "data/tests/upravlenie.json",
-          "topic": "l4",
-          "date": "2026-10-20"
-        },
-        {
-          "id": "test-l5",
-          "title": "Тест: Лекция 5. Организация и оргструктуры (03.11)",
-          "type": "test",
-          "src": "data/tests/upravlenie.json",
-          "topic": "l5",
-          "date": "2026-11-03"
-        },
-        {
-          "id": "test-l6",
-          "title": "Тест: Лекция 6. Функции управления (17.11)",
-          "type": "test",
-          "src": "data/tests/upravlenie.json",
-          "topic": "l6",
-          "date": "2026-11-17"
-        },
-        {
-          "id": "test",
-          "title": "Итоговый тест по всем темам предмета",
-          "type": "test",
-          "src": "data/tests/upravlenie.json",
-          "date": "9999"
         }
       ]
     },
