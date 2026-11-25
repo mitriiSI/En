@@ -1,3 +1,22 @@
-.tile[data-grp="upravlenie/g/tests"] { display: none; }
-.tu-assignments { display: block !important; width: 100%; scroll-margin-top: calc(var(--hh, 60px) + 28px); }
-.tu-assignments iframe { display: block; width: 100%; min-height: 18rem; border: 0; }
+.tu-assignments label, .tu-written label { display: block; font-weight: 650; margin-bottom: .4rem; }
+.tu-assignments select, .tu-written textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: .7rem .85rem;
+  border: 1px solid var(--glass-edge, var(--line));
+  border-radius: 14px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+}
+.tu-assignments :is(select, textarea, summary):focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.tu-written textarea { resize: vertical; }
+.tu-written > h3 { margin-top: 1.8rem; }
+.tu-written .wg { margin-top: .8rem; }
+.tu-written .task { border-left: 3px solid var(--accent); padding-left: .8rem; font-weight: 650; }
+.tu-written .assignment-muted { color: var(--muted); font-size: .9rem; }
+.tu-written :is(form, details, nav) { margin-top: 1rem; }
+.tu-written details { padding: .65rem .8rem; border: 1px solid var(--glass-edge, var(--line)); border-radius: 14px; }
+.tu-written summary { cursor: pointer; color: var(--accent2); }
+.tu-written nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; }
+.tu-written #status:empty { display: none; }

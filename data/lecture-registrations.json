@@ -315,6 +315,15 @@
         "topic": "pervaya-mirovaya",
         "date": "2026-11-25"
       }
+    },
+    {
+      "section": "upravlenie",
+      "item": {
+        "id": "zadaniya",
+        "title": "Задания",
+        "type": "test",
+        "src": "data/tests/upravlenie.json"
+      }
     }
   ]
 }

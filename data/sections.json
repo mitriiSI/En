@@ -7080,6 +7080,12 @@
             }
           ],
           "date": "2026-11-17"
+        },
+        {
+          "id": "zadaniya",
+          "title": "Задания",
+          "type": "test",
+          "src": "data/tests/upravlenie.json"
         }
       ]
     },
