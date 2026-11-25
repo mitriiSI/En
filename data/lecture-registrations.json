@@ -315,6 +315,27 @@
         "topic": "pervaya-mirovaya",
         "date": "2026-11-25"
       }
+    },
+    {
+      "section": "upravlenie",
+      "item": {
+        "id": "test-intensive",
+        "title": "Тренажёр по шести лекциям · 180 вопросов",
+        "type": "test",
+        "src": "data/tests/upravlenie-intensive.json",
+        "date": "2026-11-25"
+      }
+    },
+    {
+      "section": "upravlenie",
+      "item": {
+        "id": "practice-recall",
+        "title": "Самопроверка по шести лекциям",
+        "type": "markdown",
+        "group": "tests",
+        "src": "content/upravlenie-practice.md",
+        "date": "2026-11-25"
+      }
     }
   ]
 }
