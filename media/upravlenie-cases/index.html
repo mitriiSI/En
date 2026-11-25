@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Теория управления · Задачи по ситуациям</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="../../lib/ai-config.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main>
+    <a class="back" href="../../#/s/upravlenie/practice-recall">← К самопроверке</a>
+    <h1>Задачи по ситуациям</h1>
+    <p class="intro">Определи, что происходит в каждой ситуации, и объясни свой ход мысли. Ответ можно сверить с примером или отправить на проверку в GigaChat.</p>
+    <p id="loading" role="status">Загружаются задания…</p>
+    <section id="trainer" hidden aria-label="Тренажёр">
+      <div class="selection">
+        <label for="case">Выбери ситуацию</label>
+        <select id="case"></select>
+      </div>
+      <article class="card" aria-labelledby="title">
+        <p id="topic" class="topic"></p>
+        <h2 id="title"></h2>
+        <p id="scene"></p>
+        <p id="task" class="task"></p>
+        <details id="hint-box">
+          <summary>Подсказка</summary>
+          <p id="hint"></p>
+        </details>
+        <form id="form">
+          <label for="answer">Твой ответ</label>
+          <textarea id="answer" rows="5" maxlength="2400" required aria-describedby="privacy" placeholder="Назови понятия и объясни, как они связаны с ситуацией."></textarea>
+          <p id="privacy" class="muted">Текст отправляется в GigaChat только при проверке. Оценка ориентировочная.</p>
+          <button id="grade" type="submit" class="primary">Проверить с GigaChat</button>
+          <p id="status" role="status" class="muted"></p>
+        </form>
+        <section id="feedback" hidden aria-labelledby="feedback-title">
+          <h3 id="feedback-title">Разбор ответа</h3>
+          <ul id="criteria"></ul>
+          <p id="next-step"></p>
+        </section>
+        <details id="example-box">
+          <summary>Открыть пример ответа</summary>
+          <p id="example"></p>
+          <h3>Что проверить в своём ответе</h3>
+          <ul id="rubric"></ul>
+        </details>
+        <nav aria-label="Соседние задания">
+          <button id="prev" type="button">← Предыдущая</button>
+          <button id="next" type="button">Следующая →</button>
+        </nav>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

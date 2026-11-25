@@ -1,0 +1,40 @@
+:root {
+  color-scheme: dark;
+  font: 16px/1.55 system-ui, sans-serif;
+  color: #eff4fd;
+  background: #0a1221;
+  --muted: #bcc9dd;
+  --line: #3b4e6a;
+  --link: #a9caff;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { width: min(100%, 760px); margin: auto; padding: 2rem clamp(1rem, 4vw, 2rem) 3rem; }
+a { color: var(--link); }
+h1, h2, h3 { line-height: 1.18; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 6vw, 3rem); margin: 1rem 0 .5rem; }
+h2 { font-size: clamp(1.45rem, 4vw, 2rem); margin: .35rem 0 1rem; }
+h3 { font-size: 1.1rem; }
+.intro, .muted { color: var(--muted); }
+.muted { font-size: .9rem; }
+.selection { margin: 1.25rem 0 1rem; }
+.card { border: 1px solid var(--line); border-radius: 1.25rem; background: #142137; padding: clamp(1rem, 4vw, 1.6rem); }
+.topic { margin: 0; color: #ffc38d; font-size: .95rem; }
+.task { border-left: 3px solid #f4a464; padding-left: .8rem; font-weight: 600; }
+label { display: block; font-weight: 650; margin-bottom: .4rem; }
+select, textarea, button { font: inherit; color: inherit; border: 1px solid var(--line); border-radius: .7rem; }
+select, textarea { width: 100%; background: #0b1528; padding: .7rem .85rem; }
+textarea { resize: vertical; min-height: 7rem; }
+textarea::placeholder { color: #b0bed4; }
+button { cursor: pointer; background: #1d304d; padding: .58rem .9rem; min-height: 44px; }
+button:disabled { opacity: .6; cursor: default; }
+button.primary { background: #9dc5ff; color: #0b1930; border-color: transparent; font-weight: 700; }
+:focus-visible { outline: 2px solid #ffc38d; outline-offset: 3px; }
+form, details, #feedback { margin-top: 1rem; }
+details { border: 1px solid var(--line); border-radius: .75rem; padding: .2rem .8rem; }
+summary { cursor: pointer; color: var(--link); padding: .55rem 0; }
+#status:empty { display: none; }
+#feedback li, #rubric li { margin: .55rem 0; }
+#feedback { border-top: 1px solid var(--line); }
+nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; margin-top: 1.15rem; }
+[hidden] { display: none; }
