@@ -1,4 +1,9 @@
 const verdicts = { met: 'Учтено', partial: 'Частично', missing: 'Пропущено или есть ошибка' };
+const verdictColors = {
+  met: 'var(--ok, #3ddc97)',
+  partial: 'var(--orange, #ff8a1f)',
+  missing: 'var(--bad, #ff5a64)'
+};
 
 function getProxy() {
   let stored;
@@ -147,7 +152,10 @@ export function mount(root, lesson, caseFile = 'cases.json?v=3') {
     for (const [index, result] of feedback.entries()) {
       const li = document.createElement('li');
       const strong = document.createElement('strong');
-      strong.textContent = cases[selected].criteria[index][0] + ' · ' + verdicts[result.status];
+      const verdict = document.createElement('span');
+      verdict.textContent = verdicts[result.status];
+      verdict.style.color = verdictColors[result.status];
+      strong.append(cases[selected].criteria[index][0] + ' · ', verdict);
       li.append(strong, document.createElement('br'), result.comment);
       if (result.revision) {
         const revision = document.createElement('p');
