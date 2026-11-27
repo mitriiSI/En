@@ -1,3 +1,18 @@
+/* Study controls must be usable before the lecture’s scroll animation runs. */
+.doc .inline-learning,
+.doc .learn-jump {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none;
+}
+.doc .learn-jump {
+  display: inline-flex;
+  margin: .35rem 0 1rem;
+  border-color: var(--accent, #91caff);
+  color: var(--accent, #91caff);
+  min-height: 2.75rem;
+}
 .doc .inline-learning {
   margin: 1em 0 1.4em;
   border: 1px solid var(--line, #354c6b);

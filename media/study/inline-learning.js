@@ -327,10 +327,22 @@
   }
 
   window.HubInlineLearning = function (root) {
-    for (const block of root.querySelectorAll('.inline-learning')) {
+    const blocks = Array.from(root.querySelectorAll('.inline-learning'));
+    for (const block of blocks) {
       if (block.dataset.learningMounted) continue;
       block.dataset.learningMounted = 'true';
       mountBlock(block);
     }
+    const first = blocks[0];
+    const lesson = first?.closest('.doc');
+    const title = lesson?.querySelector('h1');
+    if (!title || lesson.querySelector('.learn-jump')) return;
+    const jump = button('К самопроверке', () => {
+      const summary = first.querySelector('summary');
+      first.open = true;
+      summary?.focus({ preventScroll: true });
+      first.scrollIntoView({ block: 'center', behavior: 'instant' });
+    }, 'ib learn-jump u2-keep');
+    title.after(jump);
   };
 })();
