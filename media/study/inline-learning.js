@@ -7,7 +7,7 @@
     { value: '1', label: 'Вспомнил частично' },
     { value: '0', label: 'Не вспомнил' }
   ];
-  const modes = [['steps', 'По шагам'], ['cards', 'Карточки'], ['all', 'Проверка всего блока']];
+  const modes = [['read', 'Вопросы и ответы'], ['steps', 'По шагам'], ['cards', 'Карточки'], ['all', 'Проверка всего блока']];
 
   function element(tag, text, className) {
     const node = document.createElement(tag);
@@ -53,8 +53,8 @@
     if (counts[counts.length - 1] !== items.length) counts.push(items.length);
     const saved = readProgress(block.dataset.studyId);
     let stage = Math.min(Math.max(saved.stage || 0, 0), counts.length - 1);
-    let mode = counts.length === 1 ? 'all' : 'steps';
-    let phase = mode === 'steps' ? 'study' : 'recall';
+    let mode = 'read';
+    let phase = 'recall';
     let order = items.slice();
     let position = 0;
     let flipped = false;
@@ -285,6 +285,19 @@
       draw(true);
     }
 
+    function renderReading() {
+      if (block.dataset.recall) activity.append(element('p', block.dataset.recall));
+      const list = element('ol');
+      for (const item of items) {
+        const row = element('li');
+        row.append(element('strong', item.question));
+        if (item.hint) row.append(element('p', 'Подсказка — ' + item.hint, 'learn-reading-hint'));
+        row.append(element('p', item.answer, 'learn-answer'));
+        list.append(row);
+      }
+      activity.append(list);
+    }
+
     function draw(focus) {
       status.textContent = '';
       tabs.replaceChildren();
@@ -297,7 +310,8 @@
         tabs.append(tab);
       }
 
-      if (mode === 'cards') renderCards();
+      if (mode === 'read') renderReading();
+      else if (mode === 'cards') renderCards();
       else renderRecall();
 
       if (mode !== 'cards') {
@@ -314,33 +328,23 @@
       if (focus) activity.focus({ preventScroll: true });
     }
 
-    block.addEventListener('toggle', function start() {
-      if (!block.open) return;
-      block.removeEventListener('toggle', start);
-      fallback.replaceWith(panel);
-      draw();
-    });
-    if (block.open) {
-      fallback.replaceWith(panel);
-      draw();
-    }
+    const section = element('section');
+    for (const { name, value } of block.attributes) section.setAttribute(name, value);
+    section.append(element('h3', block.querySelector('summary')?.textContent, 'learn-title'), panel);
+    block.replaceWith(section);
+    draw();
   }
 
   window.HubInlineLearning = function (root) {
-    const blocks = Array.from(root.querySelectorAll('.inline-learning'));
-    for (const block of blocks) {
-      if (block.dataset.learningMounted) continue;
-      block.dataset.learningMounted = 'true';
+    for (const block of root.querySelectorAll('details.inline-learning')) {
       mountBlock(block);
     }
-    const first = blocks[0];
+    const first = root.querySelector('.inline-learning');
     const lesson = first?.closest('.doc');
     const title = lesson?.querySelector('h1');
     if (!title || lesson.querySelector('.learn-jump')) return;
     const jump = button('К самопроверке', () => {
-      const summary = first.querySelector('summary');
-      first.open = true;
-      summary?.focus({ preventScroll: true });
+      first.querySelector('.learn-activity')?.focus({ preventScroll: true });
       first.scrollIntoView({ block: 'center', behavior: 'instant' });
     }, 'ib learn-jump u2-keep');
     title.after(jump);

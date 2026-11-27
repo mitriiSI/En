@@ -21,11 +21,13 @@
   padding: .65rem .9rem;
   overflow-wrap: anywhere;
 }
-.inline-learning > summary {
-  cursor: pointer;
+.inline-learning > summary,
+.doc .inline-learning > .learn-title {
+  margin: 0 0 .55rem;
   font-weight: 700;
   color: var(--accent, #91caff);
 }
+.inline-learning .learn-reading-hint { margin: .25rem 0; color: var(--muted, #a8bdd8); }
 .inline-learning .learn-actions {
   display: flex;
   flex-wrap: wrap;
