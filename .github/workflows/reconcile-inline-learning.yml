@@ -1,19 +1,26 @@
-name: Check live lecture versions for inline learning
+name: Reconcile and publish the 27 November inline-learning update
 on:
   push:
     branches: [deploy/inline-learning-vps]
+    paths:
+      - '.github/workflows/reconcile-inline-learning.yml'
+      - 'ops/reconcile-inline-learning.py'
 permissions:
   contents: read
+concurrency:
+  group: mitii-lectures-production
+  cancel-in-progress: false
 jobs:
-  preflight:
+  publish:
+    if: ${{ vars.MITII_DEPLOY_ENABLED == 'true' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 3
+          fetch-depth: 0
           persist-credentials: false
-      - name: Compare approved lecture paths
+      - name: Merge prepared exercises into the current lecture versions
         shell: bash
         env:
           DEPLOY_KEY: ${{ secrets.MITII_SSH_KEY }}
@@ -25,28 +32,40 @@ jobs:
           umask 077
           deploy_port="${DEPLOY_PORT:-22}"
           [[ "$DEPLOY_USER" =~ ^[a-zA-Z0-9._-]+$ && "$deploy_port" =~ ^[0-9]{1,5}$ && -n "$DEPLOY_KEY" && -n "$HOST_KEYS" ]]
-          printf '%s\n' "$DEPLOY_KEY" > "$RUNNER_TEMP/lecture-key"
-          printf '%s\n' "$HOST_KEYS" > "$RUNNER_TEMP/known-hosts"
-          git diff --name-only cfdb332744b620cfff74f6573af41b7dcb64427a 191c65be30aae6eb1860c9e1a30a3843b1eddcfe |
-            awk '/^content\/[a-z0-9-]+\.md$/ || /^lib\/upravlenie3d-common\.js$/ || /^media\/study\/inline-learning\.(css|js)$/' > "$RUNNER_TEMP/lecture-paths"
-          printf '%s\n' 'content/ekonomika-lekciya-16-11.md' >> "$RUNNER_TEMP/lecture-paths"
-          ssh -i "$RUNNER_TEMP/lecture-key" -p "$deploy_port" -o IdentitiesOnly=yes -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$RUNNER_TEMP/known-hosts" \
-            "$DEPLOY_USER@193.227.240.200" '
-              set -eu
-              cd /srv/mitii
-              while IFS= read -r f; do
-                if [ -f "$f" ]; then
-                  test -r "$f"
-                  sha256sum "$f"
-                else
-                  printf "MISSING %s\n" "$f"
-                fi
-              done
-              if [ -r content/ekonomika-lekciya-16-11.md ]; then
-                awk "/^#{2,4} /" content/ekonomika-lekciya-16-11.md
-              fi
-              if grep -q "upravlenie3d-common[.]js" index.html; then
-                printf "%s\n" "Inline widget host is loaded by live index"
-              fi
-            ' < "$RUNNER_TEMP/lecture-paths"
+          [[ "$GITHUB_SHA" =~ ^[a-f0-9]{40}$ ]]
+          work="$(mktemp -d "$RUNNER_TEMP/lecture-reconcile.XXXXXX")"
+          trap 'rm -rf "$work"' EXIT
+          printf '%s\n' "$DEPLOY_KEY" > "$work/key"
+          printf '%s\n' "$HOST_KEYS" > "$work/known-hosts"
+          unset DEPLOY_KEY HOST_KEYS
+
+          remote="$DEPLOY_USER@193.227.240.200"
+          options=(-i "$work/key" -p "$deploy_port" -o IdentitiesOnly=yes -o BatchMode=yes
+            -o StrictHostKeyChecking=yes -o "UserKnownHostsFile=$work/known-hosts")
+          rshell="ssh -i $work/key -p $deploy_port -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$work/known-hosts"
+          python3 ops/reconcile-inline-learning.py paths > "$work/lecture-paths"
+          ssh "${options[@]}" "$remote"             'cd /srv/mitii && tar --no-recursion --ignore-failed-read -cf - -T -'             < "$work/lecture-paths" > "$work/snapshot.tar"
+          mkdir "$work/live"
+          python3 -c 'import sys, tarfile; f=tarfile.open(sys.argv[1]); f.extractall(sys.argv[2], filter="data")'             "$work/snapshot.tar" "$work/live"
+          python3 ops/reconcile-inline-learning.py "$work/live" "$work/next" "$work/baseline"
+          if ! python3 -c 'import json,sys; sys.exit(not json.load(open(sys.argv[1])))' "$work/next/files.json"; then
+            echo "Every exercise and asset is already installed."
+            exit 0
+          fi
+
+          baseline_rev="$(git -c user.name=mitii-publisher -c user.email=mitii-publisher@users.noreply.github.com             commit-tree "$(git rev-parse 'HEAD^{tree}')" -p "$GITHUB_SHA"             -m "Exact live lecture baseline for run $GITHUB_RUN_ID attempt $GITHUB_RUN_ATTEMPT")"
+          inbox=/srv/mitii-deploy/lecture-inbox
+          ssh "${options[@]}" "$remote" "mkdir -p '$inbox/$baseline_rev' '$inbox/$GITHUB_SHA'"
+          rsync -az --checksum --no-owner --no-group --no-perms -e "$rshell" "$work/next/" "$remote:$inbox/$GITHUB_SHA/"
+
+          verify_base="cd /srv/mitii &&
+            (test ! -s '$inbox/$GITHUB_SHA/expected.sha256' ||
+              sha256sum --status -c '$inbox/$GITHUB_SHA/expected.sha256') &&
+            while IFS= read -r f; do test ! -e \"\$f\" || exit 1; done < '$inbox/$GITHUB_SHA/absent.list'"
+          if [ -s "$work/next/expected.sha256" ]; then
+            rsync -az --checksum --no-owner --no-group --no-perms -e "$rshell" "$work/baseline/" "$remote:$inbox/$baseline_rev/"
+            ssh "${options[@]}" "$remote" "$verify_base && sudo -n /usr/local/sbin/mitii-publish-lectures '$baseline_rev'"
+          fi
+          ssh "${options[@]}" "$remote" "$verify_base && sudo -n /usr/local/sbin/mitii-publish-lectures '$GITHUB_SHA'"
+          ssh "${options[@]}" "$remote" "cd /srv/mitii && sha256sum --status -c '$inbox/$GITHUB_SHA/published.sha256'"
+          echo "All published lecture and widget bytes verified on the server."
